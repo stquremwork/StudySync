@@ -2,6 +2,7 @@
 using System.Data;
 using System.Windows.Forms;
 using Npgsql;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Kursach
 {
@@ -73,6 +74,9 @@ namespace Kursach
                 checkBox1.Visible = true;
                 button1.Visible = true;
 
+                label1.Visible = false;
+                textBox1.Visible = false;
+
                 // Также показываем метки
                 HostLabel.Visible = true;
                 PortLabel.Visible = true;
@@ -92,6 +96,9 @@ namespace Kursach
                 PasswordTextBox.Visible = false;
                 checkBox1.Visible = false;
                 button1.Visible = false;
+
+                label1.Visible = true;
+                textBox1.Visible = true;
 
                 // Также скрываем метки
                 HostLabel.Visible = false;
@@ -253,5 +260,20 @@ namespace Kursach
         private void PortLabel_Click(object sender, EventArgs e) { }
         private void DatabaseLabel_Click(object sender, EventArgs e) { }
         private void UserLabel_Click(object sender, EventArgs e) { }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void HostTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

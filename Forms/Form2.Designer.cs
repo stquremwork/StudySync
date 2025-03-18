@@ -44,6 +44,8 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // HostLabel
@@ -65,6 +67,7 @@
             this.HostTextBox.Size = new System.Drawing.Size(265, 22);
             this.HostTextBox.TabIndex = 1;
             this.HostTextBox.Text = "localhost";
+            this.HostTextBox.TextChanged += new System.EventHandler(this.HostTextBox_TextChanged);
             // 
             // PortLabel
             // 
@@ -197,11 +200,31 @@
             this.checkBox2.UseVisualStyleBackColor = true;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(107, 15);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(265, 22);
+            this.textBox1.TabIndex = 16;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(34, 16);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "URL";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(553, 277);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.checkBox1);
@@ -244,5 +267,7 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
