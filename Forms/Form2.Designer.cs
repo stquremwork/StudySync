@@ -43,8 +43,10 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.RememberUrlCheckBox = new System.Windows.Forms.CheckBox();
+            this.UrlTextBox = new System.Windows.Forms.TextBox();
+            this.UseUrlCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // HostLabel
@@ -197,13 +199,6 @@
             this.checkBox2.UseVisualStyleBackColor = true;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(407, 37);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(265, 22);
-            this.textBox1.TabIndex = 15;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -212,15 +207,46 @@
             this.label1.Size = new System.Drawing.Size(34, 16);
             this.label1.TabIndex = 16;
             this.label1.Text = "URL";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // RememberUrlCheckBox
+            // 
+            this.RememberUrlCheckBox.AutoSize = true;
+            this.RememberUrlCheckBox.Location = new System.Drawing.Point(407, 66);
+            this.RememberUrlCheckBox.Name = "RememberUrlCheckBox";
+            this.RememberUrlCheckBox.Size = new System.Drawing.Size(175, 20);
+            this.RememberUrlCheckBox.TabIndex = 17;
+            this.RememberUrlCheckBox.Text = "RememberUrlCheckBox";
+            this.RememberUrlCheckBox.UseVisualStyleBackColor = true;
+            this.RememberUrlCheckBox.CheckedChanged += new System.EventHandler(this.RememberUrlCheckBox_CheckedChanged);
+            // 
+            // UrlTextBox
+            // 
+            this.UrlTextBox.Location = new System.Drawing.Point(407, 37);
+            this.UrlTextBox.Name = "UrlTextBox";
+            this.UrlTextBox.Size = new System.Drawing.Size(265, 22);
+            this.UrlTextBox.TabIndex = 18;
+            this.UrlTextBox.TextChanged += new System.EventHandler(this.UrlTextBox_TextChanged);
+            // 
+            // UseUrlCheckBox
+            // 
+            this.UseUrlCheckBox.AutoSize = true;
+            this.UseUrlCheckBox.Location = new System.Drawing.Point(20, 333);
+            this.UseUrlCheckBox.Name = "UseUrlCheckBox";
+            this.UseUrlCheckBox.Size = new System.Drawing.Size(132, 20);
+            this.UseUrlCheckBox.TabIndex = 19;
+            this.UseUrlCheckBox.Text = "UseUrlCheckBox";
+            this.UseUrlCheckBox.UseVisualStyleBackColor = true;
+            this.UseUrlCheckBox.CheckedChanged += new System.EventHandler(this.UseUrlCheckBox_CheckedChanged);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.UseUrlCheckBox);
+            this.Controls.Add(this.UrlTextBox);
+            this.Controls.Add(this.RememberUrlCheckBox);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.checkBox1);
@@ -262,7 +288,11 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox RememberUrlCheckBox;
+        private System.Windows.Forms.TextBox UrlTextBox;
+        private System.Windows.Forms.CheckBox UseUrlCheckBox;
     }
+
+
 }
