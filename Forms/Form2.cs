@@ -2,7 +2,6 @@
 using System.Data;
 using System.Windows.Forms;
 using Npgsql;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Kursach
 {
@@ -15,99 +14,8 @@ namespace Kursach
         {
             InitializeComponent();
 
-            // Создаем TabControl
-            TabControl tabControl = new TabControl();
-            tabControl.Dock = DockStyle.Fill;
-
-            // Вкладка 1: General
-            TabPage tabPageTables = new TabPage("General");
-            tabPageTables.Controls.Add(comboBox1);
-            tabPageTables.Controls.Add(TestConnectionButton);
-            tabPageTables.Controls.Add(HostTextBox);
-            tabPageTables.Controls.Add(PortTextBox);
-            tabPageTables.Controls.Add(DatabaseTextBox);
-            tabPageTables.Controls.Add(UserTextBox);
-            tabPageTables.Controls.Add(PasswordTextBox);
-            tabPageTables.Controls.Add(checkBox1);
-            tabPageTables.Controls.Add(button1);
-
-            // Добавляем метки на первую вкладку
-            tabPageTables.Controls.Add(HostLabel);
-            tabPageTables.Controls.Add(PortLabel);
-            tabPageTables.Controls.Add(DatabaseLabel);
-            tabPageTables.Controls.Add(UserLabel);
-            tabPageTables.Controls.Add(PasswordLabel);
-
-            // Вкладка 2: Advanced
-            TabPage tabPageEmpty = new TabPage("Advanced");
-
-            // Добавляем вкладки в TabControl
-            tabControl.TabPages.Add(tabPageTables);
-            tabControl.TabPages.Add(tabPageEmpty);
-
-            // Добавляем TabControl на форму
-            this.Controls.Add(tabControl);
-
             // Подписываемся на событие FormClosing
             this.FormClosing += new FormClosingEventHandler(Form2_FormClosing);
-
-            // Подписываемся на событие SelectedIndexChanged для TabControl
-            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
-        }
-
-        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Получаем текущий TabControl
-            TabControl tabControl = (TabControl)sender;
-
-            // Проверяем, какая вкладка выбрана
-            if (tabControl.SelectedIndex == 0) // Первая вкладка ("General")
-            {
-                // Показываем элементы первой вкладки
-                comboBox1.Visible = true;
-                TestConnectionButton.Visible = true;
-                HostTextBox.Visible = true;
-                PortTextBox.Visible = true;
-                DatabaseTextBox.Visible = true;
-                UserTextBox.Visible = true;
-                PasswordTextBox.Visible = true;
-                checkBox1.Visible = true;
-                button1.Visible = true;
-
-                label1.Visible = false;
-                textBox1.Visible = false;
-
-                // Также показываем метки
-                HostLabel.Visible = true;
-                PortLabel.Visible = true;
-                DatabaseLabel.Visible = true;
-                UserLabel.Visible = true;
-                PasswordLabel.Visible = true;
-            }
-            else if (tabControl.SelectedIndex == 1) // Вторая вкладка ("Advanced")
-            {
-                // Скрываем элементы первой вкладки
-                comboBox1.Visible = false;
-                TestConnectionButton.Visible = false;
-                HostTextBox.Visible = false;
-                PortTextBox.Visible = false;
-                DatabaseTextBox.Visible = false;
-                UserTextBox.Visible = false;
-                PasswordTextBox.Visible = false;
-                checkBox1.Visible = false;
-                button1.Visible = false;
-
-                label1.Visible = true;
-                textBox1.Visible = true;
-
-                // Также скрываем метки
-                HostLabel.Visible = false;
-                PortLabel.Visible = false;
-                DatabaseLabel.Visible = false;
-                UserLabel.Visible = false;
-                PasswordLabel.Visible = false;
-                checkBox2.Visible = false;
-            }
         }
 
         private void TestConnectionButton_Click(object sender, EventArgs e)
@@ -118,7 +26,7 @@ namespace Kursach
             string user = UserTextBox.Text;
             string password = PasswordTextBox.Text;
 
-            ConnectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password};";
+            ConnectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true;";
 
             try
             {
@@ -256,22 +164,7 @@ namespace Kursach
             }
         }
 
-        private void HostLabel_Click(object sender, EventArgs e) { }
-        private void PortLabel_Click(object sender, EventArgs e) { }
-        private void DatabaseLabel_Click(object sender, EventArgs e) { }
-        private void UserLabel_Click(object sender, EventArgs e) { }
-
         private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void HostTextBox_TextChanged(object sender, EventArgs e)
         {
 
         }
