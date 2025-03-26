@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
+using System.IO;
 using System.Windows.Forms;
+using Kursach.Forms;
 using Kursach.Helpers;
 using Npgsql;
 
@@ -21,12 +23,6 @@ namespace Kursach
         {
             dataGridView1.DataSource = dataTable;
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-        }
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            Form2 form2 = new Form2();
-            form2.Show();
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
@@ -190,6 +186,94 @@ namespace Kursach
         private void toolStripDropDownButton3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void toolStripDropDownButton1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void terminalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fullScreenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton3_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2();
+            form2.Show();
+
+        }
+
+        private void toolStripButton2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            // Создаем новую страницу
+            TabPage newTabPage = new TabPage();
+
+            // Указываем название страницы
+            newTabPage.Text = "New Page";
+
+            // Добавляем страницу в TabControl
+            tabControl1.TabPages.Add(newTabPage);
+
+            // Добавляем элементы управления на новую страницу (например, DataGridView)
+            DataGridView dgv = new DataGridView();
+            dgv.Dock = DockStyle.Fill;
+            newTabPage.Controls.Add(dgv);
+
+            // Выбираем созданную страницу
+            tabControl1.SelectedTab = newTabPage;
+        }
+
+        private void toolStripButton7_Click(object sender, EventArgs e)
+        {
+            // Проверяем, есть ли страницы в TabControl
+            if (tabControl1.TabPages.Count > 0)
+            {
+                // Удаляем текущую страницу
+                tabControl1.TabPages.RemoveAt(tabControl1.SelectedIndex);
+
+                // Если страниц больше не осталось, выходим из метода
+                if (tabControl1.TabPages.Count == 0)
+                    return;
+
+                // Выбираем последнюю страницу, если текущая была удалена
+                tabControl1.SelectedIndex = tabControl1.TabPages.Count - 1;
+            }
+            else
+            {
+                MessageBox.Show("Нет страниц для удаления.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }
