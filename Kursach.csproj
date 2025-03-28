@@ -118,12 +118,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Form3 %28Settings%29.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Form3 %28Settings%29.Designer.cs">
-      <DependentUpon>Form3 %28Settings%29.cs</DependentUpon>
-    </Compile>
     <Compile Include="Modules\DatabaseHelper.cs" />
     <Compile Include="Modules\UserSettingsManager.cs" />
     <Compile Include="Modules\DatabaseConnector.cs" />
@@ -143,9 +137,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\Form1 %28Main%29.resx">
       <DependentUpon>Form1 %28Main%29.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form3 %28Settings%29.resx">
-      <DependentUpon>Form3 %28Settings%29.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form2 %28Connect%29.resx">
       <DependentUpon>Form2 %28Connect%29.cs</DependentUpon>
