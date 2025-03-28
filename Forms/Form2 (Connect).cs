@@ -20,6 +20,9 @@ namespace Kursach
 
             // Подписка на событие закрытия формы
             this.FormClosing += new FormClosingEventHandler(Form2_FormClosing);
+
+
+
         }
 
         // Обработчик события клика на кнопку "Test Connection"
@@ -243,6 +246,17 @@ namespace Kursach
         // Обработчик события загрузки формы
         private void Form2_Load(object sender, EventArgs e)
         {
+
+            //Небольшие настроки окна
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;  // Запрещаем изменение размера окна
+            this.MaximizeBox = false;  // Запрещаем максимизацию окна
+            this.MinimizeBox = false;  // Запрещаем минимизацию окна                                    
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+
+
+
+
             // Загружаем сохраненные настройки
             UserTextBox.Text = Properties.Settings.Default.UserName;
             DatabaseTextBox.Text = Properties.Settings.Default.DatabaseName;
