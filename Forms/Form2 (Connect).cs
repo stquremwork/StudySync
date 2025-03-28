@@ -178,9 +178,11 @@ namespace Kursach
 
             // Получаем данные таблицы
             DataTable dataTable = Form1.Instance.GetTableData(tableName);
-            // Загружаем данные в форму
-            Form1.Instance.LoadData(dataTable);
+
+            // Загружаем данные в новую вкладку
+            Form1.Instance.LoadData(dataTable, tableName);
         }
+
 
         // Обработчик события изменения состояния чекбокса "Only Public schemes"
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
@@ -353,6 +355,11 @@ namespace Kursach
             {
                 UpdateConnectionString();
             }
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.HostLabel = new System.Windows.Forms.Label();
             this.HostTextBox = new System.Windows.Forms.TextBox();
             this.PortLabel = new System.Windows.Forms.Label();
@@ -47,12 +48,18 @@
             this.RememberUrlCheckBox = new System.Windows.Forms.CheckBox();
             this.UrlTextBox = new System.Windows.Forms.TextBox();
             this.UseUrlCheckBox = new System.Windows.Forms.CheckBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // HostLabel
             // 
             this.HostLabel.AutoSize = true;
-            this.HostLabel.Location = new System.Drawing.Point(16, 18);
+            this.HostLabel.Location = new System.Drawing.Point(19, 10);
             this.HostLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.HostLabel.Name = "HostLabel";
             this.HostLabel.Size = new System.Drawing.Size(38, 16);
@@ -61,7 +68,7 @@
             // 
             // HostTextBox
             // 
-            this.HostTextBox.Location = new System.Drawing.Point(107, 15);
+            this.HostTextBox.Location = new System.Drawing.Point(110, 7);
             this.HostTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.HostTextBox.Name = "HostTextBox";
             this.HostTextBox.Size = new System.Drawing.Size(265, 22);
@@ -71,7 +78,7 @@
             // PortLabel
             // 
             this.PortLabel.AutoSize = true;
-            this.PortLabel.Location = new System.Drawing.Point(16, 50);
+            this.PortLabel.Location = new System.Drawing.Point(19, 42);
             this.PortLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.PortLabel.Name = "PortLabel";
             this.PortLabel.Size = new System.Drawing.Size(34, 16);
@@ -80,7 +87,7 @@
             // 
             // PortTextBox
             // 
-            this.PortTextBox.Location = new System.Drawing.Point(107, 47);
+            this.PortTextBox.Location = new System.Drawing.Point(110, 39);
             this.PortTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.PortTextBox.Name = "PortTextBox";
             this.PortTextBox.Size = new System.Drawing.Size(265, 22);
@@ -90,7 +97,7 @@
             // DatabaseLabel
             // 
             this.DatabaseLabel.AutoSize = true;
-            this.DatabaseLabel.Location = new System.Drawing.Point(16, 82);
+            this.DatabaseLabel.Location = new System.Drawing.Point(19, 74);
             this.DatabaseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.DatabaseLabel.Name = "DatabaseLabel";
             this.DatabaseLabel.Size = new System.Drawing.Size(70, 16);
@@ -99,7 +106,7 @@
             // 
             // DatabaseTextBox
             // 
-            this.DatabaseTextBox.Location = new System.Drawing.Point(107, 79);
+            this.DatabaseTextBox.Location = new System.Drawing.Point(110, 71);
             this.DatabaseTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.DatabaseTextBox.Name = "DatabaseTextBox";
             this.DatabaseTextBox.Size = new System.Drawing.Size(265, 22);
@@ -109,7 +116,7 @@
             // UserLabel
             // 
             this.UserLabel.AutoSize = true;
-            this.UserLabel.Location = new System.Drawing.Point(16, 114);
+            this.UserLabel.Location = new System.Drawing.Point(19, 106);
             this.UserLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.UserLabel.Name = "UserLabel";
             this.UserLabel.Size = new System.Drawing.Size(39, 16);
@@ -118,7 +125,7 @@
             // 
             // UserTextBox
             // 
-            this.UserTextBox.Location = new System.Drawing.Point(107, 111);
+            this.UserTextBox.Location = new System.Drawing.Point(110, 103);
             this.UserTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.UserTextBox.Name = "UserTextBox";
             this.UserTextBox.Size = new System.Drawing.Size(265, 22);
@@ -128,7 +135,7 @@
             // PasswordLabel
             // 
             this.PasswordLabel.AutoSize = true;
-            this.PasswordLabel.Location = new System.Drawing.Point(16, 146);
+            this.PasswordLabel.Location = new System.Drawing.Point(19, 138);
             this.PasswordLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.PasswordLabel.Name = "PasswordLabel";
             this.PasswordLabel.Size = new System.Drawing.Size(70, 16);
@@ -137,7 +144,7 @@
             // 
             // PasswordTextBox
             // 
-            this.PasswordTextBox.Location = new System.Drawing.Point(107, 143);
+            this.PasswordTextBox.Location = new System.Drawing.Point(110, 135);
             this.PasswordTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.Size = new System.Drawing.Size(265, 22);
@@ -146,29 +153,29 @@
             // 
             // TestConnectionButton
             // 
-            this.TestConnectionButton.Location = new System.Drawing.Point(20, 175);
+            this.TestConnectionButton.Location = new System.Drawing.Point(438, 37);
             this.TestConnectionButton.Margin = new System.Windows.Forms.Padding(4);
             this.TestConnectionButton.Name = "TestConnectionButton";
-            this.TestConnectionButton.Size = new System.Drawing.Size(352, 28);
+            this.TestConnectionButton.Size = new System.Drawing.Size(167, 28);
             this.TestConnectionButton.TabIndex = 10;
-            this.TestConnectionButton.Text = "Test Connection";
+            this.TestConnectionButton.Text = "Connect";
             this.TestConnectionButton.UseVisualStyleBackColor = true;
             this.TestConnectionButton.Click += new System.EventHandler(this.TestConnectionButton_Click);
             // 
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(20, 210);
+            this.comboBox1.Location = new System.Drawing.Point(438, 113);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(351, 24);
+            this.comboBox1.Size = new System.Drawing.Size(167, 24);
             this.comboBox1.TabIndex = 11;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(20, 242);
+            this.checkBox1.Location = new System.Drawing.Point(438, 79);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(154, 20);
@@ -179,10 +186,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(20, 271);
+            this.button1.Location = new System.Drawing.Point(438, 145);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(352, 28);
+            this.button1.Size = new System.Drawing.Size(167, 28);
             this.button1.TabIndex = 13;
             this.button1.Text = "Send data";
             this.button1.UseVisualStyleBackColor = true;
@@ -191,7 +198,7 @@
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(20, 306);
+            this.checkBox2.Location = new System.Drawing.Point(22, 174);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(146, 20);
             this.checkBox2.TabIndex = 14;
@@ -202,7 +209,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(410, 18);
+            this.label1.Location = new System.Drawing.Point(9, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 16);
             this.label1.TabIndex = 16;
@@ -211,7 +218,7 @@
             // RememberUrlCheckBox
             // 
             this.RememberUrlCheckBox.AutoSize = true;
-            this.RememberUrlCheckBox.Location = new System.Drawing.Point(407, 66);
+            this.RememberUrlCheckBox.Location = new System.Drawing.Point(12, 55);
             this.RememberUrlCheckBox.Name = "RememberUrlCheckBox";
             this.RememberUrlCheckBox.Size = new System.Drawing.Size(175, 20);
             this.RememberUrlCheckBox.TabIndex = 17;
@@ -221,16 +228,16 @@
             // 
             // UrlTextBox
             // 
-            this.UrlTextBox.Location = new System.Drawing.Point(407, 37);
+            this.UrlTextBox.Location = new System.Drawing.Point(12, 27);
             this.UrlTextBox.Name = "UrlTextBox";
-            this.UrlTextBox.Size = new System.Drawing.Size(265, 22);
+            this.UrlTextBox.Size = new System.Drawing.Size(379, 22);
             this.UrlTextBox.TabIndex = 18;
             this.UrlTextBox.TextChanged += new System.EventHandler(this.UrlTextBox_TextChanged);
             // 
             // UseUrlCheckBox
             // 
             this.UseUrlCheckBox.AutoSize = true;
-            this.UseUrlCheckBox.Location = new System.Drawing.Point(20, 333);
+            this.UseUrlCheckBox.Location = new System.Drawing.Point(16, 266);
             this.UseUrlCheckBox.Name = "UseUrlCheckBox";
             this.UseUrlCheckBox.Size = new System.Drawing.Size(132, 20);
             this.UseUrlCheckBox.TabIndex = 19;
@@ -238,34 +245,73 @@
             this.UseUrlCheckBox.UseVisualStyleBackColor = true;
             this.UseUrlCheckBox.CheckedChanged += new System.EventHandler(this.UseUrlCheckBox_CheckedChanged);
             // 
+            // tabControl1
+            // 
+            this.tabControl1.AccessibleName = "";
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(12, 12);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(419, 238);
+            this.tabControl1.TabIndex = 20;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.HostTextBox);
+            this.tabPage1.Controls.Add(this.HostLabel);
+            this.tabPage1.Controls.Add(this.checkBox2);
+            this.tabPage1.Controls.Add(this.PortLabel);
+            this.tabPage1.Controls.Add(this.PortTextBox);
+            this.tabPage1.Controls.Add(this.DatabaseLabel);
+            this.tabPage1.Controls.Add(this.DatabaseTextBox);
+            this.tabPage1.Controls.Add(this.UserLabel);
+            this.tabPage1.Controls.Add(this.PasswordTextBox);
+            this.tabPage1.Controls.Add(this.UserTextBox);
+            this.tabPage1.Controls.Add(this.PasswordLabel);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(411, 209);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.label1);
+            this.tabPage2.Controls.Add(this.RememberUrlCheckBox);
+            this.tabPage2.Controls.Add(this.UrlTextBox);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(411, 209);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(621, 303);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.UseUrlCheckBox);
-            this.Controls.Add(this.UrlTextBox);
-            this.Controls.Add(this.RememberUrlCheckBox);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.TestConnectionButton);
-            this.Controls.Add(this.PasswordTextBox);
-            this.Controls.Add(this.PasswordLabel);
-            this.Controls.Add(this.UserTextBox);
-            this.Controls.Add(this.UserLabel);
-            this.Controls.Add(this.DatabaseTextBox);
-            this.Controls.Add(this.DatabaseLabel);
-            this.Controls.Add(this.PortTextBox);
-            this.Controls.Add(this.PortLabel);
-            this.Controls.Add(this.HostTextBox);
-            this.Controls.Add(this.HostLabel);
+            this.Controls.Add(this.button1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
-            this.Text = "Form2";
+            this.Text = "DataSync";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
             this.Load += new System.EventHandler(this.Form2_Load);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -292,6 +338,9 @@
         private System.Windows.Forms.CheckBox RememberUrlCheckBox;
         private System.Windows.Forms.TextBox UrlTextBox;
         private System.Windows.Forms.CheckBox UseUrlCheckBox;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
     }
 
 

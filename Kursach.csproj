@@ -118,12 +118,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Form3 %28Help%29.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Form3 %28Help%29.Designer.cs">
-      <DependentUpon>Form3 %28Help%29.cs</DependentUpon>
-    </Compile>
     <Compile Include="Modules\DatabaseHelper.cs" />
     <Compile Include="Modules\UserSettingsManager.cs" />
     <Compile Include="Modules\DatabaseConnector.cs" />
@@ -155,6 +149,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -169,6 +164,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Other\help.html" />
+    <None Include="Resources\free-icon-font-disk-3917394.png" />
+    <None Include="Resources\free-icon-font-database-management-18620909.png" />
+    <None Include="Resources\free-icon-font-arrow-right-3916800.png" />
+    <None Include="Resources\free-icon-font-arrow-left-3916810.png" />
+    <None Include="Resources\free-icon-question-189665.png" />
+    <None Include="Resources\free-icon-search-4024513.png" />
+    <None Include="Resources\free-icon-new-page-6604902.png" />
+    <None Include="Resources\file_1091986.png" />
+    <None Include="Resources\add-file_4502993.png" />
+    <None Include="Resources\icons8-настройки-100.png" />
+    <None Include="Resources\icons8-полный-экран-100.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\MaterialDesignThemes.4.5.0\build\MaterialDesignThemes.targets" Condition="Exists('packages\MaterialDesignThemes.4.5.0\build\MaterialDesignThemes.targets')" />
