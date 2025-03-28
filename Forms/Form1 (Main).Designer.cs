@@ -109,22 +109,23 @@ namespace Kursach
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // connectDatabaseToolStripMenuItem
             // 
             this.connectDatabaseToolStripMenuItem.Name = "connectDatabaseToolStripMenuItem";
-            this.connectDatabaseToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.connectDatabaseToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.connectDatabaseToolStripMenuItem.Text = "Connect Database";
+            this.connectDatabaseToolStripMenuItem.Click += new System.EventHandler(this.connectDatabaseToolStripMenuItem_Click);
             // 
             // toolStripDropDownButton2
             // 
@@ -135,7 +136,7 @@ namespace Kursach
             this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
             this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
-            this.toolStripDropDownButton2.Size = new System.Drawing.Size(55, 24);
+            this.toolStripDropDownButton2.Size = new System.Drawing.Size(55, 28);
             this.toolStripDropDownButton2.Text = "View";
             this.toolStripDropDownButton2.Click += new System.EventHandler(this.toolStripDropDownButton2_Click);
             // 
@@ -162,7 +163,7 @@ namespace Kursach
             this.toolStripDropDownButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton5.Image")));
             this.toolStripDropDownButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton5.Name = "toolStripDropDownButton5";
-            this.toolStripDropDownButton5.Size = new System.Drawing.Size(69, 24);
+            this.toolStripDropDownButton5.Size = new System.Drawing.Size(69, 28);
             this.toolStripDropDownButton5.Text = "Project";
             this.toolStripDropDownButton5.Click += new System.EventHandler(this.toolStripDropDownButton5_Click);
             // 
@@ -170,7 +171,7 @@ namespace Kursach
             // 
             this.settingsToolStripMenuItem1.Image = global::Kursach.Properties.Resources.icons8_настройки_100;
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(145, 26);
             this.settingsToolStripMenuItem1.Text = "Settings";
             this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
             // 
@@ -183,7 +184,7 @@ namespace Kursach
             this.toolStripDropDownButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton3.Image")));
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton3.Name = "toolStripDropDownButton3";
-            this.toolStripDropDownButton3.Size = new System.Drawing.Size(55, 24);
+            this.toolStripDropDownButton3.Size = new System.Drawing.Size(55, 28);
             this.toolStripDropDownButton3.Text = "Help";
             this.toolStripDropDownButton3.Click += new System.EventHandler(this.toolStripDropDownButton3_Click);
             // 
@@ -206,7 +207,7 @@ namespace Kursach
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(77, 24);
+            this.toolStripButton3.Size = new System.Drawing.Size(77, 28);
             this.toolStripButton3.Text = "Search";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click_1);
             // 
@@ -233,7 +234,7 @@ namespace Kursach
             this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton4.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton4.Text = "toolStripButton4";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
@@ -243,7 +244,7 @@ namespace Kursach
             this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
             this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton7.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton7.Text = "toolStripButton7";
             this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
@@ -253,7 +254,7 @@ namespace Kursach
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton1.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton1.Text = "Connect";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
@@ -263,7 +264,7 @@ namespace Kursach
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton2.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton2.Text = "Save";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
             // 
@@ -273,7 +274,7 @@ namespace Kursach
             this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton5.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton5.Text = "Undo (Ctrl+Z)";
             // 
             // toolStripButton6
@@ -282,7 +283,7 @@ namespace Kursach
             this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
             this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton6.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton6.Text = "Redo (Ctrl+ Y)";
             // 
             // tabControl1

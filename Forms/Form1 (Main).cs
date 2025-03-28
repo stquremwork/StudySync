@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Kursach.Helpers;
 using Npgsql;
 using Kursach.Forms;
+using System.Linq;
 
 namespace Kursach
 {
@@ -22,39 +23,18 @@ namespace Kursach
 
         public void LoadData(DataTable dataTable, string tableName)
         {
-            // Проверка наличия вкладок
-            if (tabControl1.TabPages.Count > 0)
+            // Проверка, открыта ли уже такая таблица
+            TabPage existingTabPage = tabControl1.TabPages.Cast<TabPage>()
+                .FirstOrDefault(tp => tp.Text == tableName);
+
+            if (existingTabPage != null)
             {
-                // Проверка пустоты первой вкладки
-                TabPage firstTabPage = tabControl1.TabPages[0];
-                DataGridView firstDataGridView = firstTabPage.Controls[0] as DataGridView;
-
-                if (firstDataGridView != null && firstDataGridView.DataSource == null)
-                {
-                    // Загрузка данных в пустую существующую вкладку
-                    firstDataGridView.DataSource = dataTable;
-                    firstTabPage.Text = tableName; // Установка названия вкладки
-                }
-                else
-                {
-                    // Создание новой вкладки и загрузка данных в неё
-                    TabPage newTabPage = new TabPage(tableName);
-                    tabControl1.TabPages.Add(newTabPage);
-
-                    DataGridView newDataGridView = new DataGridView();
-                    newDataGridView.Dock = DockStyle.Fill; // Заполнять всю вкладку
-                    newTabPage.Controls.Add(newDataGridView);
-
-                    newDataGridView.DataSource = dataTable;
-                    newDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
-                    // Сделать новую вкладку активной
-                    tabControl1.SelectedTab = newTabPage;
-                }
+                // Если таблица уже открыта, сделать эту вкладку активной
+                tabControl1.SelectedTab = existingTabPage;
             }
             else
             {
-                // Создание новой вкладки и загрузка данных в неё, если вкладок нет
+                // Создание новой вкладки и загрузка данных в неё
                 TabPage newTabPage = new TabPage(tableName);
                 tabControl1.TabPages.Add(newTabPage);
 
@@ -70,6 +50,16 @@ namespace Kursach
             }
         }
 
+
+        public void CloseAllDataTabs()
+        {
+            // Проходим по всем вкладкам, кроме первой (вкладка "Data Source")
+            for (int i = tabControl1.TabPages.Count - 1; i > 0; i--)
+            {
+                // Закрываем вкладку
+                tabControl1.TabPages.RemoveAt(i);
+            }
+        }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
@@ -363,6 +353,21 @@ namespace Kursach
         private void toolStripDropDownButton5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void connectDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Создаём и показываем Form2
+            Form2 form2 = new Form2();
+
+            // Устанавливаем Form2 по центру относительно Form1
+            form2.StartPosition = FormStartPosition.Manual;
+            form2.Location = new Point(
+                this.Location.X + (this.Width - form2.Width) / 2,
+                this.Location.Y + (this.Height - form2.Height) / 2);
+
+            // Показываем Form2 в модальном режиме
+            form2.ShowDialog();
         }
     }
 }
