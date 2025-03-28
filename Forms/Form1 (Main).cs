@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Kursach.Helpers;
 using Npgsql;
+using Kursach.Forms;
 
 namespace Kursach
 {
@@ -14,7 +16,7 @@ namespace Kursach
         public Form1()
         {
             InitializeComponent();
-            //На весь экран this.WindowState = FormWindowState.Maximized;
+            this.WindowState = FormWindowState.Maximized; //На весь экран 
             Instance = this;
         }
 
@@ -215,9 +217,17 @@ namespace Kursach
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
+            // Создаём и показываем Form2
             Form2 form2 = new Form2();
-            form2.Show();
 
+            // Устанавливаем Form2 по центру относительно Form1
+            form2.StartPosition = FormStartPosition.Manual;
+            form2.Location = new Point(
+                this.Location.X + (this.Width - form2.Width) / 2,
+                this.Location.Y + (this.Height - form2.Height) / 2);
+
+            // Показываем Form2 в модальном режиме
+            form2.ShowDialog();
         }
 
         private void toolStripButton2_Click_1(object sender, EventArgs e)
@@ -331,6 +341,26 @@ namespace Kursach
         }
 
         private void settingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            // Создаём и показываем Form2
+            Form3 form3 = new Form3();
+
+            // Устанавливаем Form2 по центру относительно Form1
+            form3.StartPosition = FormStartPosition.Manual;
+            form3.Location = new Point(
+                this.Location.X + (this.Width - form3.Width) / 2,
+                this.Location.Y + (this.Height - form3.Height) / 2);
+            
+            form3.ShowDialog(); // Показываем Form2 в модальном режиме
+
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void toolStripDropDownButton5_Click(object sender, EventArgs e)
         {
 
         }
