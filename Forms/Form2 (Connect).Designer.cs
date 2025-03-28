@@ -220,9 +220,9 @@
             this.RememberUrlCheckBox.AutoSize = true;
             this.RememberUrlCheckBox.Location = new System.Drawing.Point(12, 55);
             this.RememberUrlCheckBox.Name = "RememberUrlCheckBox";
-            this.RememberUrlCheckBox.Size = new System.Drawing.Size(175, 20);
+            this.RememberUrlCheckBox.Size = new System.Drawing.Size(127, 20);
             this.RememberUrlCheckBox.TabIndex = 17;
-            this.RememberUrlCheckBox.Text = "RememberUrlCheckBox";
+            this.RememberUrlCheckBox.Text = "Remember URL";
             this.RememberUrlCheckBox.UseVisualStyleBackColor = true;
             this.RememberUrlCheckBox.CheckedChanged += new System.EventHandler(this.RememberUrlCheckBox_CheckedChanged);
             // 
@@ -255,6 +255,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(419, 238);
             this.tabControl1.TabIndex = 20;
+            this.tabControl1.TabStop = false;
             // 
             // tabPage1
             // 
@@ -274,7 +275,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(411, 209);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
             this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
@@ -288,7 +289,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(411, 209);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.Text = "URL";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // Form2
