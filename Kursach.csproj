@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Other\help.html" />
+    <None Include="Resources\close.png" />
     <None Include="Resources\free-icon-font-disk-3917394.png" />
     <None Include="Resources\free-icon-font-database-management-18620909.png" />
     <None Include="Resources\free-icon-font-arrow-right-3916800.png" />

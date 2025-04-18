@@ -12,14 +12,89 @@ namespace Kursach
 {
     public partial class Form1 : Form
     {
-        public static Form1 Instance { get; private set; }
+        public static Form1 Instance { get; private set; }   
 
+        // В классе формы объявляем поле для картинки крестика
+        private Image closeImage;
+
+        // В конструкторе формы или методе инициализации:
         public Form1()
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized; //На весь экран 
             Instance = this;
+
+            // Загрузка картинки крестика из ресурсов (или из файла)
+            closeImage = Properties.Resources.close; // или Image.FromFile("close.png");
+
+
+            // Включаем пользовательскую отрисовку вкладок
+            tabControl1.DrawMode = TabDrawMode.OwnerDrawFixed;
+
+            // Подписываемся на события отрисовки и клика мыши
+            tabControl1.DrawItem += TabControl1_DrawItem;
+            tabControl1.MouseClick += TabControl1_MouseClick;
+
+
+
         }
+
+        // Обработчик отрисовки вкладок — рисуем текст и крестик
+        private void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            var tabPage = tabControl1.TabPages[e.Index];
+            var tabRect = tabControl1.GetTabRect(e.Index);
+
+            e.Graphics.FillRectangle(SystemBrushes.Control, tabRect);
+
+            // Измеряем ширину текста вкладки
+            Size textSize = TextRenderer.MeasureText(tabPage.Text, tabPage.Font);
+
+            // Рисуем текст с отступом слева
+            Point textLocation = new Point(tabRect.Left + 2, tabRect.Top + (tabRect.Height - textSize.Height) / 2);
+            TextRenderer.DrawText(e.Graphics, tabPage.Text, tabPage.Font, textLocation, tabPage.ForeColor);
+
+            int imageSize = 10;
+            int padding = 5; // Отступ между текстом и крестиком
+
+            // Вычисляем позицию крестика — справа от текста + padding
+            int imageX = textLocation.X + textSize.Width + padding;
+
+            // Ограничиваем, чтобы крестик не выходил за правый край вкладки
+            int maxX = tabRect.Right - imageSize - 3; // 3 пикселя отступ от края вкладки
+            if (imageX > maxX)
+                imageX = maxX;
+
+            Rectangle imageRect = new Rectangle(
+                imageX,
+                tabRect.Top + (tabRect.Height - imageSize) / 2,
+                imageSize,
+                imageSize);
+
+            if (closeImage != null)
+            {
+                e.Graphics.DrawImage(closeImage, imageRect);
+            }
+
+        }
+
+        // Обработчик клика мыши — если клик на крестик, закрываем вкладку
+        private void TabControl1_MouseClick(object sender, MouseEventArgs e)
+        {
+            for (int i = 0; i < tabControl1.TabPages.Count; i++)
+            {
+                Rectangle tabRect = tabControl1.GetTabRect(i);
+                int imageSize = 16;
+                Rectangle imageRect = new Rectangle(tabRect.Right - imageSize - 5, tabRect.Top + (tabRect.Height - imageSize) / 2, imageSize, imageSize);
+
+                if (imageRect.Contains(e.Location))
+                {
+                    tabControl1.TabPages.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+        
 
         public void LoadData(DataTable dataTable, string tableName)
         {
@@ -368,6 +443,11 @@ namespace Kursach
 
             // Показываем Form2 в модальном режиме
             form2.ShowDialog();
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
