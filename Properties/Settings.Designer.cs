@@ -58,5 +58,7 @@ namespace Kursach.Properties {
                 this["Url"] = value;
             }
         }
+
+        public string SelectedIndexChanged_1 { get; internal set; }
     }
 }

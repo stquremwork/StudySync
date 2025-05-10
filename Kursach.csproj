@@ -126,6 +126,7 @@
       <DependentUpon>Form3 %28Settings%29.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\DatabaseHelper.cs" />
+    <Compile Include="Modules\DataGridViewColumnConfigurer.cs" />
     <Compile Include="Modules\UserSettingsManager.cs" />
     <Compile Include="Modules\DatabaseConnector.cs" />
     <Compile Include="Forms\Form1 %28Main%29.cs">
