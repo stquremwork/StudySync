@@ -52,7 +52,7 @@ namespace Kursach.Helpers
                 .Where(c => !c.ColumnName.Equals("id", StringComparison.OrdinalIgnoreCase))
                 .Select(c => $"@{c.ColumnName}"));
 
-            string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
+            string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values}) RETURNING id";
 
             using (var cmd = new NpgsqlCommand(query, conn, transaction))
             {
@@ -63,7 +63,12 @@ namespace Kursach.Helpers
                         cmd.Parameters.AddWithValue(column.ColumnName, row[column]);
                     }
                 }
-                cmd.ExecuteNonQuery();
+
+                var newId = cmd.ExecuteScalar();
+                if (newId != null)
+                {
+                    row["id"] = newId;
+                }
             }
         }
 

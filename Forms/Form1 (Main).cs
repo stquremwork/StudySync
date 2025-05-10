@@ -2,10 +2,10 @@
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using Npgsql;
 using Kursach.Helpers;
+using System.Collections.Generic;
 using Kursach.Forms;
 
 namespace Kursach
@@ -15,13 +15,22 @@ namespace Kursach
         public static Form1 Instance { get; private set; }
         private Image closeImage;
         private TabPage currentDataTab = null;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem selectAllToolStripMenuItem;
+        private ToolStripMenuItem deselectAllToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem copyToolStripMenuItem;
+        private ToolStripMenuItem pasteToolStripMenuItem;
+        private ToolStripMenuItem deleteRowToolStripMenuItem;
 
         public Form1()
         {
+            this.components = new System.ComponentModel.Container();
             InitializeComponent();
+            InitializeContextMenu();
+
             this.WindowState = FormWindowState.Maximized;
             Instance = this;
-
             closeImage = Properties.Resources.close ?? GenerateDefaultCloseImage();
 
             tabControl1.DrawMode = TabDrawMode.OwnerDrawFixed;
@@ -29,6 +38,32 @@ namespace Kursach
             tabControl1.MouseClick += TabControl1_MouseClick;
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
             tabControl1.MouseDown += TabControl1_MouseDown;
+        }
+
+        private void InitializeContextMenu()
+        {
+            contextMenuStrip1 = new ContextMenuStrip();
+            selectAllToolStripMenuItem = new ToolStripMenuItem("Выделить все");
+            deselectAllToolStripMenuItem = new ToolStripMenuItem("Снять выделение");
+            toolStripSeparator1 = new ToolStripSeparator();
+            copyToolStripMenuItem = new ToolStripMenuItem("Копировать");
+            pasteToolStripMenuItem = new ToolStripMenuItem("Вставить");
+            deleteRowToolStripMenuItem = new ToolStripMenuItem("Удалить строку");
+
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] {
+                selectAllToolStripMenuItem,
+                deselectAllToolStripMenuItem,
+                toolStripSeparator1,
+                copyToolStripMenuItem,
+                pasteToolStripMenuItem,
+                deleteRowToolStripMenuItem
+            });
+
+            selectAllToolStripMenuItem.Click += selectAllToolStripMenuItem_Click;
+            deselectAllToolStripMenuItem.Click += deselectAllToolStripMenuItem_Click;
+            copyToolStripMenuItem.Click += copyToolStripMenuItem_Click;
+            pasteToolStripMenuItem.Click += pasteToolStripMenuItem_Click;
+            deleteRowToolStripMenuItem.Click += deleteRowToolStripMenuItem_Click;
         }
 
         private Image GenerateDefaultCloseImage()
@@ -110,7 +145,6 @@ namespace Kursach
             if (tabIndex < 0 || tabIndex >= tabControl1.TabPages.Count) return;
 
             var tabPage = tabControl1.TabPages[tabIndex];
-
             foreach (Control control in tabPage.Controls)
             {
                 if (control is DataGridView dgv)
@@ -156,43 +190,130 @@ namespace Kursach
             if (dataTable == null || string.IsNullOrEmpty(tableName))
                 return;
 
-            foreach (TabPage tabPage in tabControl1.TabPages)
+            try
             {
-                if (tabPage.Text.Equals(tableName, StringComparison.OrdinalIgnoreCase))
+                // Проверяем, есть ли уже вкладка с этой таблицей
+                foreach (TabPage tabPage in tabControl1.TabPages)
                 {
-                    tabControl1.SelectedTab = tabPage;
-                    currentDataTab = tabPage;
-                    return;
+                    if (tabPage.Text.Equals(tableName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        tabControl1.SelectedTab = tabPage;
+                        currentDataTab = tabPage;
+                        return;
+                    }
                 }
+
+                // Создаем новую вкладку
+                TabPage newTabPage = new TabPage(tableName);
+                DataGridView newDataGridView = new DataGridView
+                {
+                    Dock = DockStyle.Fill,
+                    AllowUserToAddRows = false,
+                    AllowUserToDeleteRows = false,
+                    AutoGenerateColumns = true,
+                    ReadOnly = false,
+                    AllowUserToOrderColumns = true,
+                    BorderStyle = BorderStyle.None,
+                    EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2,
+                    ContextMenuStrip = contextMenuStrip1
+                };
+
+                // Добавляем колонку с чекбоксами
+                DataGridViewCheckBoxColumn checkBoxColumn = new DataGridViewCheckBoxColumn
+                {
+                    Name = "CheckBoxColumn",
+                    HeaderText = "",
+                    Width = 30,
+                    FlatStyle = FlatStyle.Standard,
+                    TrueValue = true,
+                    FalseValue = false
+                };
+                newDataGridView.Columns.Add(checkBoxColumn);
+
+                // Устанавливаем источник данных
+                newDataGridView.DataSource = dataTable;
+
+                // Настраиваем колонки через модуль DataGridViewColumnConfigurer
+                if (!string.IsNullOrEmpty(Form2.ConnectionString))
+                {
+                    try
+                    {
+                        DataGridViewColumnConfigurer.ConfigureColumns(newDataGridView, tableName, Form2.ConnectionString);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при настройке столбцов: {ex.Message}", "Ошибка",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+
+                // Убедимся, что колонка с чекбоксами видна и на первом месте
+                if (newDataGridView.Columns.Contains("CheckBoxColumn"))
+                {
+                    newDataGridView.Columns["CheckBoxColumn"].DisplayIndex = 0;
+                    newDataGridView.Columns["CheckBoxColumn"].Visible = true;
+                }
+
+                // Подписываемся на события
+                newDataGridView.CellMouseUp += DataGridView_CellMouseUp;
+                newDataGridView.CellDoubleClick += DataGridView_CellDoubleClick;
+                newDataGridView.ColumnHeaderMouseClick += DataGridView_ColumnHeaderMouseClick;
+                newDataGridView.DataError += DataGridView_DataError;
+
+                newTabPage.Controls.Add(newDataGridView);
+                tabControl1.TabPages.Add(newTabPage);
+                tabControl1.SelectedTab = newTabPage;
+                currentDataTab = newTabPage;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DataGridView_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex == 0 && e.RowIndex >= 0)
+            {
+                DataGridView dgv = (DataGridView)sender;
+                dgv.EndEdit();
             }
 
-            TabPage newTabPage = new TabPage(tableName);
-            DataGridView newDataGridView = new DataGridView
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
-                Dock = DockStyle.Fill,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                AutoGenerateColumns = true,
-                ReadOnly = false,
-                AllowUserToOrderColumns = true,
-                BorderStyle = BorderStyle.None
-            };
+                DataGridView dgv = (DataGridView)sender;
+                dgv.CurrentCell = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                contextMenuStrip1.Show(dgv, dgv.PointToClient(Cursor.Position));
+            }
+        }
 
-            typeof(DataGridView).InvokeMember("DoubleBuffered",
-                BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
-                null, newDataGridView, new object[] { true });
+        private void DataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex > 0)
+            {
+                DataGridView dgv = (DataGridView)sender;
+                dgv.BeginEdit(true);
+            }
+        }
 
-            newDataGridView.DataError += DataGridView_DataError;
-            newTabPage.Controls.Add(newDataGridView);
-            tabControl1.TabPages.Add(newTabPage);
+        private void DataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                DataGridView dgv = (DataGridView)sender;
+                bool isChecked = false;
 
-            var dataView = new DataView(dataTable);
-            newDataGridView.DataSource = dataView;
+                if (dgv.Rows.Count > 0 && dgv.Rows[0].Cells[0].Value != null)
+                {
+                    isChecked = !(bool)dgv.Rows[0].Cells[0].Value;
+                }
 
-            DataGridViewColumnConfigurer.ConfigureColumns(newDataGridView, tableName, Form2.ConnectionString);
-
-            tabControl1.SelectedTab = newTabPage;
-            currentDataTab = newTabPage;
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    row.Cells[0].Value = isChecked;
+                }
+            }
         }
 
         private void DataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -213,7 +334,6 @@ namespace Kursach
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-
             while (tabControl1.TabPages.Count > 0)
             {
                 CloseTab(0);
@@ -223,6 +343,78 @@ namespace Kursach
         public DataTable GetTableData(string tableName)
         {
             return DatabaseHelper.GetTableData(tableName, Form2.ConnectionString);
+        }
+
+        private DataGridView GetCurrentDataGridView()
+        {
+            if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+            {
+                return tabControl1.SelectedTab.Controls[0] as DataGridView;
+            }
+            return null;
+        }
+
+        private List<DataGridViewRow> GetSelectedRows(DataGridView dgv)
+        {
+            List<DataGridViewRow> selectedRows = new List<DataGridViewRow>();
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                if (row.Cells[0].Value != null && (bool)row.Cells[0].Value)
+                {
+                    selectedRows.Add(row);
+                }
+            }
+            return selectedRows;
+        }
+
+        private void SelectAllRows(DataGridView dgv, bool select)
+        {
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                row.Cells[0].Value = select;
+            }
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridView dgv = GetCurrentDataGridView();
+            if (dgv != null) SelectAllRows(dgv, true);
+        }
+
+        private void deselectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridView dgv = GetCurrentDataGridView();
+            if (dgv != null) SelectAllRows(dgv, false);
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridView dgv = GetCurrentDataGridView();
+            if (dgv != null && dgv.CurrentCell != null)
+            {
+                Clipboard.SetText(dgv.CurrentCell.Value?.ToString() ?? "");
+            }
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridView dgv = GetCurrentDataGridView();
+            if (dgv != null && dgv.CurrentCell != null && Clipboard.ContainsText())
+            {
+                dgv.CurrentCell.Value = Clipboard.GetText();
+            }
+        }
+
+        private void deleteRowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataGridView dgv = GetCurrentDataGridView();
+            if (dgv != null && dgv.CurrentCell != null)
+            {
+                foreach (DataGridViewRow row in GetSelectedRows(dgv))
+                {
+                    dgv.Rows.Remove(row);
+                }
+            }
         }
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
@@ -246,6 +438,7 @@ namespace Kursach
                 return;
             }
 
+            var tableName = tabControl1.SelectedTab.Text; // Получаем имя таблицы из заголовка вкладки
             var dgv = tabControl1.SelectedTab.Controls[0] as DataGridView;
             if (dgv == null || dgv.DataSource == null)
             {
@@ -270,15 +463,15 @@ namespace Kursach
                             {
                                 if (row.RowState == DataRowState.Modified)
                                 {
-                                    DatabaseHelper.UpdateRow(conn, row, Form2.SelectedTable, transaction);
+                                    DatabaseHelper.UpdateRow(conn, row, tableName, transaction);
                                 }
                                 else if (row.RowState == DataRowState.Added)
                                 {
-                                    DatabaseHelper.InsertRow(conn, row, Form2.SelectedTable, transaction);
+                                    DatabaseHelper.InsertRow(conn, row, tableName, transaction);
                                 }
                                 else if (row.RowState == DataRowState.Deleted)
                                 {
-                                    DatabaseHelper.DeleteRow(conn, row, Form2.SelectedTable, transaction);
+                                    DatabaseHelper.DeleteRow(conn, row, tableName, transaction);
                                 }
                             }
 
@@ -351,7 +544,7 @@ namespace Kursach
             }
         }
 
-        // Empty event handlers
+        // Остальные методы-заглушки
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
         private void toolStripDropDownButton1_Click_1(object sender, EventArgs e) { }
         private void importToolStripMenuItem_Click(object sender, EventArgs e) { }
@@ -371,7 +564,5 @@ namespace Kursach
         private void toolStripButton3_Click(object sender, EventArgs e) { }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) { }
         private void button1_Click(object sender, EventArgs e) { }
-
-
     }
 }
