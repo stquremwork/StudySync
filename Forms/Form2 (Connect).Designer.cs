@@ -47,7 +47,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.RememberUrlCheckBox = new System.Windows.Forms.CheckBox();
             this.UrlTextBox = new System.Windows.Forms.TextBox();
-            this.UseUrlCheckBox = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -225,7 +224,7 @@
             this.RememberUrlCheckBox.TabIndex = 17;
             this.RememberUrlCheckBox.Text = "Remember URL";
             this.RememberUrlCheckBox.UseVisualStyleBackColor = true;
-            this.RememberUrlCheckBox.CheckedChanged += new System.EventHandler(this.RememberUrlCheckBox_CheckedChanged);
+      
             // 
             // UrlTextBox
             // 
@@ -233,18 +232,7 @@
             this.UrlTextBox.Name = "UrlTextBox";
             this.UrlTextBox.Size = new System.Drawing.Size(379, 22);
             this.UrlTextBox.TabIndex = 18;
-            this.UrlTextBox.TextChanged += new System.EventHandler(this.UrlTextBox_TextChanged);
-            // 
-            // UseUrlCheckBox
-            // 
-            this.UseUrlCheckBox.AutoSize = true;
-            this.UseUrlCheckBox.Location = new System.Drawing.Point(174, 174);
-            this.UseUrlCheckBox.Name = "UseUrlCheckBox";
-            this.UseUrlCheckBox.Size = new System.Drawing.Size(132, 20);
-            this.UseUrlCheckBox.TabIndex = 19;
-            this.UseUrlCheckBox.Text = "UseUrlCheckBox";
-            this.UseUrlCheckBox.UseVisualStyleBackColor = true;
-            this.UseUrlCheckBox.CheckedChanged += new System.EventHandler(this.UseUrlCheckBox_CheckedChanged);
+
             // 
             // tabControl1
             // 
@@ -262,7 +250,6 @@
             // 
             this.tabPage1.Controls.Add(this.HostTextBox);
             this.tabPage1.Controls.Add(this.HostLabel);
-            this.tabPage1.Controls.Add(this.UseUrlCheckBox);
             this.tabPage1.Controls.Add(this.checkBox2);
             this.tabPage1.Controls.Add(this.PortLabel);
             this.tabPage1.Controls.Add(this.PortTextBox);
@@ -289,7 +276,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(411, 209);
+            this.tabPage2.Size = new System.Drawing.Size(411, 250);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "URL";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -350,7 +337,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox RememberUrlCheckBox;
         private System.Windows.Forms.TextBox UrlTextBox;
-        private System.Windows.Forms.CheckBox UseUrlCheckBox;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
