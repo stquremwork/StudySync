@@ -2,254 +2,162 @@
 using System.Data;
 using System.Windows.Forms;
 using Npgsql;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace Kursach.Helpers
 {
     public static class DataGridViewColumnConfigurer
     {
-        public static readonly Dictionary<string, string> ColumnNameTranslations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            {"id_group", "Группа"},
-            {"GroupName", "Группа"},
-            {"last_name", "Фамилия"},
-            {"first_name", "Имя"},
-            {"middle_name", "Отчество"},
-        };
-
         public static void ConfigureColumns(DataGridView dataGridView, string tableName, string connectionString)
         {
-            try
+            if (tableName == "public.grades")
             {
-                if (tableName.Equals("public.grades", StringComparison.OrdinalIgnoreCase))
-                {
-                    ConfigureGradesTable(dataGridView, connectionString);
-                }
+                DataTable originalTable;
 
-                ConfigureBasicTableSettings(dataGridView);
-                SetColumnOrder(dataGridView);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка настройки столбцов: {ex.Message}", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private static void ConfigureGradesTable(DataGridView dataGridView, string connectionString)
-        {
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                if (ColumnNameTranslations.TryGetValue(column.Name, out string translated))
+                if (dataGridView.DataSource is DataTable dt)
                 {
-                    column.HeaderText = translated;
+                    originalTable = dt;
                 }
-                else if (IsDateColumn(column.Name))
+                else if (dataGridView.DataSource is DataView dv)
                 {
-                    column.HeaderText = column.Name.Replace('_', '.');
+                    originalTable = dv.Table;
                 }
                 else
                 {
-                    column.HeaderText = ToTitleCase(column.Name);
+                    throw new InvalidCastException("DataSource is not a DataTable or DataView");
                 }
-            }
-        }
 
-        private static void ConfigureBasicTableSettings(DataGridView dataGridView)
-        {
-            if (dataGridView.Columns.Contains("CheckBoxColumn"))
-            {
-                dataGridView.Columns["CheckBoxColumn"].DisplayIndex = 0;
-            }
+                DataTable modifiedTable = originalTable.Clone();
 
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                if (column.Name != "CheckBoxColumn")
+                // Добавляем новые столбцы для Группы, Фамилии, Имени, Отчества
+                modifiedTable.Columns.Add("Группа", typeof(string));
+                modifiedTable.Columns.Add("Фамилия", typeof(string));
+                modifiedTable.Columns.Add("Имя", typeof(string));
+                modifiedTable.Columns.Add("Отчество", typeof(string));
+
+                try
                 {
-                    if (ColumnNameTranslations.TryGetValue(column.Name, out string translatedName))
+                    using (var conn = new NpgsqlConnection(connectionString))
                     {
-                        column.HeaderText = translatedName;
+                        conn.Open();
+
+                        foreach (DataRow row in originalTable.Rows)
+                        {
+                            DataRow newRow = modifiedTable.NewRow();
+
+                            // Копируем все исходные данные
+                            foreach (DataColumn col in originalTable.Columns)
+                            {
+                                newRow[col.ColumnName] = row[col.ColumnName];
+                            }
+
+                            int studentId = Convert.ToInt32(row["StudentID"]);
+                            int groupId = Convert.ToInt32(row["GroupID"]);
+
+                            // Получаем ФИО студента
+                            string studentQuery = "SELECT last_name, first_name, middle_name FROM public.students WHERE id = @StudentID";
+                            using (var cmd = new NpgsqlCommand(studentQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("StudentID", studentId);
+                                using (var reader = cmd.ExecuteReader())
+                                {
+                                    if (reader.Read())
+                                    {
+                                        newRow["Фамилия"] = reader["last_name"].ToString();
+                                        newRow["Имя"] = reader["first_name"].ToString();
+                                        newRow["Отчество"] = reader["middle_name"].ToString();
+                                    }
+                                    else
+                                    {
+                                        newRow["Фамилия"] = "Неизвестно";
+                                        newRow["Имя"] = "Неизвестно";
+                                        newRow["Отчество"] = "Неизвестно";
+                                    }
+                                }
+                            }
+
+                            // Получаем название группы
+                            string groupQuery = "SELECT group_name FROM public.groups WHERE group_id = @GroupID";
+                            using (var cmd = new NpgsqlCommand(groupQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("GroupID", groupId);
+                                using (var reader = cmd.ExecuteReader())
+                                {
+                                    if (reader.Read())
+                                    {
+                                        newRow["Группа"] = reader["group_name"].ToString();
+                                    }
+                                    else
+                                    {
+                                        newRow["Группа"] = $"Группа {groupId} (Неизвестно)";
+                                    }
+                                }
+                            }
+
+                            modifiedTable.Rows.Add(newRow);
+                        }
                     }
-                    else if (IsDateColumn(column.Name))
+
+                    dataGridView.DataSource = modifiedTable;
+
+                    // Настраиваем видимость столбцов
+                    foreach (DataGridViewColumn column in dataGridView.Columns)
                     {
-                        column.HeaderText = column.Name.Replace('_', '.');
+                        if (column.Name == "Группа" ||
+                            column.Name == "Фамилия" ||
+                            column.Name == "Имя" ||
+                            column.Name == "Отчество" ||
+                            IsDateColumn(column))
+                        {
+                            column.Visible = true;
+                        }
+                        else
+                        {
+                            column.Visible = false;
+                        }
                     }
-                    else
+
+                    // Настраиваем порядок столбцов
+                    try
                     {
-                        column.HeaderText = ToTitleCase(column.Name);
+                        dataGridView.Columns["Группа"].DisplayIndex = 0;
+                        dataGridView.Columns["Фамилия"].DisplayIndex = 1;
+                        dataGridView.Columns["Имя"].DisplayIndex = 2;
+                        dataGridView.Columns["Отчество"].DisplayIndex = 3;
+                        // Колонки с датами идут далее автоматически
+
+                        // Заменяем в заголовках колонок с датами символы '_' на '.'
+                        foreach (DataGridViewColumn column in dataGridView.Columns)
+                        {
+                            if (IsDateColumn(column))
+                            {
+                                column.HeaderText = column.Name.Replace('_', '.');
+                            }
+                        }
+
                     }
-                }
-            }
-        }
-
-        internal static void SetColumnOrder(DataGridView dataGridView)
-        {
-            if (dataGridView.Columns.Contains("CheckBoxColumn"))
-            {
-                dataGridView.Columns["CheckBoxColumn"].DisplayIndex = 0;
-            }
-
-            string[] columnOrder = { "GroupName", "id_group", "last_name", "first_name", "middle_name" };
-            int displayIndex = 1;
-
-            foreach (string columnName in columnOrder)
-            {
-                if (dataGridView.Columns.Contains(columnName))
-                {
-                    dataGridView.Columns[columnName].DisplayIndex = displayIndex++;
-                }
-            }
-
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                if (IsDateColumn(column.Name) && column.Visible)
-                {
-                    column.DisplayIndex = displayIndex++;
-                }
-            }
-        }
-
-        private static string ToTitleCase(string text)
-        {
-            if (string.IsNullOrEmpty(text)) return text;
-            text = text.Replace('_', ' ');
-            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-            return textInfo.ToTitleCase(text.ToLower());
-        }
-
-        private static bool IsDateColumn(string columnName)
-        {
-            if (columnName.Length != 10) return false;
-            if (columnName[2] != '_' || columnName[5] != '_') return false;
-
-            try
-            {
-                _ = new DateTime(
-                    int.Parse(columnName.Substring(6, 4)),
-                    int.Parse(columnName.Substring(3, 2)),
-                    int.Parse(columnName.Substring(0, 2)));
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private static Tuple<string, string, string> GetStudentData(NpgsqlConnection conn, int studentId)
-        {
-            string query = "SELECT last_name, first_name, middle_name FROM public.students WHERE id = @StudentID";
-            using (var cmd = new NpgsqlCommand(query, conn))
-            {
-                cmd.Parameters.AddWithValue("StudentID", studentId);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
+                    catch (Exception ex)
                     {
-                        return Tuple.Create(
-                            reader["last_name"] != DBNull.Value ? reader["last_name"].ToString() : "",
-                            reader["first_name"] != DBNull.Value ? reader["first_name"].ToString() : "",
-                            reader["middle_name"] != DBNull.Value ? reader["middle_name"].ToString() : "");
+                        MessageBox.Show($"Ошибка при настройке порядка столбцов: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
-                    return Tuple.Create("", "", "");
                 }
-            }
-        }
-
-        private static string GetGroupName(NpgsqlConnection conn, int groupId)
-        {
-            string query = "SELECT group_name FROM public.groups WHERE group_id = @GroupID";
-            using (var cmd = new NpgsqlCommand(query, conn))
-            {
-                cmd.Parameters.AddWithValue("GroupID", groupId);
-                using (var reader = cmd.ExecuteReader())
+                catch (Exception ex)
                 {
-                    if (reader.Read())
-                    {
-                        return reader["group_name"] != DBNull.Value ?
-                            reader["group_name"].ToString() :
-                            $"Группа {groupId}";
-                    }
-                    return $"Группа {groupId}";
+                    MessageBox.Show($"Ошибка при получении данных из базы: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        private static DataTable GetDataTableFromDataSource(DataGridView dataGridView)
+        private static bool IsDateColumn(DataGridViewColumn column)
         {
-            if (dataGridView.DataSource is DataTable)
-            {
-                return (DataTable)dataGridView.DataSource;
-            }
-            else if (dataGridView.DataSource is DataView)
-            {
-                return ((DataView)dataGridView.DataSource).ToTable();
-            }
-            else if (dataGridView.DataSource is BindingSource)
-            {
-                var bs = (BindingSource)dataGridView.DataSource;
-                if (bs.DataSource is DataTable)
-                {
-                    return (DataTable)bs.DataSource;
-                }
-            }
-
-            throw new InvalidCastException("Неподдерживаемый тип DataSource");
-        }
-    }
-
-    public class StudentGradesColumnConfigurer
-    {
-        public void ConfigureGradesTable(DataGridView dataGridView, List<Student> students, List<DateTime> dates)
-        {
-            dataGridView.Columns.Clear();
-            dataGridView.Rows.Clear();
-
-            dataGridView.Columns.Add("GroupName", DataGridViewColumnConfigurer.ColumnNameTranslations["GroupName"]);
-            dataGridView.Columns.Add("last_name", DataGridViewColumnConfigurer.ColumnNameTranslations["last_name"]);
-            dataGridView.Columns.Add("first_name", DataGridViewColumnConfigurer.ColumnNameTranslations["first_name"]);
-            dataGridView.Columns.Add("middle_name", DataGridViewColumnConfigurer.ColumnNameTranslations["middle_name"]);
-
-            foreach (DateTime date in dates)
-            {
-                string columnName = date.ToString("dd_MM_yyyy");
-                string headerText = date.ToString("dd.MM.yyyy");
-                dataGridView.Columns.Add(columnName, headerText);
-            }
-
-            foreach (Student student in students)
-            {
-                int rowIndex = dataGridView.Rows.Add();
-                var row = dataGridView.Rows[rowIndex];
-
-                row.Cells["GroupName"].Value = student.GroupName;
-                row.Cells["last_name"].Value = student.LastName;
-                row.Cells["first_name"].Value = student.FirstName;
-                row.Cells["middle_name"].Value = student.MiddleName;
-
-                foreach (var date in dates)
-                {
-                    string columnName = date.ToString("dd_MM_yyyy");
-                    row.Cells[columnName].Value = GetGrade(student, date);
-                }
-            }
-
-            DataGridViewColumnConfigurer.SetColumnOrder(dataGridView);
+            // Проверяем, что имя колонки соответствует формату дд_мм_гггг, например "10_05_2025"
+            DateTime dt;
+            return DateTime.TryParseExact(
+                column.Name,
+                "dd_MM_yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
+                out dt);
         }
 
-        private object GetGrade(Student student, DateTime date)
-        {
-            // Реализация получения оценки
-            return null;
-        }
-    }
-
-    public class Student
-    {
-        public string GroupName { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
     }
 }
