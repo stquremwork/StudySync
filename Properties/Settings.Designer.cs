@@ -58,7 +58,17 @@ namespace Kursach.Properties {
                 this["Url"] = value;
             }
         }
-
-        public string SelectedIndexChanged_1 { get; internal set; }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Host {
+            get {
+                return ((string)(this["Host"]));
+            }
+            set {
+                this["Host"] = value;
+            }
+        }
     }
 }

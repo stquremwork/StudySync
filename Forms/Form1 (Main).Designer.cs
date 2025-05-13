@@ -57,6 +57,8 @@ namespace Kursach
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.toolStripDropDownButton4 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripDropDownButton6 = new System.Windows.Forms.ToolStripDropDownButton();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
@@ -220,7 +222,9 @@ namespace Kursach
             this.toolStripButton1,
             this.toolStripButton2,
             this.toolStripButton5,
-            this.toolStripButton6});
+            this.toolStripButton6,
+            this.toolStripDropDownButton4,
+            this.toolStripDropDownButton6});
             this.toolStrip2.Location = new System.Drawing.Point(0, 27);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(732, 27);
@@ -317,6 +321,22 @@ namespace Kursach
             this.panel1.Size = new System.Drawing.Size(732, 78);
             this.panel1.TabIndex = 4;
             // 
+            // toolStripDropDownButton4
+            // 
+            this.toolStripDropDownButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton4.Image")));
+            this.toolStripDropDownButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton4.Name = "toolStripDropDownButton4";
+            this.toolStripDropDownButton4.Size = new System.Drawing.Size(76, 24);
+            this.toolStripDropDownButton4.Text = "Filter";
+            // 
+            // toolStripDropDownButton6
+            // 
+            this.toolStripDropDownButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton6.Image")));
+            this.toolStripDropDownButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton6.Name = "toolStripDropDownButton6";
+            this.toolStripDropDownButton6.Size = new System.Drawing.Size(70, 24);
+            this.toolStripDropDownButton6.Text = "Sort";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -373,5 +393,7 @@ namespace Kursach
         private ToolStripMenuItem settingsToolStripMenuItem1;
         private ToolStripMenuItem documentationToolStripMenuItem;
         private Panel panel1;
+        private ToolStripDropDownButton toolStripDropDownButton4;
+        private ToolStripDropDownButton toolStripDropDownButton6;
     }
 }

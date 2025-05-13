@@ -189,7 +189,6 @@ namespace Kursach
             var dataView = new DataView(dataTable);
             newDataGridView.DataSource = dataView;
 
-            DataGridViewColumnConfigurer.ConfigureColumns(newDataGridView, tableName, Form2.ConnectionString);
 
             tabControl1.SelectedTab = newTabPage;
             currentDataTab = newTabPage;
