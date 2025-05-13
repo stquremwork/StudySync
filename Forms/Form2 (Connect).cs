@@ -366,5 +366,15 @@ namespace Kursach
         {
 
         }
+
+        private void guna2CheckBox1_CheckedChanged_1(object sender, EventArgs e)
+        {
+            checkBox2_CheckedChanged(sender, e);
+        }
+
+        private void guna2TextBox1_TextChanged(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
     }
 }
