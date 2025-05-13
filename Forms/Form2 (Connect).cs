@@ -1,30 +1,142 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 using Npgsql;
 
 namespace Kursach
 {
     public partial class Form2 : Form
     {
-        // Статическая строка подключения к базе данных
         public static string ConnectionString { get; private set; }
-
-        // Статическая переменная для хранения имени выбранной таблицы
         public static string SelectedTable { get; private set; }
-
-        // Флаг, указывающий, подключены ли мы к базе данных
         private bool isConnected = false;
-
-        private NpgsqlConnection connection; // Поле для хранения соединения
+        private NpgsqlConnection connection;
 
         public Form2()
         {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(Form2_FormClosing);
+
+
+            // Устанавливаем фон окна
+            this.BackColor = Color.FromArgb(33, 42, 57);
+
+
+            tabPage3.BackColor = Color.FromArgb(45, 55, 70); // немного светлее
+            tabPage4.BackColor = Color.FromArgb(45, 55, 70); // немного светлее
+
+
+
+
+
         }
 
-        // Обработчик клика на кнопку "Test Connection"
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            var (host, userName, databaseName) = UserSettingsManager.LoadUserSettings();
+            HostTextBox.Text = host;
+            UserTextBox.Text = userName;
+            DatabaseTextBox.Text = databaseName;
+
+            if (!string.IsNullOrEmpty(userName) || !string.IsNullOrEmpty(databaseName) || !string.IsNullOrEmpty(host))
+            {
+                guna2CheckBoxRemSet.Checked = true;
+            }
+
+            guna2ButtonConnect.Text = "Connect";
+        }
+
+        // Event handlers for controls
+        private void HostTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void UserTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void DatabaseTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void PasswordTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void PortTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void HostLabel_Click(object sender, EventArgs e)
+        {
+            // Optional: Add any specific behavior when host label is clicked
+        }
+
+        private void PortLabel_Click(object sender, EventArgs e)
+        {
+            // Optional: Add any specific behavior when port label is clicked
+        }
+
+        private void DatabaseLabel_Click(object sender, EventArgs e)
+        {
+            // Optional: Add any specific behavior when database label is clicked
+        }
+
+        private void UserLabel_Click(object sender, EventArgs e)
+        {
+            // Optional: Add any specific behavior when user label is clicked
+        }
+
+        private void PasswordLabel_Click(object sender, EventArgs e)
+        {
+            // Optional: Add any specific behavior when password label is clicked
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            // Optional: Add any specific behavior when label1 is clicked
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
+        {
+            // Optional: Add any specific behavior when tabPage4 is clicked
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        {
+            checkBox1_CheckedChanged(sender, e);
+        }
+
+        private void checkBox2_CheckedChanged_1(object sender, EventArgs e)
+        {
+            checkBox2_CheckedChanged(sender, e);
+        }
+
+        private void RememberUrlCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            // This appears to be the same as checkBox2_CheckedChanged
+            checkBox2_CheckedChanged(sender, e);
+        }
+
+        private void UrlTextBox_TextChanged(object sender, EventArgs e)
+        {
+            // If you have a UrlTextBox, handle its text changed event here
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        // Rest of your existing methods...
         private void TestConnectionButton_Click(object sender, EventArgs e)
         {
             if (!isConnected)
@@ -54,7 +166,7 @@ namespace Kursach
                 MessageBox.Show("Connection successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 UpdateTableList(connection);
 
-                TestConnectionButton.Text = "Disconnect";
+                guna2ButtonConnect.Text = "Disconnect";
                 isConnected = true;
             }
             catch (Exception ex)
@@ -86,8 +198,7 @@ namespace Kursach
                 {
                     connection = null;
                     isConnected = false;
-                    TestConnectionButton.Text = "Connect";
-                    comboBox1.Items.Clear();
+                    guna2ComboBox1.Items.Clear();
                     CloseDataTabsInForm1();
                 }
             }
@@ -105,7 +216,6 @@ namespace Kursach
             }
         }
 
-        // Обновление строки подключения на основе введённых данных
         private void UpdateConnectionString()
         {
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder
@@ -122,69 +232,48 @@ namespace Kursach
             ConnectionString = builder.ConnectionString;
         }
 
-        // Обновление списка таблиц в базе данных
         private void UpdateTableList(NpgsqlConnection conn)
         {
             string query = checkBox1.Checked
-                ? @"
-                    SELECT table_schema, table_name
-                    FROM information_schema.tables
-                    WHERE table_type = 'BASE TABLE' AND table_schema = 'public'
-                    ORDER BY table_schema, table_name;"
-                : @"
-                    SELECT table_schema, table_name
-                    FROM information_schema.tables
-                    WHERE table_type = 'BASE TABLE'
-                    ORDER BY table_schema, table_name;";
+                ? "SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema, table_name;"
+                : "SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' ORDER BY table_schema, table_name;";
 
             using (var cmd = new NpgsqlCommand(query, conn))
             using (var reader = cmd.ExecuteReader())
             {
-                comboBox1.Items.Clear();
+                guna2ComboBox1.Items.Clear();
                 while (reader.Read())
                 {
                     string tableSchema = reader.GetString(0);
                     string tableName = reader.GetString(1);
-                    comboBox1.Items.Add($"{tableSchema}.{tableName}");
+                    guna2ComboBox1.Items.Add($"{tableSchema}.{tableName}");
                 }
             }
 
-            if (comboBox1.Items.Count > 0)
+            if (guna2ComboBox1.Items.Count > 0)
             {
-                comboBox1.SelectedIndex = 0;
+                guna2ComboBox1.SelectedIndex = 0;
             }
         }
 
-        // Обработчик изменения выбранной таблицы
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedItem != null)
+            if (guna2ComboBox1.SelectedItem != null)
             {
-                SelectedTable = comboBox1.SelectedItem.ToString();
+                SelectedTable = guna2ComboBox1.SelectedItem.ToString();
             }
         }
 
-        // Обработчик клика на кнопку "Send data"
         private void button1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SelectedTable))
-            {
-                MessageBox.Show("Выберите таблицу из списка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string tableName = SelectedTable;
-            DataTable dataTable = Form1.Instance.GetTableData(tableName);
-            Form1.Instance.LoadData(dataTable, tableName);
+            
         }
 
-        // Обработчик изменения состояния чекбокса "Only Public schemes"
-        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             UpdateTableListBasedOnConnection();
         }
 
-        // Обновление списка таблиц на основе текущего соединения
         private void UpdateTableListBasedOnConnection()
         {
             if (!string.IsNullOrEmpty(ConnectionString) && isConnected && connection != null)
@@ -200,14 +289,13 @@ namespace Kursach
             }
             else if (!isConnected)
             {
-                comboBox1.Items.Clear();
+                guna2ComboBox1.Items.Clear();
             }
         }
 
-        // Сохранение настроек через UserSettingsManager
         private void SaveSettings()
         {
-            if (checkBox2.Checked)
+            if (guna2CheckBoxRemSet.Checked)
             {
                 UserSettingsManager.SaveUserSettings(
                     HostTextBox.Text,
@@ -221,58 +309,62 @@ namespace Kursach
             }
         }
 
-        // Обработчик изменения текста в полях (Host, User, Database)
         private void SettingsTextBox_TextChanged(object sender, EventArgs e)
         {
             SaveSettings();
         }
 
-        // Обработчик изменения состояния чекбокса "Remember settings"
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             SaveSettings();
         }
 
-        // Обработчик загрузки формы
-        private void Form2_Load(object sender, EventArgs e)
-        {
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            // Загрузка сохранённых настроек
-            var (host, userName, databaseName) = UserSettingsManager.LoadUserSettings();
-            HostTextBox.Text = host;
-            UserTextBox.Text = userName;
-            DatabaseTextBox.Text = databaseName;
-
-            // Если есть сохранённые настройки, включаем чекбокс
-            if (!string.IsNullOrEmpty(userName) || !string.IsNullOrEmpty(databaseName) || !string.IsNullOrEmpty(host))
-            {
-                checkBox2.Checked = true;
-            }
-
-            // Подписываемся на изменение текста в полях
-            HostTextBox.TextChanged += SettingsTextBox_TextChanged;
-            UserTextBox.TextChanged += SettingsTextBox_TextChanged;
-            DatabaseTextBox.TextChanged += SettingsTextBox_TextChanged;
-
-            TestConnectionButton.Text = "Connect";
-        }
-
-        // Обработчик закрытия формы
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveSettings(); // Сохраняем настройки при закрытии формы
+            SaveSettings();
         }
 
-        // Обработчик клика на кнопку закрытия формы
-        private void button2_Click(object sender, EventArgs e)
+        private void guna2ButtonSendData_Click(object sender, EventArgs e)
         {
-            this.Close(); // Закрываем форму
+            if (string.IsNullOrEmpty(SelectedTable))
+            {
+                MessageBox.Show("Выберите таблицу из списка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string tableName = SelectedTable;
+            DataTable dataTable = Form1.Instance.GetTableData(tableName);
+            Form1.Instance.LoadData(dataTable, tableName);
         }
 
-        private void tabPage1_Click(object sender, EventArgs e) { }
+        private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (guna2ComboBox1.SelectedItem != null)
+            {
+                SelectedTable = guna2ComboBox1.SelectedItem.ToString();
+            }
+        }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            if (!isConnected)
+            {
+                ConnectToDatabase();
+            }
+            else
+            {
+                DisconnectFromDatabase();
+            }
+        }
+
+        private void guna2CheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
