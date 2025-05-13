@@ -31,12 +31,15 @@ namespace Kursach.Helpers
                 .Select(c => $"{c.ColumnName} = @{c.ColumnName}"));
 
             string query = $"UPDATE {tableName} SET {setClause} WHERE id = @id";
+            Console.WriteLine($"Executing query: {query}"); // Отладка
 
             using (var cmd = new NpgsqlCommand(query, conn, transaction))
             {
                 foreach (DataColumn column in row.Table.Columns)
                 {
-                    cmd.Parameters.AddWithValue(column.ColumnName, row[column]);
+                    var value = row[column];
+                    Console.WriteLine($"Parameter {column.ColumnName}: {value} (Type: {value?.GetType().Name})"); // Отладка
+                    cmd.Parameters.AddWithValue(column.ColumnName, value ?? DBNull.Value);
                 }
                 cmd.ExecuteNonQuery();
             }

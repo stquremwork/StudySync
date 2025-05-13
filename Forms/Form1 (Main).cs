@@ -143,7 +143,14 @@ namespace Kursach
                     {
                         if (control is DataGridView dgv)
                         {
-                            dgv.EndEdit(DataGridViewDataErrorContexts.Commit);
+                            try
+                            {
+                                dgv.EndEdit(DataGridViewDataErrorContexts.Commit);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error in EndEdit: {ex.Message}");
+                            }
                         }
                     }
                 }
@@ -175,7 +182,9 @@ namespace Kursach
                 AutoGenerateColumns = true,
                 ReadOnly = false,
                 AllowUserToOrderColumns = true,
-                BorderStyle = BorderStyle.None
+                BorderStyle = BorderStyle.None,
+                EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2,
+                Enabled = true
             };
 
             typeof(DataGridView).InvokeMember("DoubleBuffered",
@@ -186,17 +195,30 @@ namespace Kursach
             newTabPage.Controls.Add(newDataGridView);
             tabControl1.TabPages.Add(newTabPage);
 
-            var dataView = new DataView(dataTable);
+            // Убедимся, что столбцы DataTable редактируемы
+            foreach (DataColumn column in dataTable.Columns)
+            {
+                column.ReadOnly = false;
+            }
+
+            var dataView = new DataView(dataTable)
+            {
+                AllowEdit = true,
+                AllowNew = true,
+                AllowDelete = true
+            };
             newDataGridView.DataSource = dataView;
 
-
+            newDataGridView.Focus();
             tabControl1.SelectedTab = newTabPage;
             currentDataTab = newTabPage;
         }
 
         private void DataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            MessageBox.Show($"Data error: {e.Exception.Message}\n\nError context: {e.Context}",
+            // Логирование для диагностики
+            Console.WriteLine($"DataGridView Error: {e.Exception.Message}, Context: {e.Context}, Row: {e.RowIndex}, Column: {e.ColumnIndex}");
+            MessageBox.Show($"Data error: {e.Exception.Message}\n\nError context: {e.Context}\nRow: {e.RowIndex}, Column: {e.ColumnIndex}",
                 "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             e.ThrowException = false;
         }
@@ -258,6 +280,12 @@ namespace Kursach
                 var dataView = dgv.DataSource as DataView;
                 if (dataView == null) return;
 
+                // Отладка: проверить изменения в DataTable
+                var dataTable = dataView.Table;
+                Console.WriteLine($"Modified rows: {dataTable.Select(null, null, DataViewRowState.ModifiedCurrent).Length}");
+                Console.WriteLine($"Added rows: {dataTable.Select(null, null, DataViewRowState.Added).Length}");
+                Console.WriteLine($"Deleted rows: {dataTable.Select(null, null, DataViewRowState.Deleted).Length}");
+
                 using (var conn = new NpgsqlConnection(Form2.ConnectionString))
                 {
                     conn.Open();
@@ -282,6 +310,7 @@ namespace Kursach
                             }
 
                             transaction.Commit();
+                            dataTable.AcceptChanges(); // Подтверждаем изменения в DataTable
                             MessageBox.Show("Data saved successfully", "Success",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -370,7 +399,5 @@ namespace Kursach
         private void toolStripButton3_Click(object sender, EventArgs e) { }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) { }
         private void button1_Click(object sender, EventArgs e) { }
-
-
     }
 }

@@ -145,9 +145,7 @@ namespace Kursach
                 {
                     string tableSchema = reader.GetString(0);
                     string tableName = reader.GetString(1);
-                    comboBox1
-
-.Items.Add($"{tableSchema}.{tableName}");
+                    comboBox1.Items.Add($"{tableSchema}.{tableName}");
                 }
             }
 
@@ -206,8 +204,25 @@ namespace Kursach
             }
         }
 
-        // Обработчик изменения текста в поле "User"
-        private void UserTextBox_TextChanged(object sender, EventArgs e)
+        // Сохранение настроек через UserSettingsManager
+        private void SaveSettings()
+        {
+            if (checkBox2.Checked)
+            {
+                UserSettingsManager.SaveUserSettings(
+                    HostTextBox.Text,
+                    UserTextBox.Text,
+                    DatabaseTextBox.Text
+                );
+            }
+            else
+            {
+                UserSettingsManager.ClearUserSettings();
+            }
+        }
+
+        // Обработчик изменения текста в полях (Host, User, Database)
+        private void SettingsTextBox_TextChanged(object sender, EventArgs e)
         {
             SaveSettings();
         }
@@ -218,22 +233,6 @@ namespace Kursach
             SaveSettings();
         }
 
-        // Сохранение настроек
-        private void SaveSettings()
-        {
-            if (checkBox2.Checked)
-            {
-                Properties.Settings.Default.UserName = UserTextBox.Text;
-                Properties.Settings.Default.DatabaseName = DatabaseTextBox.Text;
-            }
-            else
-            {
-                Properties.Settings.Default.UserName = string.Empty;
-                Properties.Settings.Default.DatabaseName = string.Empty;
-            }
-            Properties.Settings.Default.Save();
-        }
-
         // Обработчик загрузки формы
         private void Form2_Load(object sender, EventArgs e)
         {
@@ -242,13 +241,22 @@ namespace Kursach
             this.MinimizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            UserTextBox.Text = Properties.Settings.Default.UserName;
-            DatabaseTextBox.Text = Properties.Settings.Default.DatabaseName;
+            // Загрузка сохранённых настроек
+            var (host, userName, databaseName) = UserSettingsManager.LoadUserSettings();
+            HostTextBox.Text = host;
+            UserTextBox.Text = userName;
+            DatabaseTextBox.Text = databaseName;
 
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.UserName))
+            // Если есть сохранённые настройки, включаем чекбокс
+            if (!string.IsNullOrEmpty(userName) || !string.IsNullOrEmpty(databaseName) || !string.IsNullOrEmpty(host))
             {
                 checkBox2.Checked = true;
             }
+
+            // Подписываемся на изменение текста в полях
+            HostTextBox.TextChanged += SettingsTextBox_TextChanged;
+            UserTextBox.TextChanged += SettingsTextBox_TextChanged;
+            DatabaseTextBox.TextChanged += SettingsTextBox_TextChanged;
 
             TestConnectionButton.Text = "Connect";
         }
@@ -256,18 +264,7 @@ namespace Kursach
         // Обработчик закрытия формы
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (checkBox2.Checked)
-            {
-                Properties.Settings.Default.UserName = UserTextBox.Text;
-                Properties.Settings.Default.DatabaseName = DatabaseTextBox.Text;
-            }
-            else
-            {
-                Properties.Settings.Default.UserName = string.Empty;
-                Properties.Settings.Default.DatabaseName = string.Empty;
-            }
-            Properties.Settings.Default.Save();
-            // Не разрываем соединение с базой данных
+            SaveSettings(); // Сохраняем настройки при закрытии формы
         }
 
         // Обработчик клика на кнопку закрытия формы
