@@ -125,6 +125,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\Form52.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Form52.Designer.cs">
+      <DependentUpon>Form52.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Form3 %28Settings%29.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,6 +156,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\Form1 %28Main%29.resx">
       <DependentUpon>Form1 %28Main%29.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Form52.resx">
+      <DependentUpon>Form52.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form3 %28Settings%29.resx">
       <DependentUpon>Form3 %28Settings%29.cs</DependentUpon>
@@ -183,6 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Other\help.html" />
+    <None Include="Resources\free-icon-edit-3597088.png" />
+    <None Include="Resources\free-icon-sort-4621305.png" />
+    <None Include="Resources\free-icon-filter-2676824.png" />
     <None Include="Resources\close.png" />
     <None Include="Resources\free-icon-font-disk-3917394.png" />
     <None Include="Resources\free-icon-font-database-management-18620909.png" />

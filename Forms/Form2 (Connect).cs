@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data;
-using System.Drawing;
 using System.Windows.Forms;
-using Guna.UI2.WinForms;
 using Npgsql;
+using System.Drawing;
+using Guna.UI2.WinForms;
 
 namespace Kursach
 {
@@ -20,13 +20,7 @@ namespace Kursach
             this.FormClosing += new FormClosingEventHandler(Form2_FormClosing);
 
 
-            // Устанавливаем фон окна
-            this.BackColor = Color.FromArgb(33, 42, 57);
-
-
-            tabPage3.BackColor = Color.FromArgb(45, 55, 70); // немного светлее
-            tabPage4.BackColor = Color.FromArgb(45, 55, 70); // немного светлее
-
+        
 
 
 

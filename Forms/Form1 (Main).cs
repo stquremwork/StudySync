@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Npgsql;
 using Kursach.Helpers;
 using Kursach.Forms;
+using System.IO;
 
 namespace Kursach
 {
@@ -195,7 +196,6 @@ namespace Kursach
             newTabPage.Controls.Add(newDataGridView);
             tabControl1.TabPages.Add(newTabPage);
 
-            // Убедимся, что столбцы DataTable редактируемы
             foreach (DataColumn column in dataTable.Columns)
             {
                 column.ReadOnly = false;
@@ -216,7 +216,6 @@ namespace Kursach
 
         private void DataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            // Логирование для диагностики
             Console.WriteLine($"DataGridView Error: {e.Exception.Message}, Context: {e.Context}, Row: {e.RowIndex}, Column: {e.ColumnIndex}");
             MessageBox.Show($"Data error: {e.Exception.Message}\n\nError context: {e.Context}\nRow: {e.RowIndex}, Column: {e.ColumnIndex}",
                 "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -280,7 +279,6 @@ namespace Kursach
                 var dataView = dgv.DataSource as DataView;
                 if (dataView == null) return;
 
-                // Отладка: проверить изменения в DataTable
                 var dataTable = dataView.Table;
                 Console.WriteLine($"Modified rows: {dataTable.Select(null, null, DataViewRowState.ModifiedCurrent).Length}");
                 Console.WriteLine($"Added rows: {dataTable.Select(null, null, DataViewRowState.Added).Length}");
@@ -310,7 +308,7 @@ namespace Kursach
                             }
 
                             transaction.Commit();
-                            dataTable.AcceptChanges(); // Подтверждаем изменения в DataTable
+                            dataTable.AcceptChanges();
                             MessageBox.Show("Data saved successfully", "Success",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -379,11 +377,144 @@ namespace Kursach
             }
         }
 
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "CSV files (*.csv)|*.csv",
+                Title = "Select CSV file to import"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    DataTable dt = ReadCSVFile(openFileDialog.FileName);
+                    if (tabControl1.SelectedTab != null)
+                    {
+                        var dgv = tabControl1.SelectedTab.Controls[0] as DataGridView;
+                        if (dgv != null)
+                        {
+                            dgv.DataSource = dt;
+                        }
+                    }
+                    else
+                    {
+                        LoadData(dt, Path.GetFileNameWithoutExtension(openFileDialog.FileName));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading file: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private DataTable ReadCSVFile(string filePath)
+        {
+            DataTable dt = new DataTable();
+
+            string[] lines = File.ReadAllLines(filePath);
+            if (lines.Length == 0)
+                throw new Exception("File is empty");
+
+            string[] headers = lines[0].Split(',');
+            foreach (string header in headers)
+            {
+                dt.Columns.Add(header.Trim());
+            }
+
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string[] fields = lines[i].Split(',');
+                if (fields.Length < dt.Columns.Count)
+                {
+                    fields = fields.Concat(Enumerable.Repeat(string.Empty, dt.Columns.Count - fields.Length)).ToArray();
+                }
+                dt.Rows.Add(fields);
+            }
+
+            return dt;
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab == null || tabControl1.SelectedTab.Controls.Count == 0)
+            {
+                MessageBox.Show("No active table to export", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var dgv = tabControl1.SelectedTab.Controls[0] as DataGridView;
+            if (dgv == null || dgv.Rows.Count == 0)
+            {
+                MessageBox.Show("No data to export", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "CSV files (*.csv)|*.csv",
+                Title = "Export to CSV"
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    ExportDataGridViewToCSV(dgv, saveFileDialog.FileName);
+                    MessageBox.Show("Data exported successfully", "Success",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error exporting data: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void ExportDataGridViewToCSV(DataGridView dgv, string filePath)
+        {
+            using (StreamWriter sw = new StreamWriter(filePath, false, System.Text.Encoding.UTF8))
+            {
+                var headers = dgv.Columns.Cast<DataGridViewColumn>()
+                    .Where(c => c.Visible)
+                    .Select(c => EscapeCsvValue(c.HeaderText));
+                sw.WriteLine(string.Join(",", headers));
+
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    if (!row.IsNewRow)
+                    {
+                        var cells = row.Cells.Cast<DataGridViewCell>()
+                            .Where(c => c.Visible)
+                            .Select(c => EscapeCsvValue(Convert.ToString(c.Value)));
+                        sw.WriteLine(string.Join(",", cells));
+                    }
+                }
+            }
+        }
+
+        private string EscapeCsvValue(string value)
+        {
+            if (value == null)
+                return "";
+
+            if (value.Contains(",") || value.Contains("\"") || value.Contains("\n"))
+            {
+                value = value.Replace("\"", "\"\"");
+                return $"\"{value}\"";
+            }
+            return value;
+        }
+
         // Empty event handlers
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
         private void toolStripDropDownButton1_Click_1(object sender, EventArgs e) { }
-        private void importToolStripMenuItem_Click(object sender, EventArgs e) { }
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e) { }
         private void terminalToolStripMenuItem_Click(object sender, EventArgs e) { }
         private void toolStripDropDownButton5_Click(object sender, EventArgs e) { }
         private void toolStripDropDownButton3_Click(object sender, EventArgs e) { }
@@ -399,5 +530,13 @@ namespace Kursach
         private void toolStripButton3_Click(object sender, EventArgs e) { }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) { }
         private void button1_Click(object sender, EventArgs e) { }
+        private void panel1_Paint(object sender, PaintEventArgs e) { }
+        private void toolStripDropDownButton7_Click(object sender, EventArgs e) { }
+        private void toolStripDropDownButton6_Click(object sender, EventArgs e) { }
+
+        private void button1_Click_2(object sender, EventArgs e)
+        {
+
+        }
     }
 }
