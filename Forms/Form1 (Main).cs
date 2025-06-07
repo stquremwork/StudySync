@@ -30,7 +30,55 @@ namespace Kursach
             tabControl1.MouseClick += TabControl1_MouseClick;
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
             tabControl1.MouseDown += TabControl1_MouseDown;
+
+            // Настройка вкладки main
+            SetupMainTab();
         }
+
+        private void SetupMainTab()
+        {
+            // Предполагаем, что вкладка main — это первая вкладка (индекс 0)
+            if (tabControl1.TabPages.Count > 0)
+            {
+                TabPage mainTab = tabControl1.TabPages[0];
+                mainTab.Text = "Main"; // Убедимся, что вкладка называется "Main"
+
+                // Очищаем существующие элементы управления, если они есть
+                mainTab.Controls.Clear();
+
+                // Создаем Label для приветственного текста
+                Label welcomeLabel = new Label
+                {
+                    AutoSize = true, // Размер подстраивается под текст
+                    TextAlign = ContentAlignment.TopLeft, // Текст выравнивается по левому краю
+                    Font = new Font("Segoe UI", 12),
+                    BackColor = SystemColors.ControlLightLight,
+                    Text = "Добро пожаловать в StudySync\n\n" +
+                           "Версия программы: 1.0\n" +
+                           "Более подробную информацию о программе\n" +
+                           "вы можете найти в документации."
+                };
+
+                // Центрируем Label на вкладке
+                mainTab.Resize += (s, e) =>
+                {
+                    welcomeLabel.Location = new Point(
+                        (mainTab.Width - welcomeLabel.Width) / 2, // Центр по горизонтали
+                        (mainTab.Height - welcomeLabel.Height) / 2 // Центр по вертикали
+                    );
+                };
+
+                // Вызываем пересчет позиции сразу после создания
+                welcomeLabel.Location = new Point(
+                    (mainTab.Width - welcomeLabel.Width) / 2,
+                    (mainTab.Height - welcomeLabel.Height) / 2
+                );
+
+                // Добавляем Label на вкладку main
+                mainTab.Controls.Add(welcomeLabel);
+            }
+        }
+
 
         private Image GenerateDefaultCloseImage()
         {
@@ -368,7 +416,7 @@ namespace Kursach
         {
             try
             {
-                System.Diagnostics.Process.Start("H:\\Other\\Програмирование\\Проекты C#\\Project-Repository\\Program\\Other\\help.html");
+                System.Diagnostics.Process.Start("H:\\Other\\Програмирование\\Kursach\\Resources\\help.html");
             }
             catch (Exception ex)
             {

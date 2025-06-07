@@ -191,7 +191,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Other\help.html" />
+    <Content Include="Resources\help.html" />
     <None Include="Resources\free-icon-edit-3597088.png" />
     <None Include="Resources\free-icon-sort-4621305.png" />
     <None Include="Resources\free-icon-filter-2676824.png" />
