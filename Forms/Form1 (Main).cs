@@ -17,7 +17,7 @@ namespace Kursach
         public static Form1 Instance { get; private set; }
         private Image closeImage;
         private TabPage currentDataTab = null;
-        private ListBox listBoxTables = new ListBox();
+        private ListView listViewTables = new ListView();
 
         public Form1()
         {
@@ -36,35 +36,38 @@ namespace Kursach
             // Настройка вкладки main
             SetupMainTab();
 
-            // Инициализация ListBox для таблиц
-            InitializeTablesListBox();
+            // Инициализация ListView для таблиц
+            InitializeTablesListView();
 
             // Инициализация статуса подключения
             UpdateConnectionStatus();
         }
 
-        private void InitializeTablesListBox()
+        private void InitializeTablesListView()
         {
-            listBoxTables.Dock = DockStyle.Fill;
-            listBoxTables.SelectionMode = SelectionMode.One;
-            listBoxTables.DoubleClick += ListBoxTables_DoubleClick;
+            listViewTables.Dock = DockStyle.Fill;
+            listViewTables.View = View.Details;
+            listViewTables.FullRowSelect = true;
+            listViewTables.GridLines = true;
+            listViewTables.MultiSelect = false;
 
-            // Добавляем ListBox в Panel1 splitContainer'а
-            splitContainer1.Panel1.Controls.Add(listBoxTables);
-        }
+            // Настройка колонок
+            listViewTables.Columns.Add("Объект", 300);
+            listViewTables.Columns.Add("Тип", 150);
 
-        private void ListBoxTables_DoubleClick(object sender, EventArgs e)
-        {
-            if (listBoxTables.SelectedItem != null && !string.IsNullOrEmpty(Form2.ConnectionString))
-            {
-                string selectedTable = listBoxTables.SelectedItem.ToString();
-                LoadTableData(selectedTable);
-            }
+            listViewTables.DoubleClick += ListViewTables_DoubleClick;
+
+            // Разрешаем отображение групп
+            listViewTables.ShowGroups = true;
+
+            // Добавляем ListView в Panel1 splitContainer'а
+            splitContainer1.Panel1.Controls.Add(listViewTables);
         }
 
         public void LoadTableList()
         {
-            listBoxTables.Items.Clear();
+            listViewTables.Items.Clear();
+            listViewTables.Groups.Clear();
 
             if (string.IsNullOrEmpty(Form2.ConnectionString))
             {
@@ -79,30 +82,66 @@ namespace Kursach
                 {
                     conn.Open();
 
+                    // Создаем группу для схемы public
+                    ListViewGroup publicGroup = new ListViewGroup("public", "public course");
+                    listViewTables.Groups.Add(publicGroup);
+
                     // Получаем список всех таблиц в публичной схеме
-                    var tables = new List<string>();
                     using (var cmd = new NpgsqlCommand(
-                        "SELECT table_name FROM information_schema.tables " +
-                        "WHERE table_schema = 'public' AND table_type = 'BASE TABLE'", conn))
+                        "SELECT table_name, column_name, data_type " +
+                        "FROM information_schema.columns " +
+                        "WHERE table_schema = 'public' " +
+                        "ORDER BY table_name, ordinal_position", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
+                            string currentTable = null;
                             while (reader.Read())
                             {
-                                tables.Add(reader.GetString(0));
+                                string tableName = reader.GetString(0);
+                                string columnName = reader.GetString(1);
+                                string dataType = reader.GetString(2);
+
+                                // Если это новая таблица, добавляем ее как родительский элемент
+                                if (tableName != currentTable)
+                                {
+                                    currentTable = tableName;
+                                    ListViewItem tableItem = new ListViewItem(tableName);
+                                    tableItem.SubItems.Add("Таблица");
+                                    tableItem.Group = publicGroup;
+                                    listViewTables.Items.Add(tableItem);
+                                }
+
+                                // Добавляем колонки как дочерние элементы
+                                ListViewItem columnItem = new ListViewItem($"  {columnName}");
+                                columnItem.SubItems.Add(dataType);
+                                columnItem.Group = publicGroup;
+                                columnItem.IndentCount = 1; // Отступ для визуальной иерархии
+                                listViewTables.Items.Add(columnItem);
                             }
                         }
                     }
-
-                    // Сортируем и добавляем в ListBox
-                    tables.Sort();
-                    listBoxTables.Items.AddRange(tables.ToArray());
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка при загрузке списка таблиц: {ex.Message}", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ListViewTables_DoubleClick(object sender, EventArgs e)
+        {
+            if (listViewTables.SelectedItems.Count > 0 && !string.IsNullOrEmpty(Form2.ConnectionString))
+            {
+                var selectedItem = listViewTables.SelectedItems[0];
+
+                // Если выбран элемент таблицы (а не колонка)
+                if (selectedItem.SubItems[1].Text == "Таблица")
+                {
+                    string selectedTable = selectedItem.Text;
+                    LoadTableData($"public.{selectedTable}");
+                }
             }
         }
 
@@ -738,6 +777,11 @@ namespace Kursach
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
+        }
+
+        private void listView1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

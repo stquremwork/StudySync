@@ -34,7 +34,6 @@ namespace Kursach
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.guna2TabControl1 = new Guna.UI2.WinForms.Guna2TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -46,6 +45,7 @@ namespace Kursach
             this.DatabaseLabel = new System.Windows.Forms.Label();
             this.DatabaseTextBox = new System.Windows.Forms.TextBox();
             this.UserLabel = new System.Windows.Forms.Label();
+            this.PasswordTextBox = new System.Windows.Forms.TextBox();
             this.UserTextBox = new System.Windows.Forms.TextBox();
             this.PasswordLabel = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -56,25 +56,10 @@ namespace Kursach
             this.guna2ButtonSendData = new Guna.UI2.WinForms.Guna2Button();
             this.guna2ComboBox1 = new Guna.UI2.WinForms.Guna2ComboBox();
             this.guna2ButtonConnect = new Guna.UI2.WinForms.Guna2Button();
-            this.PasswordTextBox = new System.Windows.Forms.TextBox();
             this.guna2TabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.checkBox1.ForeColor = System.Drawing.Color.White;
-            this.checkBox1.Location = new System.Drawing.Point(587, 72);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(156, 23);
-            this.checkBox1.TabIndex = 12;
-            this.checkBox1.Text = "Only Public schemes";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
             // 
             // button1
             // 
@@ -147,7 +132,7 @@ namespace Kursach
             this.guna2CheckBoxRemSet.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.guna2CheckBoxRemSet.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.guna2CheckBoxRemSet.ForeColor = System.Drawing.Color.White;
-            this.guna2CheckBoxRemSet.Location = new System.Drawing.Point(18, 201);
+            this.guna2CheckBoxRemSet.Location = new System.Drawing.Point(18, 211);
             this.guna2CheckBoxRemSet.Name = "guna2CheckBoxRemSet";
             this.guna2CheckBoxRemSet.Size = new System.Drawing.Size(152, 21);
             this.guna2CheckBoxRemSet.TabIndex = 26;
@@ -160,7 +145,7 @@ namespace Kursach
             // 
             // HostTextBox
             // 
-            this.HostTextBox.Location = new System.Drawing.Point(106, 7);
+            this.HostTextBox.Location = new System.Drawing.Point(106, 17);
             this.HostTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.HostTextBox.Name = "HostTextBox";
             this.HostTextBox.Size = new System.Drawing.Size(265, 22);
@@ -173,7 +158,7 @@ namespace Kursach
             this.HostLabel.AutoSize = true;
             this.HostLabel.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.HostLabel.ForeColor = System.Drawing.Color.White;
-            this.HostLabel.Location = new System.Drawing.Point(15, 10);
+            this.HostLabel.Location = new System.Drawing.Point(15, 20);
             this.HostLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.HostLabel.Name = "HostLabel";
             this.HostLabel.Size = new System.Drawing.Size(41, 19);
@@ -186,7 +171,7 @@ namespace Kursach
             this.PortLabel.AutoSize = true;
             this.PortLabel.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.PortLabel.ForeColor = System.Drawing.Color.White;
-            this.PortLabel.Location = new System.Drawing.Point(15, 42);
+            this.PortLabel.Location = new System.Drawing.Point(15, 52);
             this.PortLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.PortLabel.Name = "PortLabel";
             this.PortLabel.Size = new System.Drawing.Size(37, 19);
@@ -196,7 +181,7 @@ namespace Kursach
             // 
             // PortTextBox
             // 
-            this.PortTextBox.Location = new System.Drawing.Point(106, 39);
+            this.PortTextBox.Location = new System.Drawing.Point(106, 49);
             this.PortTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.PortTextBox.Name = "PortTextBox";
             this.PortTextBox.Size = new System.Drawing.Size(265, 22);
@@ -209,7 +194,7 @@ namespace Kursach
             this.DatabaseLabel.AutoSize = true;
             this.DatabaseLabel.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.DatabaseLabel.ForeColor = System.Drawing.Color.White;
-            this.DatabaseLabel.Location = new System.Drawing.Point(15, 74);
+            this.DatabaseLabel.Location = new System.Drawing.Point(15, 84);
             this.DatabaseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.DatabaseLabel.Name = "DatabaseLabel";
             this.DatabaseLabel.Size = new System.Drawing.Size(69, 19);
@@ -219,7 +204,7 @@ namespace Kursach
             // 
             // DatabaseTextBox
             // 
-            this.DatabaseTextBox.Location = new System.Drawing.Point(106, 71);
+            this.DatabaseTextBox.Location = new System.Drawing.Point(106, 81);
             this.DatabaseTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.DatabaseTextBox.Name = "DatabaseTextBox";
             this.DatabaseTextBox.Size = new System.Drawing.Size(265, 22);
@@ -232,7 +217,7 @@ namespace Kursach
             this.UserLabel.AutoSize = true;
             this.UserLabel.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.UserLabel.ForeColor = System.Drawing.Color.White;
-            this.UserLabel.Location = new System.Drawing.Point(15, 106);
+            this.UserLabel.Location = new System.Drawing.Point(15, 116);
             this.UserLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.UserLabel.Name = "UserLabel";
             this.UserLabel.Size = new System.Drawing.Size(40, 19);
@@ -240,9 +225,19 @@ namespace Kursach
             this.UserLabel.Text = "User:";
             this.UserLabel.Click += new System.EventHandler(this.UserLabel_Click);
             // 
+            // PasswordTextBox
+            // 
+            this.PasswordTextBox.Location = new System.Drawing.Point(106, 145);
+            this.PasswordTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.PasswordTextBox.Name = "PasswordTextBox";
+            this.PasswordTextBox.Size = new System.Drawing.Size(265, 22);
+            this.PasswordTextBox.TabIndex = 24;
+            this.PasswordTextBox.UseSystemPasswordChar = true;
+            this.PasswordTextBox.TextChanged += new System.EventHandler(this.PasswordTextBox_TextChanged);
+            // 
             // UserTextBox
             // 
-            this.UserTextBox.Location = new System.Drawing.Point(106, 103);
+            this.UserTextBox.Location = new System.Drawing.Point(106, 113);
             this.UserTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.UserTextBox.Name = "UserTextBox";
             this.UserTextBox.Size = new System.Drawing.Size(265, 22);
@@ -255,7 +250,7 @@ namespace Kursach
             this.PasswordLabel.AutoSize = true;
             this.PasswordLabel.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.PasswordLabel.ForeColor = System.Drawing.Color.White;
-            this.PasswordLabel.Location = new System.Drawing.Point(15, 138);
+            this.PasswordLabel.Location = new System.Drawing.Point(15, 148);
             this.PasswordLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.PasswordLabel.Name = "PasswordLabel";
             this.PasswordLabel.Size = new System.Drawing.Size(70, 19);
@@ -330,6 +325,7 @@ namespace Kursach
             this.guna2ButtonClose.Size = new System.Drawing.Size(185, 44);
             this.guna2ButtonClose.TabIndex = 23;
             this.guna2ButtonClose.Text = "Close";
+            this.guna2ButtonClose.Click += new System.EventHandler(this.guna2ButtonClose_Click);
             // 
             // guna2ButtonSendData
             // 
@@ -339,7 +335,7 @@ namespace Kursach
             this.guna2ButtonSendData.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.guna2ButtonSendData.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.guna2ButtonSendData.ForeColor = System.Drawing.Color.White;
-            this.guna2ButtonSendData.Location = new System.Drawing.Point(587, 169);
+            this.guna2ButtonSendData.Location = new System.Drawing.Point(588, 199);
             this.guna2ButtonSendData.Name = "guna2ButtonSendData";
             this.guna2ButtonSendData.Size = new System.Drawing.Size(185, 44);
             this.guna2ButtonSendData.TabIndex = 24;
@@ -371,22 +367,12 @@ namespace Kursach
             this.guna2ButtonConnect.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.guna2ButtonConnect.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.guna2ButtonConnect.ForeColor = System.Drawing.Color.White;
-            this.guna2ButtonConnect.Location = new System.Drawing.Point(587, 12);
+            this.guna2ButtonConnect.Location = new System.Drawing.Point(587, 48);
             this.guna2ButtonConnect.Name = "guna2ButtonConnect";
             this.guna2ButtonConnect.Size = new System.Drawing.Size(185, 44);
             this.guna2ButtonConnect.TabIndex = 26;
             this.guna2ButtonConnect.Text = "Connect";
             this.guna2ButtonConnect.Click += new System.EventHandler(this.guna2Button1_Click);
-            // 
-            // PasswordTextBox
-            // 
-            this.PasswordTextBox.Location = new System.Drawing.Point(106, 135);
-            this.PasswordTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.PasswordTextBox.Name = "PasswordTextBox";
-            this.PasswordTextBox.Size = new System.Drawing.Size(265, 22);
-            this.PasswordTextBox.TabIndex = 24;
-            this.PasswordTextBox.UseSystemPasswordChar = true;
-            this.PasswordTextBox.TextChanged += new System.EventHandler(this.PasswordTextBox_TextChanged);
             // 
             // Form2
             // 
@@ -399,7 +385,6 @@ namespace Kursach
             this.Controls.Add(this.guna2ButtonSendData);
             this.Controls.Add(this.guna2ButtonClose);
             this.Controls.Add(this.guna2TabControl1);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
@@ -412,7 +397,6 @@ namespace Kursach
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -422,7 +406,6 @@ namespace Kursach
         }
 
         #endregion
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button1;
         private Guna.UI2.WinForms.Guna2TabControl guna2TabControl1;
         private System.Windows.Forms.TabPage tabPage3;

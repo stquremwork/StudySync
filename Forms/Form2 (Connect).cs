@@ -19,12 +19,6 @@ namespace Kursach
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(Form2_FormClosing);
 
-
-        
-
-
-
-
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -106,11 +100,6 @@ namespace Kursach
         private void tabPage4_Click(object sender, EventArgs e)
         {
             // Optional: Add any specific behavior when tabPage4 is clicked
-        }
-
-        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
-        {
-            checkBox1_CheckedChanged(sender, e);
         }
 
         private void checkBox2_CheckedChanged_1(object sender, EventArgs e)
@@ -228,9 +217,8 @@ namespace Kursach
 
         private void UpdateTableList(NpgsqlConnection conn)
         {
-            string query = checkBox1.Checked
-                ? "SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema, table_name;"
-                : "SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' ORDER BY table_schema, table_name;";
+            string query = "SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_schema, table_name;";
+
 
             using (var cmd = new NpgsqlCommand(query, conn))
             using (var reader = cmd.ExecuteReader())
@@ -263,10 +251,6 @@ namespace Kursach
             
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateTableListBasedOnConnection();
-        }
 
         private void UpdateTableListBasedOnConnection()
         {
@@ -369,6 +353,11 @@ namespace Kursach
         private void guna2TextBox1_TextChanged(object sender, EventArgs e)
         {
             SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void guna2ButtonClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
