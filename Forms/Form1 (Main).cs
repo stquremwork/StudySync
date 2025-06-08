@@ -51,16 +51,15 @@ namespace Kursach
             listViewTables.GridLines = true;
             listViewTables.MultiSelect = false;
 
-            // Настройка колонок
-            listViewTables.Columns.Add("Объект", 300);
-            listViewTables.Columns.Add("Тип", 150);
+            // Оставляем только одну колонку
+            listViewTables.Columns.Add("Название таблицы", 300);
 
             listViewTables.DoubleClick += ListViewTables_DoubleClick;
-
-            // Разрешаем отображение групп
             listViewTables.ShowGroups = true;
 
-            // Добавляем ListView в Panel1 splitContainer'а
+            // Добавляем контекстное меню
+            listViewTables.ContextMenuStrip = CreateTableContextMenu();
+
             splitContainer1.Panel1.Controls.Add(listViewTables);
         }
 
@@ -82,42 +81,20 @@ namespace Kursach
                 {
                     conn.Open();
 
-                    // Создаем группу для схемы public
-                    ListViewGroup publicGroup = new ListViewGroup("public", "public course");
+                    var publicGroup = new ListViewGroup("public", "");
                     listViewTables.Groups.Add(publicGroup);
 
-                    // Получаем список всех таблиц в публичной схеме
                     using (var cmd = new NpgsqlCommand(
-                        "SELECT table_name, column_name, data_type " +
-                        "FROM information_schema.columns " +
-                        "WHERE table_schema = 'public' " +
-                        "ORDER BY table_name, ordinal_position", conn))
+                        "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
-                            string currentTable = null;
                             while (reader.Read())
                             {
                                 string tableName = reader.GetString(0);
-                                string columnName = reader.GetString(1);
-                                string dataType = reader.GetString(2);
-
-                                // Если это новая таблица, добавляем ее как родительский элемент
-                                if (tableName != currentTable)
-                                {
-                                    currentTable = tableName;
-                                    ListViewItem tableItem = new ListViewItem(tableName);
-                                    tableItem.SubItems.Add("Таблица");
-                                    tableItem.Group = publicGroup;
-                                    listViewTables.Items.Add(tableItem);
-                                }
-
-                                // Добавляем колонки как дочерние элементы
-                                ListViewItem columnItem = new ListViewItem($"  {columnName}");
-                                columnItem.SubItems.Add(dataType);
-                                columnItem.Group = publicGroup;
-                                columnItem.IndentCount = 1; // Отступ для визуальной иерархии
-                                listViewTables.Items.Add(columnItem);
+                                var item = new ListViewItem(tableName);
+                                item.Group = publicGroup;
+                                listViewTables.Items.Add(item);
                             }
                         }
                     }
@@ -130,18 +107,145 @@ namespace Kursach
             }
         }
 
+        private ContextMenuStrip CreateTableContextMenu()
+        {
+            var menu = new ContextMenuStrip();
+
+            var addTableItem = new ToolStripMenuItem("Создать таблицу");
+            addTableItem.Click += (sender, e) => CreateTableDialog();
+
+            var renameTableItem = new ToolStripMenuItem("Переименовать таблицу");
+            renameTableItem.Click += (sender, e) => RenameSelectedTable();
+
+            var deleteTableItem = new ToolStripMenuItem("Удалить таблицу");
+            deleteTableItem.Click += (sender, e) => DeleteSelectedTable();
+
+            menu.Items.Add(addTableItem);
+            menu.Items.Add(renameTableItem);
+            menu.Items.Add(deleteTableItem);
+
+            return menu;
+        }
+
+        private void CreateTableDialog()
+        {
+            string input = Prompt.ShowDialog("Введите название новой таблицы:", "Создание таблицы");
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                try
+                {
+                    using (var conn = new NpgsqlConnection(Form2.ConnectionString))
+                    {
+                        conn.Open();
+                        using (var cmd = new NpgsqlCommand($"CREATE TABLE public.\"{input}\" (id serial PRIMARY KEY);", conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    LoadTableList(); // Обновляем список таблиц
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при создании таблицы: {ex.Message}", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void RenameSelectedTable()
+        {
+            if (listViewTables.SelectedItems.Count == 0)
+                return;
+
+            string oldName = listViewTables.SelectedItems[0].Text;
+            string newName = Prompt.ShowDialog($"Переименовать '{oldName}' в:", "Переименование таблицы");
+
+            if (!string.IsNullOrWhiteSpace(newName) && newName != oldName)
+            {
+                try
+                {
+                    using (var conn = new NpgsqlConnection(Form2.ConnectionString))
+                    {
+                        conn.Open();
+                        using (var cmd = new NpgsqlCommand($"ALTER TABLE public.\"{oldName}\" RENAME TO \"{newName}\";", conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    LoadTableList(); // Обновляем список
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при переименовании таблицы: {ex.Message}", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void DeleteSelectedTable()
+        {
+            if (listViewTables.SelectedItems.Count == 0)
+                return;
+
+            string tableName = listViewTables.SelectedItems[0].Text;
+            var result = MessageBox.Show($"Вы уверены, что хотите удалить таблицу '{tableName}'?", "Подтверждение удаления",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    using (var conn = new NpgsqlConnection(Form2.ConnectionString))
+                    {
+                        conn.Open();
+                        using (var cmd = new NpgsqlCommand($"DROP TABLE public.\"{tableName}\" CASCADE;", conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    LoadTableList(); // Обновляем список
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при удалении таблицы: {ex.Message}", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        public static class Prompt
+        {
+            public static string ShowDialog(string text, string caption)
+            {
+                Form prompt = new Form()
+                {
+                    Width = 300,
+                    Height = 150,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    Text = caption,
+                    StartPosition = FormStartPosition.CenterScreen
+                };
+
+                Label textLabel = new Label() { Left = 20, Top = 20, Text = text };
+                TextBox textBox = new TextBox() { Left = 20, Top = 50, Width = 240 };
+                Button confirmation = new Button() { Text = "OK", Left = 200, Width = 60, Top = 80, DialogResult = DialogResult.OK };
+
+                prompt.Controls.Add(textBox);
+                prompt.Controls.Add(textLabel);
+                prompt.Controls.Add(confirmation);
+                prompt.AcceptButton = confirmation;
+
+                return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : null;
+            }
+        }
+
         private void ListViewTables_DoubleClick(object sender, EventArgs e)
         {
             if (listViewTables.SelectedItems.Count > 0 && !string.IsNullOrEmpty(Form2.ConnectionString))
             {
                 var selectedItem = listViewTables.SelectedItems[0];
-
-                // Если выбран элемент таблицы (а не колонка)
-                if (selectedItem.SubItems[1].Text == "Таблица")
-                {
-                    string selectedTable = selectedItem.Text;
-                    LoadTableData($"public.{selectedTable}");
-                }
+                string selectedTable = selectedItem.Text;
+                LoadTableData($"public.{selectedTable}");
             }
         }
 
