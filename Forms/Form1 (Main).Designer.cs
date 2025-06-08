@@ -32,7 +32,6 @@ namespace Kursach
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,7 +42,7 @@ namespace Kursach
             this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDropDownButton3 = new System.Windows.Forms.ToolStripDropDownButton();
             this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
@@ -54,27 +53,22 @@ namespace Kursach
             this.sortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(718, 455);
-            this.dataGridView1.TabIndex = 1;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // toolStrip1
             // 
@@ -83,10 +77,11 @@ namespace Kursach
             this.toolStripDropDownButton1,
             this.toolStripDropDownButton2,
             this.toolStripDropDownButton5,
-            this.toolStripDropDownButton3});
+            this.toolStripDropDownButton3,
+            this.toolStripTextBox1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(732, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(1902, 27);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
@@ -100,22 +95,22 @@ namespace Kursach
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(46, 24);
-            this.toolStripDropDownButton1.Text = "File";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(59, 24);
+            this.toolStripDropDownButton1.Text = "Файл";
             this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click_1);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
-            this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.importToolStripMenuItem.Text = "Импорт из CSV";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
-            this.exportToolStripMenuItem.Text = "Export";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.exportToolStripMenuItem.Text = "Экспорт в CSV";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // toolStripDropDownButton2
@@ -126,16 +121,16 @@ namespace Kursach
             this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
             this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
-            this.toolStripDropDownButton2.Size = new System.Drawing.Size(55, 24);
-            this.toolStripDropDownButton2.Text = "View";
+            this.toolStripDropDownButton2.Size = new System.Drawing.Size(49, 24);
+            this.toolStripDropDownButton2.Text = "Вид";
             this.toolStripDropDownButton2.Click += new System.EventHandler(this.toolStripDropDownButton2_Click);
             // 
             // fullScreenToolStripMenuItem
             // 
             this.fullScreenToolStripMenuItem.Image = global::Kursach.Properties.Resources.icons8_полный_экран_100;
             this.fullScreenToolStripMenuItem.Name = "fullScreenToolStripMenuItem";
-            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(163, 26);
-            this.fullScreenToolStripMenuItem.Text = "Full Screen";
+            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
+            this.fullScreenToolStripMenuItem.Text = "На весь экран";
             this.fullScreenToolStripMenuItem.Click += new System.EventHandler(this.fullScreenToolStripMenuItem_Click);
             // 
             // toolStripDropDownButton5
@@ -146,44 +141,47 @@ namespace Kursach
             this.toolStripDropDownButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton5.Image")));
             this.toolStripDropDownButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton5.Name = "toolStripDropDownButton5";
-            this.toolStripDropDownButton5.Size = new System.Drawing.Size(69, 24);
-            this.toolStripDropDownButton5.Text = "Project";
+            this.toolStripDropDownButton5.Size = new System.Drawing.Size(73, 24);
+            this.toolStripDropDownButton5.Text = "Проект";
             this.toolStripDropDownButton5.Click += new System.EventHandler(this.toolStripDropDownButton5_Click);
             // 
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.Image = global::Kursach.Properties.Resources.icons8_настройки_100;
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
-            this.settingsToolStripMenuItem1.Text = "Settings";
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(167, 26);
+            this.settingsToolStripMenuItem1.Text = "Настройки";
             this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
             // 
             // toolStripDropDownButton3
             // 
             this.toolStripDropDownButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewHelpToolStripMenuItem,
-            this.documentationToolStripMenuItem});
+            this.viewHelpToolStripMenuItem});
             this.toolStripDropDownButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton3.Image")));
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton3.Name = "toolStripDropDownButton3";
-            this.toolStripDropDownButton3.Size = new System.Drawing.Size(55, 24);
-            this.toolStripDropDownButton3.Text = "Help";
+            this.toolStripDropDownButton3.Size = new System.Drawing.Size(83, 24);
+            this.toolStripDropDownButton3.Text = "Помощь";
+            this.toolStripDropDownButton3.ToolTipText = "Help";
             this.toolStripDropDownButton3.Click += new System.EventHandler(this.toolStripDropDownButton3_Click);
             // 
             // viewHelpToolStripMenuItem
             // 
             this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
             this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
-            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(195, 26);
-            this.viewHelpToolStripMenuItem.Text = "View Help";
+            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(193, 26);
+            this.viewHelpToolStripMenuItem.Text = "Документация";
             this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
             // 
-            // documentationToolStripMenuItem
+            // toolStripTextBox1
             // 
-            this.documentationToolStripMenuItem.Name = "documentationToolStripMenuItem";
-            this.documentationToolStripMenuItem.Size = new System.Drawing.Size(195, 26);
-            this.documentationToolStripMenuItem.Text = "Documentation";
+            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStripTextBox1.Margin = new System.Windows.Forms.Padding(480, 0, 1, 0);
+            this.toolStripTextBox1.MergeAction = System.Windows.Forms.MergeAction.MatchOnly;
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(200, 27);
+            this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
             // 
             // toolStrip2
             // 
@@ -198,7 +196,7 @@ namespace Kursach
             this.toolStripButton6});
             this.toolStrip2.Location = new System.Drawing.Point(0, 27);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(732, 27);
+            this.toolStrip2.Size = new System.Drawing.Size(1902, 27);
             this.toolStrip2.TabIndex = 2;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip2_ItemClicked);
@@ -287,16 +285,37 @@ namespace Kursach
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(29, 24);
             this.toolStripButton6.Text = "Redo (Ctrl+ Y)";
+            this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 54);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.Window;
+            this.splitContainer1.Panel1.Controls.Add(this.listView1);
+            this.splitContainer1.Panel1.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
+            this.splitContainer1.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel1_Paint);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer1.Size = new System.Drawing.Size(1902, 979);
+            this.splitContainer1.SplitterDistance = 634;
+            this.splitContainer1.TabIndex = 3;
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 54);
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(732, 490);
-            this.tabControl1.TabIndex = 3;
+            this.tabControl1.Size = new System.Drawing.Size(1264, 979);
+            this.tabControl1.TabIndex = 4;
             this.tabControl1.TabStop = false;
             // 
             // tabPage1
@@ -306,7 +325,7 @@ namespace Kursach
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(724, 461);
+            this.tabPage1.Size = new System.Drawing.Size(1256, 950);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -314,30 +333,57 @@ namespace Kursach
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 412);
+            this.panel1.Location = new System.Drawing.Point(3, 901);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(718, 46);
+            this.panel1.Size = new System.Drawing.Size(1250, 46);
             this.panel1.TabIndex = 2;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersWidth = 51;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(1250, 944);
+            this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick_1);
+            // 
+            // listView1
+            // 
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(634, 979);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 544);
-            this.Controls.Add(this.tabControl1);
+            this.ClientSize = new System.Drawing.Size(1902, 1033);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip2);
             this.Controls.Add(this.toolStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "DataSync";
+            this.Text = "StudySync";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -349,7 +395,6 @@ namespace Kursach
         }
 
         #endregion
-        private System.Windows.Forms.DataGridView dataGridView1;
         private ToolStrip toolStrip1;
         private ToolStrip toolStrip2;
         private ToolStripDropDownButton toolStripDropDownButton1;
@@ -363,16 +408,19 @@ namespace Kursach
         private ToolStripMenuItem fullScreenToolStripMenuItem;
         private ToolStripDropDownButton toolStripDropDownButton3;
         private ToolStripMenuItem viewHelpToolStripMenuItem;
-        private TabControl tabControl1;
-        private TabPage tabPage1;
         private ToolStripButton toolStripButton4;
         private ToolStripButton toolStripButton7;
         private ToolStripDropDownButton toolStripDropDownButton5;
         private ToolStripMenuItem settingsToolStripMenuItem1;
-        private ToolStripMenuItem documentationToolStripMenuItem;
         private ToolStripDropDownButton EdittoolStripDropDownButton;
         private ToolStripMenuItem filterToolStripMenuItem;
         private ToolStripMenuItem sortToolStripMenuItem;
+        private ToolStripTextBox toolStripTextBox1;
+        private SplitContainer splitContainer1;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
         private Panel panel1;
+        private DataGridView dataGridView1;
+        private ListView listView1;
     }
 }

@@ -8,6 +8,7 @@ using Npgsql;
 using Kursach.Helpers;
 using Kursach.Forms;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Kursach
 {
@@ -16,6 +17,7 @@ namespace Kursach
         public static Form1 Instance { get; private set; }
         private Image closeImage;
         private TabPage currentDataTab = null;
+        private ListBox listBoxTables = new ListBox();
 
         public Form1()
         {
@@ -33,24 +35,146 @@ namespace Kursach
 
             // Настройка вкладки main
             SetupMainTab();
+
+            // Инициализация ListBox для таблиц
+            InitializeTablesListBox();
+
+            // Инициализация статуса подключения
+            UpdateConnectionStatus();
+        }
+
+        private void InitializeTablesListBox()
+        {
+            listBoxTables.Dock = DockStyle.Fill;
+            listBoxTables.SelectionMode = SelectionMode.One;
+            listBoxTables.DoubleClick += ListBoxTables_DoubleClick;
+
+            // Добавляем ListBox в Panel1 splitContainer'а
+            splitContainer1.Panel1.Controls.Add(listBoxTables);
+        }
+
+        private void ListBoxTables_DoubleClick(object sender, EventArgs e)
+        {
+            if (listBoxTables.SelectedItem != null && !string.IsNullOrEmpty(Form2.ConnectionString))
+            {
+                string selectedTable = listBoxTables.SelectedItem.ToString();
+                LoadTableData(selectedTable);
+            }
+        }
+
+        public void LoadTableList()
+        {
+            listBoxTables.Items.Clear();
+
+            if (string.IsNullOrEmpty(Form2.ConnectionString))
+            {
+                MessageBox.Show("Нет подключения к базе данных", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                using (var conn = new NpgsqlConnection(Form2.ConnectionString))
+                {
+                    conn.Open();
+
+                    // Получаем список всех таблиц в публичной схеме
+                    var tables = new List<string>();
+                    using (var cmd = new NpgsqlCommand(
+                        "SELECT table_name FROM information_schema.tables " +
+                        "WHERE table_schema = 'public' AND table_type = 'BASE TABLE'", conn))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                tables.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+
+                    // Сортируем и добавляем в ListBox
+                    tables.Sort();
+                    listBoxTables.Items.AddRange(tables.ToArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке списка таблиц: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadTableData(string tableName)
+        {
+            try
+            {
+                DataTable dataTable = DatabaseHelper.GetTableData(tableName, Form2.ConnectionString);
+                if (dataTable != null)
+                {
+                    LoadData(dataTable, tableName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке таблицы {tableName}: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void UpdateConnectionStatus()
+        {
+            // Удаляем текущий ToolStripTextBox, если он есть
+            if (toolStrip1.Items.Contains(toolStripTextBox1))
+            {
+                toolStrip1.Items.Remove(toolStripTextBox1);
+            }
+
+            // Устанавливаем текст и стиль
+            if (string.IsNullOrEmpty(Form2.ConnectionString))
+            {
+                toolStripTextBox1.Text = "Не подключена";
+                toolStripTextBox1.Font = new Font(toolStrip1.Font, FontStyle.Regular);
+            }
+            else
+            {
+                try
+                {
+                    var builder = new NpgsqlConnectionStringBuilder(Form2.ConnectionString);
+                    toolStripTextBox1.Text = builder.Database;
+                    toolStripTextBox1.Font = new Font(toolStrip1.Font, FontStyle.Bold);
+
+                    // Загружаем список таблиц при успешном подключении
+                    LoadTableList();
+                }
+                catch
+                {
+                    toolStripTextBox1.Text = "Ошибка подключения";
+                    toolStripTextBox1.ForeColor = Color.Red;
+                    toolStripTextBox1.Font = new Font(toolStrip1.Font, FontStyle.Regular);
+                }
+            }
+
+            // Добавляем TextBox на ToolStrip
+            toolStrip1.Items.Add(toolStripTextBox1);
+
+            // Обработчик для предотвращения фокуса
+            toolStripTextBox1.GotFocus += (sender, e) => { toolStrip1.Focus(); };
         }
 
         private void SetupMainTab()
         {
-            // Предполагаем, что вкладка main — это первая вкладка (индекс 0)
             if (tabControl1.TabPages.Count > 0)
             {
                 TabPage mainTab = tabControl1.TabPages[0];
-                mainTab.Text = "Main"; // Убедимся, что вкладка называется "Main"
-
-                // Очищаем существующие элементы управления, если они есть
+                mainTab.Text = "Main";
                 mainTab.Controls.Clear();
 
-                // Создаем Label для приветственного текста
                 Label welcomeLabel = new Label
                 {
-                    AutoSize = true, // Размер подстраивается под текст
-                    TextAlign = ContentAlignment.TopLeft, // Текст выравнивается по левому краю
+                    AutoSize = true,
+                    TextAlign = ContentAlignment.TopLeft,
                     Font = new Font("Segoe UI", 12),
                     BackColor = SystemColors.ControlLightLight,
                     Text = "Добро пожаловать в StudySync\n\n" +
@@ -59,26 +183,22 @@ namespace Kursach
                            "вы можете найти в документации."
                 };
 
-                // Центрируем Label на вкладке
                 mainTab.Resize += (s, e) =>
                 {
                     welcomeLabel.Location = new Point(
-                        (mainTab.Width - welcomeLabel.Width) / 2, // Центр по горизонтали
-                        (mainTab.Height - welcomeLabel.Height) / 2 // Центр по вертикали
+                        (mainTab.Width - welcomeLabel.Width) / 2,
+                        (mainTab.Height - welcomeLabel.Height) / 2
                     );
                 };
 
-                // Вызываем пересчет позиции сразу после создания
                 welcomeLabel.Location = new Point(
                     (mainTab.Width - welcomeLabel.Width) / 2,
                     (mainTab.Height - welcomeLabel.Height) / 2
                 );
 
-                // Добавляем Label на вкладку main
                 mainTab.Controls.Add(welcomeLabel);
             }
         }
-
 
         private Image GenerateDefaultCloseImage()
         {
@@ -297,7 +417,10 @@ namespace Kursach
         {
             Form2 form2 = new Form2();
             form2.StartPosition = FormStartPosition.CenterParent;
-            form2.ShowDialog(this);
+            if (form2.ShowDialog(this) == DialogResult.OK)
+            {
+                UpdateConnectionStatus();
+            }
         }
 
         private void toolStripButton2_Click_1(object sender, EventArgs e)
@@ -404,7 +527,10 @@ namespace Kursach
         {
             Form2 form2 = new Form2();
             form2.StartPosition = FormStartPosition.CenterParent;
-            form2.ShowDialog(this);
+            if (form2.ShowDialog(this) == DialogResult.OK)
+            {
+                UpdateConnectionStatus();
+            }
         }
 
         private void fullScreenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -560,7 +686,19 @@ namespace Kursach
             return value;
         }
 
-        // Empty event handlers
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
+        {
+            UpdateConnectionStatus();
+        }
+
+        private void toolStripButton3_Click_2(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3();
+            form3.StartPosition = FormStartPosition.CenterParent;
+            form3.ShowDialog(this);
+        }
+
+        // Остальные пустые обработчики событий
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
         private void toolStripDropDownButton1_Click_1(object sender, EventArgs e) { }
         private void terminalToolStripMenuItem_Click(object sender, EventArgs e) { }
@@ -581,10 +719,25 @@ namespace Kursach
         private void panel1_Paint(object sender, PaintEventArgs e) { }
         private void toolStripDropDownButton7_Click(object sender, EventArgs e) { }
         private void toolStripDropDownButton6_Click(object sender, EventArgs e) { }
+        private void button1_Click_2(object sender, EventArgs e) { }
+        private void toolStripButton6_Click(object sender, EventArgs e) { }
 
-        private void button1_Click_2(object sender, EventArgs e)
+        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
         {
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Orientation = Orientation.Vertical;
+            splitContainer1.SplitterDistance = 300;
+            splitContainer1.FixedPanel = FixedPanel.Panel1;
+            splitContainer1.Panel1MinSize = 100;
+            splitContainer1.Panel2MinSize = 0;
+        }
 
+        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
         }
     }
 }
