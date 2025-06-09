@@ -87,6 +87,7 @@ namespace Kursach
             this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importToolStripMenuItem,
             this.exportToolStripMenuItem});
+            this.toolStripDropDownButton1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -97,14 +98,14 @@ namespace Kursach
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.importToolStripMenuItem.Text = "Импорт из CSV";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportToolStripMenuItem.Text = "Экспорт в CSV";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
@@ -113,6 +114,7 @@ namespace Kursach
             this.toolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fullScreenToolStripMenuItem});
+            this.toolStripDropDownButton2.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
             this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
@@ -124,7 +126,7 @@ namespace Kursach
             // 
             this.fullScreenToolStripMenuItem.Image = global::Kursach.Properties.Resources.icons8_полный_экран_100;
             this.fullScreenToolStripMenuItem.Name = "fullScreenToolStripMenuItem";
-            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
+            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.fullScreenToolStripMenuItem.Text = "На весь экран";
             this.fullScreenToolStripMenuItem.Click += new System.EventHandler(this.fullScreenToolStripMenuItem_Click);
             // 
@@ -133,6 +135,7 @@ namespace Kursach
             this.toolStripDropDownButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton5.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsToolStripMenuItem1});
+            this.toolStripDropDownButton5.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripDropDownButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton5.Image")));
             this.toolStripDropDownButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton5.Name = "toolStripDropDownButton5";
@@ -144,7 +147,7 @@ namespace Kursach
             // 
             this.settingsToolStripMenuItem1.Image = global::Kursach.Properties.Resources.icons8_настройки_100;
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(167, 26);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
             this.settingsToolStripMenuItem1.Text = "Настройки";
             this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
             // 
@@ -308,6 +311,7 @@ namespace Kursach
             // 
             // dataGridView1
             // 
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.Silver;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);

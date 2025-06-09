@@ -25,6 +25,8 @@ namespace Kursach
             this.WindowState = FormWindowState.Maximized;
             Instance = this;
 
+            
+            
             closeImage = Properties.Resources.close ?? GenerateDefaultCloseImage();
 
             tabControl1.DrawMode = TabDrawMode.OwnerDrawFixed;
@@ -51,8 +53,11 @@ namespace Kursach
             listViewTables.GridLines = true;
             listViewTables.MultiSelect = false;
 
-            // Оставляем только одну колонку
-            listViewTables.Columns.Add("Название таблицы", 300);
+            // Установка шрифта для ListView 
+            listViewTables.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+
+            // Оставляем только одну колонку и увеличиваем шрифт заголовка колонки
+            listViewTables.Columns.Add("Название таблицы", 300).ListView.Font = new Font("Segoe UI", 10, FontStyle.Regular);
 
             listViewTables.DoubleClick += ListViewTables_DoubleClick;
             listViewTables.ShowGroups = true;
