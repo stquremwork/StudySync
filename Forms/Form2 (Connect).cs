@@ -14,6 +14,8 @@ namespace Kursach
         private bool isConnected = false;
         private NpgsqlConnection connection;
 
+        public Form1 MainForm { get; set; }
+
         public Form2()
         {
             InitializeComponent();
@@ -304,6 +306,7 @@ namespace Kursach
 
         private void guna2ButtonSendData_Click(object sender, EventArgs e)
         {
+            MainForm.UpdateConnectionStatus();
             if (string.IsNullOrEmpty(SelectedTable))
             {
                 MessageBox.Show("Выберите таблицу из списка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);

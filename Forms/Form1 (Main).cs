@@ -559,6 +559,7 @@ namespace Kursach
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
             Form2 form2 = new Form2();
+            form2.MainForm = this; // Передаем текущий экземпляр Form1
             form2.StartPosition = FormStartPosition.CenterParent;
             if (form2.ShowDialog(this) == DialogResult.OK)
             {
