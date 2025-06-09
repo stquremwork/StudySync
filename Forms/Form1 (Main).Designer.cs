@@ -48,9 +48,6 @@ namespace Kursach
             this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.EdittoolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -179,6 +176,7 @@ namespace Kursach
             this.toolStripTextBox1.MergeAction = System.Windows.Forms.MergeAction.MatchOnly;
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(200, 27);
+            this.toolStripTextBox1.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
             // 
             // toolStrip2
@@ -189,7 +187,6 @@ namespace Kursach
             this.toolStripButton7,
             this.toolStripButton1,
             this.toolStripButton2,
-            this.EdittoolStripDropDownButton,
             this.toolStripButton5,
             this.toolStripButton6});
             this.toolStrip2.Location = new System.Drawing.Point(0, 27);
@@ -238,32 +235,6 @@ namespace Kursach
             this.toolStripButton2.Size = new System.Drawing.Size(29, 24);
             this.toolStripButton2.Text = "Save";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
-            // 
-            // EdittoolStripDropDownButton
-            // 
-            this.EdittoolStripDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.filterToolStripMenuItem,
-            this.sortToolStripMenuItem});
-            this.EdittoolStripDropDownButton.Image = global::Kursach.Properties.Resources.free_icon_edit_3597088;
-            this.EdittoolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.EdittoolStripDropDownButton.Name = "EdittoolStripDropDownButton";
-            this.EdittoolStripDropDownButton.Size = new System.Drawing.Size(69, 24);
-            this.EdittoolStripDropDownButton.Text = "Edit";
-            this.EdittoolStripDropDownButton.Click += new System.EventHandler(this.toolStripDropDownButton7_Click);
-            // 
-            // filterToolStripMenuItem
-            // 
-            this.filterToolStripMenuItem.Image = global::Kursach.Properties.Resources.free_icon_filter_2676824;
-            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(125, 26);
-            this.filterToolStripMenuItem.Text = "Filter";
-            // 
-            // sortToolStripMenuItem
-            // 
-            this.sortToolStripMenuItem.Image = global::Kursach.Properties.Resources.free_icon_sort_4621305;
-            this.sortToolStripMenuItem.Name = "sortToolStripMenuItem";
-            this.sortToolStripMenuItem.Size = new System.Drawing.Size(125, 26);
-            this.sortToolStripMenuItem.Text = "Sort";
             // 
             // toolStripButton5
             // 
@@ -397,9 +368,6 @@ namespace Kursach
         private ToolStripButton toolStripButton7;
         private ToolStripDropDownButton toolStripDropDownButton5;
         private ToolStripMenuItem settingsToolStripMenuItem1;
-        private ToolStripDropDownButton EdittoolStripDropDownButton;
-        private ToolStripMenuItem filterToolStripMenuItem;
-        private ToolStripMenuItem sortToolStripMenuItem;
         private ToolStripTextBox toolStripTextBox1;
         private SplitContainer splitContainer1;
         private TabControl tabControl1;

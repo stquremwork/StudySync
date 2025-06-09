@@ -183,7 +183,7 @@ namespace Kursach
                 {
                     connection = null;
                     isConnected = false;
-                    guna2ComboBox1.Items.Clear();
+                   ;
                     CloseDataTabsInForm1();
                 }
             }
@@ -225,28 +225,17 @@ namespace Kursach
             using (var cmd = new NpgsqlCommand(query, conn))
             using (var reader = cmd.ExecuteReader())
             {
-                guna2ComboBox1.Items.Clear();
+              
                 while (reader.Read())
                 {
                     string tableSchema = reader.GetString(0);
                     string tableName = reader.GetString(1);
-                    guna2ComboBox1.Items.Add($"{tableSchema}.{tableName}");
+    
                 }
             }
 
-            if (guna2ComboBox1.Items.Count > 0)
-            {
-                guna2ComboBox1.SelectedIndex = 0;
-            }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (guna2ComboBox1.SelectedItem != null)
-            {
-                SelectedTable = guna2ComboBox1.SelectedItem.ToString();
-            }
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -269,7 +258,7 @@ namespace Kursach
             }
             else if (!isConnected)
             {
-                guna2ComboBox1.Items.Clear();
+       
             }
         }
 
@@ -307,24 +296,9 @@ namespace Kursach
         private void guna2ButtonSendData_Click(object sender, EventArgs e)
         {
             MainForm.UpdateConnectionStatus();
-            if (string.IsNullOrEmpty(SelectedTable))
-            {
-                MessageBox.Show("Выберите таблицу из списка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string tableName = SelectedTable;
-            DataTable dataTable = Form1.Instance.GetTableData(tableName);
-            Form1.Instance.LoadData(dataTable, tableName);
         }
 
-        private void guna2ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (guna2ComboBox1.SelectedItem != null)
-            {
-                SelectedTable = guna2ComboBox1.SelectedItem.ToString();
-            }
-        }
+       
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {

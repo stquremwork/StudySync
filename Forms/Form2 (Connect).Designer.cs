@@ -54,7 +54,6 @@ namespace Kursach
             this.UrlTextBox = new System.Windows.Forms.TextBox();
             this.guna2ButtonClose = new Guna.UI2.WinForms.Guna2Button();
             this.guna2ButtonSendData = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2ComboBox1 = new Guna.UI2.WinForms.Guna2ComboBox();
             this.guna2ButtonConnect = new Guna.UI2.WinForms.Guna2Button();
             this.guna2TabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -342,23 +341,6 @@ namespace Kursach
             this.guna2ButtonSendData.Text = "Send data";
             this.guna2ButtonSendData.Click += new System.EventHandler(this.guna2ButtonSendData_Click);
             // 
-            // guna2ComboBox1
-            // 
-            this.guna2ComboBox1.BackColor = System.Drawing.Color.Transparent;
-            this.guna2ComboBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.guna2ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.guna2ComboBox1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(70)))));
-            this.guna2ComboBox1.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.guna2ComboBox1.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.guna2ComboBox1.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.guna2ComboBox1.ForeColor = System.Drawing.Color.White;
-            this.guna2ComboBox1.ItemHeight = 30;
-            this.guna2ComboBox1.Location = new System.Drawing.Point(587, 111);
-            this.guna2ComboBox1.Name = "guna2ComboBox1";
-            this.guna2ComboBox1.Size = new System.Drawing.Size(185, 36);
-            this.guna2ComboBox1.TabIndex = 25;
-            this.guna2ComboBox1.SelectedIndexChanged += new System.EventHandler(this.guna2ComboBox1_SelectedIndexChanged);
-            // 
             // guna2ButtonConnect
             // 
             this.guna2ButtonConnect.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -381,14 +363,13 @@ namespace Kursach
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(42)))), ((int)(((byte)(57)))));
             this.ClientSize = new System.Drawing.Size(785, 329);
             this.Controls.Add(this.guna2ButtonConnect);
-            this.Controls.Add(this.guna2ComboBox1);
             this.Controls.Add(this.guna2ButtonSendData);
             this.Controls.Add(this.guna2ButtonClose);
             this.Controls.Add(this.guna2TabControl1);
             this.Controls.Add(this.button1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
-            this.Text = "DataSync";
+            this.Text = "ㅤ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
             this.Load += new System.EventHandler(this.Form2_Load);
             this.guna2TabControl1.ResumeLayout(false);
@@ -420,7 +401,6 @@ namespace Kursach
         private System.Windows.Forms.Label PasswordLabel;
         private Guna.UI2.WinForms.Guna2Button guna2ButtonClose;
         private Guna.UI2.WinForms.Guna2Button guna2ButtonSendData;
-        private Guna.UI2.WinForms.Guna2ComboBox guna2ComboBox1;
         private Guna.UI2.WinForms.Guna2Button guna2ButtonConnect;
         private Guna.UI2.WinForms.Guna2CheckBox guna2CheckBoxRemSet;
         private System.Windows.Forms.TabPage tabPage4;
