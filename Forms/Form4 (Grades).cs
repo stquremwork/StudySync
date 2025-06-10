@@ -362,8 +362,8 @@ namespace Kursach.Forms
 
             // SQL-запрос
             string query = @"
-        INSERT INTO public.grades (subject_id, group_id, student_id, grade_date, grade)
-        VALUES (@subjectId, @groupId, @studentId, @gradeDate, @grade)";
+            INSERT INTO public.grades (subject_id, group_id, student_id, grade_date, grade)
+            VALUES (@subjectId, @groupId, @studentId, @gradeDate, @grade)";
 
             try
             {
@@ -400,6 +400,8 @@ namespace Kursach.Forms
             {
                 MessageBox.Show($"Ошибка при добавлении оценки:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            this.Close();
         }
 
         private void guna2Button2_Click(object sender, EventArgs e)

@@ -705,6 +705,10 @@ namespace Kursach
 
                             transaction.Commit();
                             dataTable.AcceptChanges();
+
+                            // Обновляем только данные в существующем DataGridView
+                            RefreshDataGridView(dgv, tableName);
+
                             MessageBox.Show("Данные успешно сохранены", "Успех",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -716,12 +720,39 @@ namespace Kursach
                         }
                     }
                 }
-
-                LoadTableData(tableName);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Критическая ошибка: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void RefreshDataGridView(DataGridView dgv, string tableName)
+        {
+            try
+            {
+                DataTable refreshedData = DatabaseHelper.GetTableData(tableName, Form2.ConnectionString);
+                if (refreshedData != null)
+                {
+                    foreach (DataColumn column in refreshedData.Columns)
+                    {
+                        column.ReadOnly = false;
+                    }
+
+                    var dataView = new DataView(refreshedData)
+                    {
+                        AllowEdit = true,
+                        AllowNew = true,
+                        AllowDelete = true
+                    };
+
+                    dgv.DataSource = dataView;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении таблицы: {ex.Message}", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
