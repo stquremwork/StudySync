@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Kursach
@@ -17,6 +18,75 @@ namespace Kursach
         private Image closeImage;
         private TabPage currentDataTab = null;
         private ListView listViewTables = new ListView();
+
+        private ContextMenuStrip CreateGridContextMenu()
+        {
+            var menu = new ContextMenuStrip();
+
+            // Удалить выделенные строки
+            var deleteItem = new ToolStripMenuItem("Удалить выбранные строки");
+            deleteItem.Click += (sender, e) =>
+            {
+                if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+                {
+                    if (tabControl1.SelectedTab.Controls[0] is DataGridView dgv)
+                    {
+                        var selectedRows = dgv.SelectedRows.Cast<DataGridViewRow>().ToList();
+                        if (selectedRows.Count == 0)
+                        {
+                            MessageBox.Show("Нет выделенных строк для удаления.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        var result = MessageBox.Show($"Вы уверены, что хотите удалить {selectedRows.Count} строк?",
+                            "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            foreach (var row in selectedRows)
+                            {
+                                if (!row.IsNewRow)
+                                    dgv.Rows.Remove(row);
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Выбрать всё
+            var selectAllItem = new ToolStripMenuItem("Выбрать всё");
+            selectAllItem.Click += (sender, e) =>
+            {
+                if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+                {
+                    if (tabControl1.SelectedTab.Controls[0] is DataGridView dgv)
+                    {
+                        dgv.SelectAll();
+                    }
+                }
+            };
+
+            // Отменить всё выделение
+            var deselectAllItem = new ToolStripMenuItem("Отменить всё выделение");
+            deselectAllItem.Click += (sender, e) =>
+            {
+                if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+                {
+                    if (tabControl1.SelectedTab.Controls[0] is DataGridView dgv)
+                    {
+                        dgv.ClearSelection();
+                    }
+                }
+            };
+
+            // Добавляем пункты в меню
+            menu.Items.Add(deleteItem);
+            menu.Items.Add(new ToolStripSeparator()); // Разделитель
+            menu.Items.Add(selectAllItem);
+            menu.Items.Add(deselectAllItem);
+
+            return menu;
+        }
 
         public Form1()
         {
@@ -462,6 +532,7 @@ namespace Kursach
                 }
             }
 
+
             TabPage newTabPage = new TabPage(tableName);
 
             DataGridView newDataGridView = new DataGridView
@@ -484,6 +555,9 @@ namespace Kursach
                 null, newDataGridView, new object[] { true });
 
             newDataGridView.DataError += DataGridView_DataError;
+            newDataGridView.ContextMenuStrip = CreateGridContextMenu();
+
+
 
             // Добавляем столбец с чекбоксами
             var checkBoxColumn = new DataGridViewCheckBoxColumn
@@ -798,15 +872,8 @@ namespace Kursach
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                System.Diagnostics.Process.Start("H:\\Other\\Програмирование\\Kursach\\Resources\\help.html");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Could not open help file: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            System.Diagnostics.Process.Start("https://stquremwork.github.io/");
+
         }
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
@@ -947,8 +1014,6 @@ namespace Kursach
         {
             UpdateConnectionStatus();
         }
-
-   
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Form2.ConnectionString))
@@ -972,7 +1037,6 @@ namespace Kursach
                 MessageBox.Show($"Ошибка при подключении к БД: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
         private void toolStripDropDownButton1_Click_1(object sender, EventArgs e) { }
         private void terminalToolStripMenuItem_Click(object sender, EventArgs e) { }
@@ -1007,7 +1071,141 @@ namespace Kursach
         private void listView1_SelectedIndexChanged(object sender, EventArgs e) { }
         private void listView1_SelectedIndexChanged_1(object sender, EventArgs e) { }
         private void listView1_SelectedIndexChanged_2(object sender, EventArgs e) { }
+
+        private void удалитьСтрокуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab == null || tabControl1.SelectedTab.Controls.Count == 0)
+            {
+                MessageBox.Show("Нет активной таблицы для удаления строки", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var dgv = tabControl1.SelectedTab.Controls[0] as DataGridView;
+            if (dgv == null || dgv.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Выберите строку для удаления", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var result = MessageBox.Show("Вы уверены, что хотите удалить выбранную строку?",
+                "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    foreach (DataGridViewRow row in dgv.SelectedRows)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            dgv.Rows.Remove(row);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при удалении строки: {ex.Message}", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void toolStripDropDownButtonEdit_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void выбратьВсёToolStripMenuItem1_Click(object sender, EventArgs e)
+
+        {
+            if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+            {
+                if (tabControl1.SelectedTab.Controls[0] is DataGridView dgv)
+                {
+                    dgv.SelectAll();
+                }
+            }
+        }
+
+        private void отменитьВыделениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+            {
+                if (tabControl1.SelectedTab.Controls[0] is DataGridView dgv)
+                {
+                    dgv.ClearSelection();
+                }
+            }
+        }
+
+        private void копироватьВыделенноеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+            {
+                if (tabControl1.SelectedTab.Controls[0] is DataGridView dgv)
+                {
+                    var selectedRows = dgv.SelectedRows.Cast<DataGridViewRow>().ToList();
+                    if (selectedRows.Count == 0)
+                    {
+                        MessageBox.Show("Нет выделенных строк для копирования.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    // Создаем текстовое представление строк (например, CSV)
+                    StringBuilder sb = new StringBuilder();
+
+                    foreach (var row in selectedRows.Where(r => !r.IsNewRow))
+                    {
+                        for (int i = 0; i < dgv.Columns.Count; i++)
+                        {
+                            if (i > 0) sb.Append("\t");
+                            sb.Append(row.Cells[i].Value?.ToString().Replace("\n", "").Replace("\r", ""));
+                        }
+                        sb.AppendLine();
+                    }
+
+                    Clipboard.SetText(sb.ToString());
+                }
+            }
+        }
+
+        private void вставитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab != null && tabControl1.SelectedTab.Controls.Count > 0)
+            {
+                if (tabControl1.SelectedTab.Controls[0] is DataGridView dgv)
+                {
+                    try
+                    {
+                        string clipboardText = Clipboard.GetText();
+                        string[] lines = clipboardText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (string line in lines)
+                        {
+                            string[] cells = line.Split('\t');
+                            if (cells.Length == dgv.Columns.Count)
+                            {
+                                dgv.Rows.Add(cells);
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Строка не соответствует количеству столбцов: {line}", "Ошибка вставки", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при вставке: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
     }
+}
 
     public static class DatabaseHelper
     {
@@ -1080,5 +1278,6 @@ namespace Kursach
                 cmd.ExecuteNonQuery();
             }
         }
-    }
+
+        
 }

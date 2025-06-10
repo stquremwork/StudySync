@@ -38,25 +38,27 @@ namespace Kursach
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.fullScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripDropDownButton5 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.minimizeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDropDownButton3 = new System.Windows.Forms.ToolStripDropDownButton();
             this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripDropDownButtonEdit = new System.Windows.Forms.ToolStripDropDownButton();
+            this.выбратьВсёToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.отменитьВыделениеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.удалитьСтрокуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonDeleteRows = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -73,7 +75,6 @@ namespace Kursach
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1,
             this.toolStripDropDownButton2,
-            this.toolStripDropDownButton5,
             this.toolStripDropDownButton3,
             this.toolStripTextBox1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -99,6 +100,7 @@ namespace Kursach
             // 
             // importToolStripMenuItem
             // 
+            this.importToolStripMenuItem.Image = global::Kursach.Properties.Resources.free_icon_import_87651641;
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             this.importToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.importToolStripMenuItem.Text = "Импорт из CSV";
@@ -106,6 +108,7 @@ namespace Kursach
             // 
             // exportToolStripMenuItem
             // 
+            this.exportToolStripMenuItem.Image = global::Kursach.Properties.Resources.free_icon_export_88283341;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.exportToolStripMenuItem.Text = "Экспорт в CSV";
@@ -115,7 +118,8 @@ namespace Kursach
             // 
             this.toolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fullScreenToolStripMenuItem});
+            this.fullScreenToolStripMenuItem,
+            this.minimizeToolStripMenuItem1});
             this.toolStripDropDownButton2.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
             this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -132,26 +136,12 @@ namespace Kursach
             this.fullScreenToolStripMenuItem.Text = "На весь экран";
             this.fullScreenToolStripMenuItem.Click += new System.EventHandler(this.fullScreenToolStripMenuItem_Click);
             // 
-            // toolStripDropDownButton5
+            // minimizeToolStripMenuItem1
             // 
-            this.toolStripDropDownButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton5.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingsToolStripMenuItem1});
-            this.toolStripDropDownButton5.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolStripDropDownButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton5.Image")));
-            this.toolStripDropDownButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton5.Name = "toolStripDropDownButton5";
-            this.toolStripDropDownButton5.Size = new System.Drawing.Size(73, 24);
-            this.toolStripDropDownButton5.Text = "Проект";
-            this.toolStripDropDownButton5.Click += new System.EventHandler(this.toolStripDropDownButton5_Click);
-            // 
-            // settingsToolStripMenuItem1
-            // 
-            this.settingsToolStripMenuItem1.Image = global::Kursach.Properties.Resources.icons8_настройки_100;
-            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(167, 26);
-            this.settingsToolStripMenuItem1.Text = "Настройки";
-            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
+            this.minimizeToolStripMenuItem1.Image = global::Kursach.Properties.Resources.free_icon_zoom_out_35940051;
+            this.minimizeToolStripMenuItem1.Name = "minimizeToolStripMenuItem1";
+            this.minimizeToolStripMenuItem1.Size = new System.Drawing.Size(190, 26);
+            this.minimizeToolStripMenuItem1.Text = "В окне";
             // 
             // toolStripDropDownButton3
             // 
@@ -190,12 +180,12 @@ namespace Kursach
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton4,
             this.toolStripButton7,
+            this.toolStripSeparator2,
             this.toolStripButton1,
             this.toolStripButton2,
-            this.toolStripButton5,
-            this.toolStripButton6,
+            this.toolStripSeparator1,
             this.toolStripButton3,
-            this.toolStripButtonDeleteRows});
+            this.toolStripDropDownButtonEdit});
             this.toolStrip2.Location = new System.Drawing.Point(0, 27);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(1902, 27);
@@ -223,6 +213,11 @@ namespace Kursach
             this.toolStripButton7.Text = "toolStripButton7";
             this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -236,32 +231,63 @@ namespace Kursach
             // toolStripButton2
             // 
             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.Image = global::Kursach.Properties.Resources.free_icon_diskette_5612613;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(29, 24);
             this.toolStripButton2.Text = "Save";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
             // 
-            // toolStripButton5
+            // toolStripSeparator1
             // 
-            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
-            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(29, 24);
-            this.toolStripButton5.Text = "Undo (Ctrl+Z)";
-            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
             // 
-            // toolStripButton6
+            // toolStripButton3
             // 
-            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(29, 24);
-            this.toolStripButton6.Text = "Redo (Ctrl+ Y)";
-            this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+            this.toolStripButton3.BackColor = System.Drawing.SystemColors.Window;
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(138, 24);
+            this.toolStripButton3.Text = "Выставить оценку";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
+            // toolStripDropDownButtonEdit
+            // 
+            this.toolStripDropDownButtonEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButtonEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.удалитьСтрокуToolStripMenuItem,
+            this.выбратьВсёToolStripMenuItem1,
+            this.отменитьВыделениеToolStripMenuItem});
+            this.toolStripDropDownButtonEdit.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonEdit.Image")));
+            this.toolStripDropDownButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButtonEdit.Name = "toolStripDropDownButtonEdit";
+            this.toolStripDropDownButtonEdit.Size = new System.Drawing.Size(137, 24);
+            this.toolStripDropDownButtonEdit.Text = "Редактирование";
+            this.toolStripDropDownButtonEdit.Click += new System.EventHandler(this.toolStripDropDownButtonEdit_Click);
+            // 
+            // выбратьВсёToolStripMenuItem1
+            // 
+            this.выбратьВсёToolStripMenuItem1.Name = "выбратьВсёToolStripMenuItem1";
+            this.выбратьВсёToolStripMenuItem1.Size = new System.Drawing.Size(241, 26);
+            this.выбратьВсёToolStripMenuItem1.Text = "Выбрать всё";
+            this.выбратьВсёToolStripMenuItem1.Click += new System.EventHandler(this.выбратьВсёToolStripMenuItem1_Click);
+            // 
+            // отменитьВыделениеToolStripMenuItem
+            // 
+            this.отменитьВыделениеToolStripMenuItem.Name = "отменитьВыделениеToolStripMenuItem";
+            this.отменитьВыделениеToolStripMenuItem.Size = new System.Drawing.Size(241, 26);
+            this.отменитьВыделениеToolStripMenuItem.Text = "Отменить выделение";
+            this.отменитьВыделениеToolStripMenuItem.Click += new System.EventHandler(this.отменитьВыделениеToolStripMenuItem_Click);
+            // 
+            // удалитьСтрокуToolStripMenuItem
+            // 
+            this.удалитьСтрокуToolStripMenuItem.Name = "удалитьСтрокуToolStripMenuItem";
+            this.удалитьСтрокуToolStripMenuItem.Size = new System.Drawing.Size(241, 26);
+            this.удалитьСтрокуToolStripMenuItem.Text = "Удалить строку";
+            this.удалитьСтрокуToolStripMenuItem.Click += new System.EventHandler(this.удалитьСтрокуToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -328,27 +354,6 @@ namespace Kursach
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick_1);
             // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.BackColor = System.Drawing.SystemColors.Window;
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(138, 24);
-            this.toolStripButton3.Text = "Выставить оценку";
-            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
-            // 
-            // toolStripButtonDeleteRows
-            // 
-            this.toolStripButtonDeleteRows.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonDeleteRows.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDeleteRows.Image")));
-            this.toolStripButtonDeleteRows.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonDeleteRows.Name = "toolStripButtonDeleteRows";
-            this.toolStripButtonDeleteRows.Size = new System.Drawing.Size(118, 24);
-            this.toolStripButtonDeleteRows.Text = "Удалить строку";
-            this.toolStripButtonDeleteRows.Click += new System.EventHandler(this.toolStripButtonDeleteRows_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -390,15 +395,11 @@ namespace Kursach
         private ToolStripDropDownButton toolStripDropDownButton2;
         private ToolStripButton toolStripButton1;
         private ToolStripButton toolStripButton2;
-        private ToolStripButton toolStripButton5;
-        private ToolStripButton toolStripButton6;
         private ToolStripMenuItem fullScreenToolStripMenuItem;
         private ToolStripDropDownButton toolStripDropDownButton3;
         private ToolStripMenuItem viewHelpToolStripMenuItem;
         private ToolStripButton toolStripButton4;
         private ToolStripButton toolStripButton7;
-        private ToolStripDropDownButton toolStripDropDownButton5;
-        private ToolStripMenuItem settingsToolStripMenuItem1;
         private ToolStripTextBox toolStripTextBox1;
         private SplitContainer splitContainer1;
         private TabControl tabControl1;
@@ -406,6 +407,12 @@ namespace Kursach
         private Panel panel1;
         private DataGridView dataGridView1;
         private ToolStripButton toolStripButton3;
-        private ToolStripButton toolStripButtonDeleteRows;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem minimizeToolStripMenuItem1;
+        private ToolStripDropDownButton toolStripDropDownButtonEdit;
+        private ToolStripMenuItem удалитьСтрокуToolStripMenuItem;
+        private ToolStripMenuItem выбратьВсёToolStripMenuItem1;
+        private ToolStripMenuItem отменитьВыделениеToolStripMenuItem;
     }
 }

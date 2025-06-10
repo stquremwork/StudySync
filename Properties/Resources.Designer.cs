@@ -93,9 +93,59 @@ namespace Kursach.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_edit_3597088 {
+        internal static System.Drawing.Bitmap free_icon_diskette_561261 {
             get {
-                object obj = ResourceManager.GetObject("free-icon-edit-3597088", resourceCulture);
+                object obj = ResourceManager.GetObject("free-icon-diskette-561261", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_diskette_5612611 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-diskette-5612611", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_diskette_5612612 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-diskette-5612612", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_diskette_5612613 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-diskette-5612613", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_export_8828334 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-export-8828334", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_export_88283341 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-export-88283341", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +183,9 @@ namespace Kursach.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_font_database_management_18620909 {
+        internal static System.Drawing.Bitmap free_icon_font_disk_3917394 {
             get {
-                object obj = ResourceManager.GetObject("free-icon-font-database-management-18620909", resourceCulture);
+                object obj = ResourceManager.GetObject("free-icon-font-disk-3917394", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +193,19 @@ namespace Kursach.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_font_disk_3917394 {
+        internal static System.Drawing.Bitmap free_icon_import_8765164 {
             get {
-                object obj = ResourceManager.GetObject("free-icon-font-disk-3917394", resourceCulture);
+                object obj = ResourceManager.GetObject("free-icon-import-8765164", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_import_87651641 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-import-87651641", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,6 +253,26 @@ namespace Kursach.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap free_icon_zoom_out_3594005 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-zoom-out-3594005", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_zoom_out_35940051 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-zoom-out-35940051", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_настройки_100 {
             get {
                 object obj = ResourceManager.GetObject("icons8-настройки-100", resourceCulture);
@@ -206,6 +286,16 @@ namespace Kursach.Properties {
         internal static System.Drawing.Bitmap icons8_полный_экран_100 {
             get {
                 object obj = ResourceManager.GetObject("icons8-полный-экран-100", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap study_sync_icon {
+            get {
+                object obj = ResourceManager.GetObject("study-sync-icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
