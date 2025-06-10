@@ -154,6 +154,7 @@
             this.comboBox_grade.Name = "comboBox_grade";
             this.comboBox_grade.Size = new System.Drawing.Size(121, 24);
             this.comboBox_grade.TabIndex = 10;
+            this.comboBox_grade.SelectedIndexChanged += new System.EventHandler(this.comboBox_grade_SelectedIndexChanged);
             // 
             // label6
             // 
