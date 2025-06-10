@@ -9,74 +9,70 @@ namespace Kursach.Helpers
     {
         public static DataTable GetTableData(string tableName, string connectionString)
         {
-            DataTable dataTable = new DataTable();
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand($"SELECT * FROM {tableName}", conn))
+                using (var adapter = new NpgsqlDataAdapter($"SELECT * FROM {tableName}", conn))
                 {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        dataTable.Load(reader);
-                    }
+                    var dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    return dataTable;
                 }
-            }
-            return dataTable;
-        }
-
-        public static void UpdateRow(NpgsqlConnection conn, DataRow row, string tableName, NpgsqlTransaction transaction)
-        {
-            string setClause = string.Join(", ", row.Table.Columns.Cast<DataColumn>()
-                .Where(c => !c.ColumnName.Equals("id", StringComparison.OrdinalIgnoreCase))
-                .Select(c => $"{c.ColumnName} = @{c.ColumnName}"));
-
-            string query = $"UPDATE {tableName} SET {setClause} WHERE id = @id";
-            Console.WriteLine($"Executing query: {query}"); // Отладка
-
-            using (var cmd = new NpgsqlCommand(query, conn, transaction))
-            {
-                foreach (DataColumn column in row.Table.Columns)
-                {
-                    var value = row[column];
-                    Console.WriteLine($"Parameter {column.ColumnName}: {value} (Type: {value?.GetType().Name})"); // Отладка
-                    cmd.Parameters.AddWithValue(column.ColumnName, value ?? DBNull.Value);
-                }
-                cmd.ExecuteNonQuery();
             }
         }
 
         public static void InsertRow(NpgsqlConnection conn, DataRow row, string tableName, NpgsqlTransaction transaction)
         {
-            string columns = string.Join(", ", row.Table.Columns.Cast<DataColumn>()
-                .Where(c => !c.ColumnName.Equals("id", StringComparison.OrdinalIgnoreCase))
-                .Select(c => c.ColumnName));
+            var columns = row.Table.Columns.Cast<DataColumn>()
+                .Where(c => c.ColumnName != "id") // Предполагаем, что id автоинкрементный
+                .Select(c => $"\"{c.ColumnName}\"");
+            var parameters = row.Table.Columns.Cast<DataColumn>()
+                .Where(c => c.ColumnName != "id")
+                .Select(c => $"@p{c.Ordinal}");
 
-            string values = string.Join(", ", row.Table.Columns.Cast<DataColumn>()
-                .Where(c => !c.ColumnName.Equals("id", StringComparison.OrdinalIgnoreCase))
-                .Select(c => $"@{c.ColumnName}"));
+            string sql = $"INSERT INTO {tableName} ({string.Join(",", columns)}) VALUES ({string.Join(",", parameters)})";
 
-            string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
-
-            using (var cmd = new NpgsqlCommand(query, conn, transaction))
+            using (var cmd = new NpgsqlCommand(sql, conn, transaction))
             {
-                foreach (DataColumn column in row.Table.Columns)
+                foreach (DataColumn col in row.Table.Columns)
                 {
-                    if (!column.ColumnName.Equals("id", StringComparison.OrdinalIgnoreCase))
+                    if (col.ColumnName != "id")
                     {
-                        cmd.Parameters.AddWithValue(column.ColumnName, row[column]);
+                        cmd.Parameters.AddWithValue($"@p{col.Ordinal}", row[col] == DBNull.Value ? null : row[col]);
                     }
                 }
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static void UpdateRow(NpgsqlConnection conn, DataRow row, string tableName, NpgsqlTransaction transaction)
+        {
+            var setClause = row.Table.Columns.Cast<DataColumn>()
+                .Where(c => c.ColumnName != "id")
+                .Select(c => $"\"{c.ColumnName}\" = @p{c.Ordinal}");
+
+            string sql = $"UPDATE {tableName} SET {string.Join(",", setClause)} WHERE id = @id";
+
+            using (var cmd = new NpgsqlCommand(sql, conn, transaction))
+            {
+                foreach (DataColumn col in row.Table.Columns)
+                {
+                    if (col.ColumnName != "id")
+                    {
+                        cmd.Parameters.AddWithValue($"@p{col.Ordinal}", row[col] == DBNull.Value ? null : row[col]);
+                    }
+                }
+                cmd.Parameters.AddWithValue("@id", row["id"]);
                 cmd.ExecuteNonQuery();
             }
         }
 
         public static void DeleteRow(NpgsqlConnection conn, DataRow row, string tableName, NpgsqlTransaction transaction)
         {
-            string query = $"DELETE FROM {tableName} WHERE id = @id";
-
-            using (var cmd = new NpgsqlCommand(query, conn, transaction))
+            string sql = $"DELETE FROM {tableName} WHERE id = @id";
+            using (var cmd = new NpgsqlCommand(sql, conn, transaction))
             {
-                cmd.Parameters.AddWithValue("id", row["id", DataRowVersion.Original]);
+                cmd.Parameters.AddWithValue("@id", row["id", DataRowVersion.Original]);
                 cmd.ExecuteNonQuery();
             }
         }

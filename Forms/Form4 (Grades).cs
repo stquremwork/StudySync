@@ -329,14 +329,27 @@ namespace Kursach.Forms
                 return;
             }
 
+            if (comboBox_group_id.SelectedValue == null)
+            {
+                MessageBox.Show("Выберите группу.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // Получаем данные
             int subjectId = Convert.ToInt32(comboBox_subject.SelectedValue);
             int studentId = selectedStudentId.Value;
             string gradeStr = comboBox_grade.SelectedItem.ToString();
             DateTime gradeDate = dateTimePicker1.Value;
 
-            short? gradeValue = null;
+            // Проверяем и устанавливаем groupId
+            if (!int.TryParse(comboBox_group_id.SelectedValue?.ToString(), out int groupId))
+            {
+                MessageBox.Show("Некорректный идентификатор группы.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            selectedGroupId = groupId;
 
+            short? gradeValue = null;
             if (gradeStr != "Н")
             {
                 if (!short.TryParse(gradeStr, out short parsedGrade))
@@ -357,23 +370,20 @@ namespace Kursach.Forms
                 using (var cmd = new NpgsqlCommand(query, _connection))
                 {
                     // subject_id - обязателен
-                    cmd.Parameters.AddWithValue("@subjectId", NpgsqlTypes.NpgsqlDbType.Bigint, subjectId);
+                    cmd.Parameters.AddWithValue("@subjectId", NpgsqlDbType.Bigint, subjectId);
+
+                    // group_id - теперь обязателен
+                    cmd.Parameters.AddWithValue("@groupId", NpgsqlDbType.Bigint, selectedGroupId.Value);
 
                     // student_id - обязателен
-                    cmd.Parameters.AddWithValue("@studentId", NpgsqlTypes.NpgsqlDbType.Bigint, studentId);
+                    cmd.Parameters.AddWithValue("@studentId", NpgsqlDbType.Bigint, studentId);
 
                     // grade_date - обязателен
-                    cmd.Parameters.AddWithValue("@gradeDate", NpgsqlTypes.NpgsqlDbType.Date, gradeDate); // Прямая передача DateTime
-
-                    // group_id - может быть NULL
-                    if (selectedGroupId.HasValue)
-                        cmd.Parameters.AddWithValue("@groupId", NpgsqlTypes.NpgsqlDbType.Bigint, selectedGroupId.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@groupId", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@gradeDate", NpgsqlDbType.Date, gradeDate);
 
                     // grade - может быть NULL (если "Н")
                     if (gradeValue.HasValue)
-                        cmd.Parameters.AddWithValue("@grade", NpgsqlTypes.NpgsqlDbType.Smallint, gradeValue.Value);
+                        cmd.Parameters.AddWithValue("@grade", NpgsqlDbType.Smallint, gradeValue.Value);
                     else
                         cmd.Parameters.AddWithValue("@grade", DBNull.Value);
 

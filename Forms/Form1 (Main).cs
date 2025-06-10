@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Kursach.Forms;
+using Npgsql;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using Npgsql;
-using Kursach.Helpers;
-using Kursach.Forms;
-using System.IO;
-using System.Collections.Generic;
 
 namespace Kursach
 {
@@ -25,8 +24,6 @@ namespace Kursach
             this.WindowState = FormWindowState.Maximized;
             Instance = this;
 
-            
-            
             closeImage = Properties.Resources.close ?? GenerateDefaultCloseImage();
 
             tabControl1.DrawMode = TabDrawMode.OwnerDrawFixed;
@@ -35,13 +32,8 @@ namespace Kursach
             tabControl1.SelectedIndexChanged += TabControl1_SelectedIndexChanged;
             tabControl1.MouseDown += TabControl1_MouseDown;
 
-            // Настройка вкладки main
             SetupMainTab();
-
-            // Инициализация ListView для таблиц
             InitializeTablesListView();
-
-            // Инициализация статуса подключения
             UpdateConnectionStatus();
         }
 
@@ -53,16 +45,11 @@ namespace Kursach
             listViewTables.GridLines = true;
             listViewTables.MultiSelect = false;
 
-            // Установка шрифта для ListView 
             listViewTables.Font = new Font("Segoe UI", 10, FontStyle.Regular);
-
-            // Оставляем только одну колонку и увеличиваем шрифт заголовка колонки
             listViewTables.Columns.Add("Название таблицы", 300).ListView.Font = new Font("Segoe UI", 10, FontStyle.Regular);
 
             listViewTables.DoubleClick += ListViewTables_DoubleClick;
             listViewTables.ShowGroups = true;
-
-            // Добавляем контекстное меню
             listViewTables.ContextMenuStrip = CreateTableContextMenu();
 
             splitContainer1.Panel1.Controls.Add(listViewTables);
@@ -85,7 +72,6 @@ namespace Kursach
                 using (var conn = new NpgsqlConnection(Form2.ConnectionString))
                 {
                     conn.Open();
-
                     var publicGroup = new ListViewGroup("public", "");
                     listViewTables.Groups.Add(publicGroup);
 
@@ -115,20 +101,15 @@ namespace Kursach
         private ContextMenuStrip CreateTableContextMenu()
         {
             var menu = new ContextMenuStrip();
-
             var addTableItem = new ToolStripMenuItem("Создать таблицу");
             addTableItem.Click += (sender, e) => CreateTableDialog();
-
             var renameTableItem = new ToolStripMenuItem("Переименовать таблицу");
             renameTableItem.Click += (sender, e) => RenameSelectedTable();
-
             var deleteTableItem = new ToolStripMenuItem("Удалить таблицу");
             deleteTableItem.Click += (sender, e) => DeleteSelectedTable();
-
             menu.Items.Add(addTableItem);
             menu.Items.Add(renameTableItem);
             menu.Items.Add(deleteTableItem);
-
             return menu;
         }
 
@@ -147,7 +128,7 @@ namespace Kursach
                             cmd.ExecuteNonQuery();
                         }
                     }
-                    LoadTableList(); // Обновляем список таблиц
+                    LoadTableList();
                 }
                 catch (Exception ex)
                 {
@@ -177,7 +158,7 @@ namespace Kursach
                             cmd.ExecuteNonQuery();
                         }
                     }
-                    LoadTableList(); // Обновляем список
+                    LoadTableList();
                 }
                 catch (Exception ex)
                 {
@@ -208,7 +189,7 @@ namespace Kursach
                             cmd.ExecuteNonQuery();
                         }
                     }
-                    LoadTableList(); // Обновляем список
+                    LoadTableList();
                 }
                 catch (Exception ex)
                 {
@@ -230,16 +211,13 @@ namespace Kursach
                     Text = caption,
                     StartPosition = FormStartPosition.CenterScreen
                 };
-
                 Label textLabel = new Label() { Left = 20, Top = 20, Text = text };
                 TextBox textBox = new TextBox() { Left = 20, Top = 50, Width = 240 };
                 Button confirmation = new Button() { Text = "OK", Left = 200, Width = 60, Top = 80, DialogResult = DialogResult.OK };
-
                 prompt.Controls.Add(textBox);
                 prompt.Controls.Add(textLabel);
                 prompt.Controls.Add(confirmation);
                 prompt.AcceptButton = confirmation;
-
                 return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : null;
             }
         }
@@ -273,13 +251,11 @@ namespace Kursach
 
         public void UpdateConnectionStatus()
         {
-            // Удаляем текущий ToolStripTextBox, если он есть
             if (toolStrip1.Items.Contains(toolStripTextBox1))
             {
                 toolStrip1.Items.Remove(toolStripTextBox1);
             }
 
-            // Устанавливаем текст и стиль
             if (string.IsNullOrEmpty(Form2.ConnectionString))
             {
                 toolStripTextBox1.Text = "Не подключена";
@@ -292,8 +268,6 @@ namespace Kursach
                     var builder = new NpgsqlConnectionStringBuilder(Form2.ConnectionString);
                     toolStripTextBox1.Text = builder.Database;
                     toolStripTextBox1.Font = new Font(toolStrip1.Font, FontStyle.Bold);
-
-                    // Загружаем список таблиц при успешном подключении
                     LoadTableList();
                 }
                 catch
@@ -304,10 +278,7 @@ namespace Kursach
                 }
             }
 
-            // Добавляем TextBox на ToolStrip
             toolStrip1.Items.Add(toolStripTextBox1);
-
-            // Обработчик для предотвращения фокуса
             toolStripTextBox1.GotFocus += (sender, e) => { toolStrip1.Focus(); };
         }
 
@@ -494,8 +465,8 @@ namespace Kursach
             DataGridView newDataGridView = new DataGridView
             {
                 Dock = DockStyle.Fill,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
+                AllowUserToAddRows = true,
+                AllowUserToDeleteRows = true,
                 AutoGenerateColumns = true,
                 ReadOnly = false,
                 AllowUserToOrderColumns = true,
@@ -549,7 +520,6 @@ namespace Kursach
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-
             while (tabControl1.TabPages.Count > 0)
             {
                 CloseTab(0);
@@ -566,7 +536,6 @@ namespace Kursach
             Form2 form2 = new Form2();
             form2.MainForm = this;
             form2.StartPosition = FormStartPosition.CenterParent;
-
             form2.Show(this);
         }
 
@@ -575,11 +544,51 @@ namespace Kursach
             SaveCurrentTabData();
         }
 
+        private void toolStripButtonDeleteRows_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab == null || tabControl1.SelectedTab.Controls.Count == 0)
+            {
+                MessageBox.Show("Нет активной таблицы для удаления строки", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var dgv = tabControl1.SelectedTab.Controls[0] as DataGridView;
+            if (dgv == null || dgv.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Выберите строку для удаления", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var result = MessageBox.Show("Вы уверены, что хотите удалить выбранную строку?",
+                "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    foreach (DataGridViewRow row in dgv.SelectedRows)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            dgv.Rows.Remove(row);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при удалении строки: {ex.Message}", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void SaveCurrentTabData()
         {
             if (tabControl1.SelectedTab == null || tabControl1.SelectedTab.Controls.Count == 0)
             {
-                MessageBox.Show("No active table to save", "Error",
+                MessageBox.Show("Нет активной таблицы для сохранения", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -587,20 +596,19 @@ namespace Kursach
             var dgv = tabControl1.SelectedTab.Controls[0] as DataGridView;
             if (dgv == null || dgv.DataSource == null)
             {
-                MessageBox.Show("No data to save", "Error",
+                MessageBox.Show("Нет данных для сохранения", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
+                dgv.EndEdit();
                 var dataView = dgv.DataSource as DataView;
                 if (dataView == null) return;
 
                 var dataTable = dataView.Table;
-                Console.WriteLine($"Modified rows: {dataTable.Select(null, null, DataViewRowState.ModifiedCurrent).Length}");
-                Console.WriteLine($"Added rows: {dataTable.Select(null, null, DataViewRowState.Added).Length}");
-                Console.WriteLine($"Deleted rows: {dataTable.Select(null, null, DataViewRowState.Deleted).Length}");
+                string tableName = tabControl1.SelectedTab.Text;
 
                 using (var conn = new NpgsqlConnection(Form2.ConnectionString))
                 {
@@ -609,39 +617,43 @@ namespace Kursach
                     {
                         try
                         {
-                            foreach (DataRow row in dataView.Table.Rows)
+                            var deletedRows = dataTable.Select(null, null, DataViewRowState.Deleted);
+                            foreach (DataRow row in deletedRows)
                             {
-                                if (row.RowState == DataRowState.Modified)
-                                {
-                                    DatabaseHelper.UpdateRow(conn, row, Form2.SelectedTable, transaction);
-                                }
-                                else if (row.RowState == DataRowState.Added)
-                                {
-                                    DatabaseHelper.InsertRow(conn, row, Form2.SelectedTable, transaction);
-                                }
-                                else if (row.RowState == DataRowState.Deleted)
-                                {
-                                    DatabaseHelper.DeleteRow(conn, row, Form2.SelectedTable, transaction);
-                                }
+                                DatabaseHelper.DeleteRow(conn, row, tableName, transaction);
+                            }
+
+                            var modifiedRows = dataTable.Select(null, null, DataViewRowState.ModifiedCurrent);
+                            foreach (DataRow row in modifiedRows)
+                            {
+                                DatabaseHelper.UpdateRow(conn, row, tableName, transaction);
+                            }
+
+                            var addedRows = dataTable.Select(null, null, DataViewRowState.Added);
+                            foreach (DataRow row in addedRows)
+                            {
+                                DatabaseHelper.InsertRow(conn, row, tableName, transaction);
                             }
 
                             transaction.Commit();
                             dataTable.AcceptChanges();
-                            MessageBox.Show("Data saved successfully", "Success",
+                            MessageBox.Show("Данные успешно сохранены", "Успех",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         catch (Exception ex)
                         {
                             transaction.Rollback();
-                            MessageBox.Show($"Error saving data: {ex.Message}", "Error",
+                            MessageBox.Show($"Ошибка при сохранении данных: {ex.Message}", "Ошибка",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
+
+                LoadTableData(tableName);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Critical error: {ex.Message}", "Error",
+                MessageBox.Show($"Критическая ошибка: {ex.Message}", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -735,7 +747,6 @@ namespace Kursach
         private DataTable ReadCSVFile(string filePath)
         {
             DataTable dt = new DataTable();
-
             string[] lines = File.ReadAllLines(filePath);
             if (lines.Length == 0)
                 throw new Exception("File is empty");
@@ -836,23 +847,17 @@ namespace Kursach
         private void toolStripTextBox1_Click(object sender, EventArgs e)
         {
             UpdateConnectionStatus();
-            
         }
 
-        private void toolStripButton3_Click_2(object sender, EventArgs e)
+        private void toolStripButton3_Click_3(object sender, EventArgs e)
         {
-            Form3 form3 = new Form3();
-            form3.StartPosition = FormStartPosition.CenterParent;
-            form3.ShowDialog(this);
         }
 
-        // Остальные пустые обработчики событий
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
         private void toolStripDropDownButton1_Click_1(object sender, EventArgs e) { }
         private void terminalToolStripMenuItem_Click(object sender, EventArgs e) { }
         private void toolStripDropDownButton5_Click(object sender, EventArgs e) { }
         private void toolStripDropDownButton3_Click(object sender, EventArgs e) { }
-        private void toolStripButton3_Click_1(object sender, EventArgs e) { }
         private void toolStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
         private void toolStripButton5_Click(object sender, EventArgs e) { }
         private void Form1_Load(object sender, EventArgs e) { }
@@ -869,7 +874,6 @@ namespace Kursach
         private void toolStripDropDownButton6_Click(object sender, EventArgs e) { }
         private void button1_Click_2(object sender, EventArgs e) { }
         private void toolStripButton6_Click(object sender, EventArgs e) { }
-
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
         {
             splitContainer1.Dock = DockStyle.Fill;
@@ -879,28 +883,82 @@ namespace Kursach
             splitContainer1.Panel1MinSize = 100;
             splitContainer1.Panel2MinSize = 0;
         }
+        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e) { }
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e) { }
+        private void listView1_SelectedIndexChanged_1(object sender, EventArgs e) { }
+        private void listView1_SelectedIndexChanged_2(object sender, EventArgs e) { }
+    }
 
-        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+    public static class DatabaseHelper
+    {
+        public static DataTable GetTableData(string tableName, string connectionString)
         {
+            using (var conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (var adapter = new NpgsqlDataAdapter($"SELECT * FROM {tableName}", conn))
+                {
+                    var dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    return dataTable;
+                }
+            }
         }
 
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        public static void InsertRow(NpgsqlConnection conn, DataRow row, string tableName, NpgsqlTransaction transaction)
         {
+            var columns = row.Table.Columns.Cast<DataColumn>()
+                .Where(c => c.ColumnName != "id")
+                .Select(c => $"\"{c.ColumnName}\"");
+            var parameters = row.Table.Columns.Cast<DataColumn>()
+                .Where(c => c.ColumnName != "id")
+                .Select(c => $"@p{c.Ordinal}");
+
+            string sql = $"INSERT INTO {tableName} ({string.Join(",", columns)}) VALUES ({string.Join(",", parameters)})";
+
+            using (var cmd = new NpgsqlCommand(sql, conn, transaction))
+            {
+                foreach (DataColumn col in row.Table.Columns)
+                {
+                    if (col.ColumnName != "id")
+                    {
+                        cmd.Parameters.AddWithValue($"@p{col.Ordinal}", row[col] == DBNull.Value ? null : row[col]);
+                    }
+                }
+                cmd.ExecuteNonQuery();
+            }
         }
 
-        private void listView1_SelectedIndexChanged_1(object sender, EventArgs e)
+        public static void UpdateRow(NpgsqlConnection conn, DataRow row, string tableName, NpgsqlTransaction transaction)
         {
+            var setClause = row.Table.Columns.Cast<DataColumn>()
+                .Where(c => c.ColumnName != "id")
+                .Select(c => $"\"{c.ColumnName}\" = @p{c.Ordinal}");
 
+            string sql = $"UPDATE {tableName} SET {string.Join(",", setClause)} WHERE id = @id";
+
+            using (var cmd = new NpgsqlCommand(sql, conn, transaction))
+            {
+                foreach (DataColumn col in row.Table.Columns)
+                {
+                    if (col.ColumnName != "id")
+                    {
+                        cmd.Parameters.AddWithValue($"@p{col.Ordinal}", row[col] == DBNull.Value ? null : row[col]);
+                    }
+                }
+                cmd.Parameters.AddWithValue("@id", row["id"]);
+                cmd.ExecuteNonQuery();
+            }
         }
 
-        private void listView1_SelectedIndexChanged_2(object sender, EventArgs e)
+        public static void DeleteRow(NpgsqlConnection conn, DataRow row, string tableName, NpgsqlTransaction transaction)
         {
-
-        }
-
-        private void toolStripButton3_Click_3(object sender, EventArgs e)
-        {
-
+            string sql = $"DELETE FROM {tableName} WHERE id = @id";
+            using (var cmd = new NpgsqlCommand(sql, conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("@id", row["id", DataRowVersion.Original]);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }
