@@ -43,11 +43,6 @@ namespace Kursach
             guna2ButtonConnect.Text = "Connect";
         }
 
-        // Event handlers for controls
-        private void HostTextBox_TextChanged(object sender, EventArgs e)
-        {
-            SettingsTextBox_TextChanged(sender, e);
-        }
 
         private void UserTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -64,10 +59,7 @@ namespace Kursach
             SettingsTextBox_TextChanged(sender, e);
         }
 
-        private void PortTextBox_TextChanged(object sender, EventArgs e)
-        {
-            SettingsTextBox_TextChanged(sender, e);
-        }
+
 
         private void HostLabel_Click(object sender, EventArgs e)
         {
@@ -335,6 +327,61 @@ namespace Kursach
         private void guna2ButtonClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void PasswordLabel_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void UserLabel_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DatabaseLabel_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PortLabel_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void HostLabel_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2CheckBoxRemSet_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void HostTextBox_TextChanged_1(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void PortTextBox_TextChanged_1(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void DatabaseTextBox_TextChanged_1(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void UserTextBox_TextChanged_1(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
+        }
+
+        private void PasswordTextBox_TextChanged_1(object sender, EventArgs e)
+        {
+            SettingsTextBox_TextChanged(sender, e);
         }
     }
 }
