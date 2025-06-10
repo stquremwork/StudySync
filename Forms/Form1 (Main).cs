@@ -849,8 +849,29 @@ namespace Kursach
             UpdateConnectionStatus();
         }
 
-        private void toolStripButton3_Click_3(object sender, EventArgs e)
+   
+        private void toolStripButton3_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(Form2.ConnectionString))
+            {
+                MessageBox.Show("Нет подключения к базе данных.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                using (var conn = new NpgsqlConnection(Form2.ConnectionString))
+                {
+                    conn.Open();
+                    Form4 form4 = new Form4(conn);
+                    form4.StartPosition = FormStartPosition.CenterParent;
+                    form4.ShowDialog(this); // Открываем как диалоговое окно
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при подключении к БД: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
@@ -866,7 +887,7 @@ namespace Kursach
         private void toolStripDropDownButton4_Click(object sender, EventArgs e) { }
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e) { }
         private void toolStripDropDownButton1_Click(object sender, EventArgs e) { }
-        private void toolStripButton3_Click(object sender, EventArgs e) { }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) { }
         private void button1_Click(object sender, EventArgs e) { }
         private void panel1_Paint(object sender, PaintEventArgs e) { }

@@ -287,9 +287,7 @@ namespace Kursach
             MainForm.UpdateConnectionStatus();
             if (isConnected && connection != null && connection.State == ConnectionState.Open)
             {
-                // Передаем уже открытое подключение в Form4
-                Form4 form4 = new Form4(connection);
-                form4.Show(); // или ShowDialog(), если хочешь модальное окно
+               
             }
             else
             {

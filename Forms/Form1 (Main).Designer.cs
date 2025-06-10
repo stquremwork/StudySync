@@ -50,13 +50,13 @@ namespace Kursach
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonDeleteRows = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonDeleteRows = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -263,27 +263,6 @@ namespace Kursach
             this.toolStripButton6.Text = "Redo (Ctrl+ Y)";
             this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
             // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.BackColor = System.Drawing.SystemColors.Window;
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(138, 24);
-            this.toolStripButton3.Text = "Выставить оценку";
-            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click_3);
-            // 
-            // toolStripButtonDeleteRows
-            // 
-            this.toolStripButtonDeleteRows.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonDeleteRows.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDeleteRows.Image")));
-            this.toolStripButtonDeleteRows.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonDeleteRows.Name = "toolStripButtonDeleteRows";
-            this.toolStripButtonDeleteRows.Size = new System.Drawing.Size(118, 24);
-            this.toolStripButtonDeleteRows.Text = "Удалить строку";
-            this.toolStripButtonDeleteRows.Click += new System.EventHandler(this.toolStripButtonDeleteRows_Click);
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -336,6 +315,8 @@ namespace Kursach
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.Silver;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -346,6 +327,27 @@ namespace Kursach
             this.dataGridView1.Size = new System.Drawing.Size(1250, 944);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick_1);
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.BackColor = System.Drawing.SystemColors.Window;
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(138, 24);
+            this.toolStripButton3.Text = "Выставить оценку";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
+            // toolStripButtonDeleteRows
+            // 
+            this.toolStripButtonDeleteRows.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonDeleteRows.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDeleteRows.Image")));
+            this.toolStripButtonDeleteRows.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonDeleteRows.Name = "toolStripButtonDeleteRows";
+            this.toolStripButtonDeleteRows.Size = new System.Drawing.Size(118, 24);
+            this.toolStripButtonDeleteRows.Text = "Удалить строку";
+            this.toolStripButtonDeleteRows.Click += new System.EventHandler(this.toolStripButtonDeleteRows_Click);
             // 
             // Form1
             // 
