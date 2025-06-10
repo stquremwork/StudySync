@@ -132,6 +132,7 @@ namespace Kursach
 
             if (string.IsNullOrEmpty(ConnectionString))
             {
+                this.WindowState = FormWindowState.Minimized;
                 MessageBox.Show("Строка подключения не может быть пустой. Заполните параметры подключения.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -140,9 +141,7 @@ namespace Kursach
             {
                 connection = new NpgsqlConnection(ConnectionString);
                 connection.Open();
-                MessageBox.Show("Подключение выполнено!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 UpdateTableList(connection);
-
                 guna2ButtonConnect.Text = "Отключится";
                 isConnected = true;
             }
@@ -150,6 +149,7 @@ namespace Kursach
             {
                 MessageBox.Show($"Подключение невозможно: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 isConnected = false;
+                guna2ButtonConnect.Text = "Подключится"; // Явно меняем обратно
                 if (connection != null)
                 {
                     connection.Close();
@@ -165,7 +165,6 @@ namespace Kursach
                 try
                 {
                     connection.Close();
-                    MessageBox.Show("Отключение выполнено.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -175,7 +174,7 @@ namespace Kursach
                 {
                     connection = null;
                     isConnected = false;
-                   ;
+                    guna2ButtonConnect.Text = "Подключится"; // Явно меняем текст кнопки
                     CloseDataTabsInForm1();
                 }
             }
