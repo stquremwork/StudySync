@@ -451,6 +451,7 @@ namespace Kursach
             if (dataTable == null || string.IsNullOrEmpty(tableName))
                 return;
 
+            // Проверка, открыта ли уже эта вкладка
             foreach (TabPage tabPage in tabControl1.TabPages)
             {
                 if (tabPage.Text.Equals(tableName, StringComparison.OrdinalIgnoreCase))
@@ -462,27 +463,37 @@ namespace Kursach
             }
 
             TabPage newTabPage = new TabPage(tableName);
+
             DataGridView newDataGridView = new DataGridView
             {
                 Dock = DockStyle.Fill,
-                AllowUserToAddRows = true,
-                AllowUserToDeleteRows = true,
+                AllowUserToAddRows = false, // ❌ Отключаем добавление строк
                 AutoGenerateColumns = true,
                 ReadOnly = false,
                 AllowUserToOrderColumns = true,
                 BorderStyle = BorderStyle.None,
                 EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2,
-                Enabled = true
+                Enabled = true,
+                MultiSelect = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
 
+            // Включаем двойную буферизацию для лучшей производительности
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
                 null, newDataGridView, new object[] { true });
 
             newDataGridView.DataError += DataGridView_DataError;
-            newTabPage.Controls.Add(newDataGridView);
-            tabControl1.TabPages.Add(newTabPage);
 
+            // Добавляем столбец с чекбоксами
+            var checkBoxColumn = new DataGridViewCheckBoxColumn
+            {
+                Name = "CheckBoxColumn",
+                HeaderText = "Выбор"
+            };
+            newDataGridView.Columns.Add(checkBoxColumn);
+
+            // Привязываем данные
             foreach (DataColumn column in dataTable.Columns)
             {
                 column.ReadOnly = false;
@@ -494,9 +505,66 @@ namespace Kursach
                 AllowNew = true,
                 AllowDelete = true
             };
+
             newDataGridView.DataSource = dataView;
 
+            // Скрываем автоматически созданную пустую строку (новая запись)
+            newDataGridView.RowsAdded += (sender, e) =>
+            {
+                for (int i = 0; i < newDataGridView.Rows.Count; i++)
+                {
+                    if (newDataGridView.Rows[i].IsNewRow)
+                        newDataGridView.Rows[i].Visible = false;
+                }
+            };
+
+            // --- НОВЫЕ СОБЫТИЯ ---
+            // Обработка клика по чекбоксу
+            newDataGridView.CellContentClick += (sender, e) =>
+            {
+                if (e.ColumnIndex == newDataGridView.Columns["CheckBoxColumn"].Index && e.RowIndex >= 0)
+                {
+                    var cell = newDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    bool? isChecked = cell.Value as bool?;
+                    if (isChecked.HasValue)
+                    {
+                        // Инвертируем состояние
+                        newDataGridView.Rows[e.RowIndex].Selected = isChecked.Value;
+                    }
+                    else
+                    {
+                        newDataGridView.Rows[e.RowIndex].Selected = false;
+                    }
+                }
+            };
+
+            // Обработка выделения строк
+            newDataGridView.SelectionChanged += (sender, e) =>
+            {
+                foreach (DataGridViewRow row in newDataGridView.SelectedRows)
+                {
+                    if (row.Cells["CheckBoxColumn"].Value is bool val)
+                    {
+                        row.Cells["CheckBoxColumn"].Value = true;
+                    }
+                    else
+                    {
+                        row.Cells["CheckBoxColumn"].Value = true;
+                    }
+                }
+
+                foreach (DataGridViewRow row in newDataGridView.Rows)
+                {
+                    if (!row.Selected && !row.IsNewRow)
+                    {
+                        row.Cells["CheckBoxColumn"].Value = false;
+                    }
+                }
+            };
+
             newDataGridView.Focus();
+            newTabPage.Controls.Add(newDataGridView);
+            tabControl1.TabPages.Add(newTabPage);
             tabControl1.SelectedTab = newTabPage;
             currentDataTab = newTabPage;
         }
