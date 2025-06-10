@@ -1,9 +1,10 @@
-﻿using System;
-using System.Data;
-using System.Windows.Forms;
+﻿using Guna.UI2.WinForms;
+using Kursach.Forms;
 using Npgsql;
+using System;
+using System.Data;
 using System.Drawing;
-using Guna.UI2.WinForms;
+using System.Windows.Forms;
 
 namespace Kursach
 {
@@ -27,7 +28,6 @@ namespace Kursach
         {
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
 
             var (host, userName, databaseName) = UserSettingsManager.LoadUserSettings();
@@ -40,7 +40,7 @@ namespace Kursach
                 guna2CheckBoxRemSet.Checked = true;
             }
 
-            guna2ButtonConnect.Text = "Connect";
+            guna2ButtonConnect.Text = "Подключится";
         }
 
 
@@ -140,15 +140,15 @@ namespace Kursach
             {
                 connection = new NpgsqlConnection(ConnectionString);
                 connection.Open();
-                MessageBox.Show("Connection successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Подключение выполнено!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 UpdateTableList(connection);
 
-                guna2ButtonConnect.Text = "Disconnect";
+                guna2ButtonConnect.Text = "Отключится";
                 isConnected = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Подключение невозможно: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 isConnected = false;
                 if (connection != null)
                 {
@@ -165,11 +165,11 @@ namespace Kursach
                 try
                 {
                     connection.Close();
-                    MessageBox.Show("Disconnected from database.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Отключение выполнено.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error during disconnection: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка отключения: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 finally
                 {
@@ -181,7 +181,7 @@ namespace Kursach
             }
             else
             {
-                MessageBox.Show("Not connected to any database.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("База данных не подключена.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -228,12 +228,10 @@ namespace Kursach
 
         }
 
-
         private void button1_Click(object sender, EventArgs e)
         {
             
         }
-
 
         private void UpdateTableListBasedOnConnection()
         {
@@ -288,9 +286,19 @@ namespace Kursach
         private void guna2ButtonSendData_Click(object sender, EventArgs e)
         {
             MainForm.UpdateConnectionStatus();
+            if (isConnected && connection != null && connection.State == ConnectionState.Open)
+            {
+                // Передаем уже открытое подключение в Form4
+                Form4 form4 = new Form4(connection);
+                form4.Show(); // или ShowDialog(), если хочешь модальное окно
+            }
+            else
+            {
+                MessageBox.Show("Сначала необходимо установить соединение с базой данных.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
-       
+
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {

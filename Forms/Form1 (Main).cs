@@ -564,12 +564,10 @@ namespace Kursach
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
             Form2 form2 = new Form2();
-            form2.MainForm = this; 
+            form2.MainForm = this;
             form2.StartPosition = FormStartPosition.CenterParent;
-            if (form2.ShowDialog(this) == DialogResult.OK)
-            {
-                UpdateConnectionStatus();
-            }
+
+            form2.Show(this);
         }
 
         private void toolStripButton2_Click_1(object sender, EventArgs e)
@@ -896,6 +894,11 @@ namespace Kursach
         }
 
         private void listView1_SelectedIndexChanged_2(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton3_Click_3(object sender, EventArgs e)
         {
 
         }
