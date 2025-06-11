@@ -112,8 +112,9 @@ namespace Kursach
             listViewTables.Dock = DockStyle.Fill;
             listViewTables.View = View.Details;
             listViewTables.FullRowSelect = true;
-            listViewTables.GridLines = true;
             listViewTables.MultiSelect = false;
+            listViewTables.Scrollable = false;
+            listViewTables.GridLines = false;
 
             listViewTables.Font = new Font("Segoe UI", 10, FontStyle.Regular);
             listViewTables.Columns.Add("Название таблицы", 300).ListView.Font = new Font("Segoe UI", 10, FontStyle.Regular);
@@ -418,13 +419,7 @@ namespace Kursach
                 new Point(tabRect.Left + 4, tabRect.Top + (tabRect.Height - tabPage.Font.Height) / 2),
                 tabPage.ForeColor);
 
-            if (closeImage != null && e.Index > 0)
-            {
-                int imageSize = 12;
-                int imageX = tabRect.Right - imageSize - 4;
-                int imageY = tabRect.Top + (tabRect.Height - imageSize) / 2;
-                e.Graphics.DrawImage(closeImage, imageX, imageY, imageSize, imageSize);
-            }
+            // Крестик больше не рисуется
         }
 
         private void TabControl1_MouseDown(object sender, MouseEventArgs e)
@@ -467,6 +462,9 @@ namespace Kursach
         {
             if (tabIndex < 0 || tabIndex >= tabControl1.TabPages.Count) return;
 
+            // Запоминаем текущую выбранную вкладку перед закрытием
+            int currentSelectedIndex = tabControl1.SelectedIndex;
+
             var tabPage = tabControl1.TabPages[tabIndex];
 
             foreach (Control control in tabPage.Controls)
@@ -481,13 +479,38 @@ namespace Kursach
             tabPage.Controls.Clear();
             tabControl1.TabPages.RemoveAt(tabIndex);
 
-            if (tabControl1.TabPages.Count > 0)
+            // Если закрыли текущую выбранную вкладку
+            if (currentSelectedIndex == tabIndex)
             {
-                currentDataTab = tabControl1.SelectedTab;
-            }
-            else
-            {
-                currentDataTab = null;
+                // Определяем какую вкладку выбрать после закрытия
+                int newSelectedIndex = -1;
+
+                // Если остались вкладки
+                if (tabControl1.TabPages.Count > 0)
+                {
+                    // Если закрыли не первую вкладку, выбираем предыдущую
+                    if (tabIndex > 0)
+                    {
+                        newSelectedIndex = tabIndex - 1;
+                    }
+                    // Если закрыли первую вкладку, но есть другие, выбираем следующую
+                    else if (tabControl1.TabPages.Count > 1)
+                    {
+                        newSelectedIndex = 0;
+                    }
+                    // Если осталась только главная вкладка
+                    else
+                    {
+                        newSelectedIndex = 0;
+                    }
+
+                    tabControl1.SelectedIndex = newSelectedIndex;
+                    currentDataTab = tabControl1.SelectedTab;
+                }
+                else
+                {
+                    currentDataTab = null;
+                }
             }
         }
 
@@ -538,7 +561,7 @@ namespace Kursach
             DataGridView newDataGridView = new DataGridView
             {
                 Dock = DockStyle.Fill,
-                AllowUserToAddRows = false, // ❌ Отключаем добавление строк
+                AllowUserToAddRows = false, 
                 AutoGenerateColumns = true,
                 ReadOnly = false,
                 AllowUserToOrderColumns = true,
@@ -547,6 +570,7 @@ namespace Kursach
                 Enabled = true,
                 MultiSelect = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
             };
 
             // Включаем двойную буферизацию для лучшей производительности
