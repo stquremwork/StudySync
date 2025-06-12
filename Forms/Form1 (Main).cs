@@ -1223,6 +1223,30 @@ namespace StudySync
                 }
             }
         }
+
+        private void toolStripButton5_Click_1(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(Form2.ConnectionString))
+            {
+                MessageBox.Show("Нет подключения к базе данных.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                using (var conn = new NpgsqlConnection(Form2.ConnectionString))
+                {
+                    conn.Open();
+                    Form3 form3 = new Form3(conn);
+                    form3.StartPosition = FormStartPosition.CenterParent;
+                    form3.ShowDialog(this); // Открываем как диалоговое окно
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при подключении к БД: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
 

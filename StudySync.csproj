@@ -126,8 +126,26 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Xceed.Document.NET, Version=5.0.25228.6154, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>packages\Xceed.Document.NET.5.0.25228.6154\lib\net40\Xceed.Document.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Drawing.NET, Version=1.0.25228.6154, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>packages\Xceed.Drawing.NET.1.0.25228.6154\lib\net40\Xceed.Drawing.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Pdf, Version=5.0.25228.6154, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>packages\Xceed.Pdf.5.0.25228.6154\lib\net40\Xceed.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Words.NET, Version=5.0.25228.6154, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <HintPath>packages\Xceed.Words.NET.5.0.25228.6154\lib\net40\Xceed.Words.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\Form3 %28GenWord%29.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Form3 %28GenWord%29.Designer.cs">
+      <DependentUpon>Form3 %28GenWord%29.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Form4 %28Grades%29.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,22 +161,25 @@
     <Compile Include="Forms\Form1 %28Main%29.Designer.cs">
       <DependentUpon>Form1 %28Main%29.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form2 %28Connect%29.cs">
+    <Compile Include="Forms\Form2 %28ConnectDB%29.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form2 %28Connect%29.Designer.cs">
-      <DependentUpon>Form2 %28Connect%29.cs</DependentUpon>
+    <Compile Include="Forms\Form2 %28ConnectDB%29.Designer.cs">
+      <DependentUpon>Form2 %28ConnectDB%29.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\Form1 %28Main%29.resx">
       <DependentUpon>Form1 %28Main%29.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Form3 %28GenWord%29.resx">
+      <DependentUpon>Form3 %28GenWord%29.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form4 %28Grades%29.resx">
       <DependentUpon>Form4 %28Grades%29.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form2 %28Connect%29.resx">
-      <DependentUpon>Form2 %28Connect%29.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Form2 %28ConnectDB%29.resx">
+      <DependentUpon>Form2 %28ConnectDB%29.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

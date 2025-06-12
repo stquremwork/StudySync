@@ -59,6 +59,7 @@ namespace StudySync
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -124,7 +125,7 @@ namespace StudySync
             this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
             this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
-            this.toolStripDropDownButton2.Size = new System.Drawing.Size(49, 24);
+            this.toolStripDropDownButton2.Size = new System.Drawing.Size(49, 28);
             this.toolStripDropDownButton2.Text = "Вид";
             this.toolStripDropDownButton2.Click += new System.EventHandler(this.toolStripDropDownButton2_Click);
             // 
@@ -151,7 +152,7 @@ namespace StudySync
             this.toolStripDropDownButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton3.Image")));
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton3.Name = "toolStripDropDownButton3";
-            this.toolStripDropDownButton3.Size = new System.Drawing.Size(83, 24);
+            this.toolStripDropDownButton3.Size = new System.Drawing.Size(83, 28);
             this.toolStripDropDownButton3.Text = "Помощь";
             this.toolStripDropDownButton3.ToolTipText = "Help";
             this.toolStripDropDownButton3.Click += new System.EventHandler(this.toolStripDropDownButton3_Click);
@@ -170,7 +171,7 @@ namespace StudySync
             this.toolStripTextBox1.Margin = new System.Windows.Forms.Padding(480, 0, 1, 0);
             this.toolStripTextBox1.MergeAction = System.Windows.Forms.MergeAction.MatchOnly;
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(200, 27);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(200, 31);
             this.toolStripTextBox1.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
             // 
@@ -185,7 +186,8 @@ namespace StudySync
             this.toolStripButton2,
             this.toolStripSeparator1,
             this.toolStripButton3,
-            this.toolStripDropDownButtonEdit});
+            this.toolStripDropDownButtonEdit,
+            this.toolStripButton5});
             this.toolStrip2.Location = new System.Drawing.Point(0, 27);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(1902, 27);
@@ -199,7 +201,7 @@ namespace StudySync
             this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton4.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton4.Text = "Открыть новую вкладку";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
@@ -209,14 +211,14 @@ namespace StudySync
             this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
             this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton7.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton7.Text = "Закрыть вкладку";
             this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripButton1
             // 
@@ -224,7 +226,7 @@ namespace StudySync
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton1.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton1.Text = "Подключится к БД";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
@@ -234,14 +236,14 @@ namespace StudySync
             this.toolStripButton2.Image = global::StudySync.Properties.Resources.free_icon_diskette_5612613;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButton2.Size = new System.Drawing.Size(29, 28);
             this.toolStripButton2.Text = "Сохранить изменения";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripButton3
             // 
@@ -250,7 +252,7 @@ namespace StudySync
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(138, 24);
+            this.toolStripButton3.Size = new System.Drawing.Size(138, 28);
             this.toolStripButton3.Text = "Выставить оценку";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
@@ -264,7 +266,7 @@ namespace StudySync
             this.toolStripDropDownButtonEdit.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonEdit.Image")));
             this.toolStripDropDownButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButtonEdit.Name = "toolStripDropDownButtonEdit";
-            this.toolStripDropDownButtonEdit.Size = new System.Drawing.Size(137, 24);
+            this.toolStripDropDownButtonEdit.Size = new System.Drawing.Size(137, 28);
             this.toolStripDropDownButtonEdit.Text = "Редактирование";
             this.toolStripDropDownButtonEdit.Click += new System.EventHandler(this.toolStripDropDownButtonEdit_Click);
             // 
@@ -355,6 +357,15 @@ namespace StudySync
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick_1);
             // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(170, 24);
+            this.toolStripButton5.Text = "Сгенерировать табель";
+            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -415,5 +426,6 @@ namespace StudySync
         private ToolStripMenuItem удалитьСтрокуToolStripMenuItem;
         private ToolStripMenuItem выбратьВсёToolStripMenuItem1;
         private ToolStripMenuItem отменитьВыделениеToolStripMenuItem;
+        private ToolStripButton toolStripButton5;
     }
 }
