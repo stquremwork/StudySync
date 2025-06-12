@@ -353,72 +353,91 @@ namespace StudySync.Forms
 
                 // ФИО
                 var nameParagraph = doc.Content.Paragraphs.Add();
-                nameParagraph.Range.Text = $"ученика(цы) {selectedLastName} {selectedFirstName} {selectedMiddleName}";
+                nameParagraph.Range.Text = $"ученика(цы) {selectedLastName} {selectedFirstName} {selectedMiddleName}, группы «{comboBox_group_id.Text}»";
                 nameParagraph.Range.Font.Size = 14;
                 nameParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
                 nameParagraph.SpaceAfter = 10;
                 nameParagraph.Range.InsertParagraphAfter();
-
-                // Группа
-                var groupParagraph = doc.Content.Paragraphs.Add();
-                groupParagraph.Range.Text = $"группы «{comboBox_group_id.Text}»";
-                groupParagraph.Range.Font.Size = 14;
-                groupParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                groupParagraph.SpaceAfter = 30;
-                groupParagraph.Range.InsertParagraphAfter();
 
                 // Таблица
                 var tableParagraph = doc.Content.Paragraphs.Add();
                 tableParagraph.Range.Text = "";
                 tableParagraph.Range.InsertParagraphAfter();
 
-                // Создаем таблицу 15 строк × 13 столбцов
-                var table = doc.Tables.Add(tableParagraph.Range, 15, 13);
+                // Создаем таблицу 15 строк × 12 столбцов (10 оценок + предмет + средний балл)
+                var table = doc.Tables.Add(tableParagraph.Range, 15, 12);
                 table.Borders.Enable = 1;
 
                 // Настройка ширины столбцов
-                for (int col = 1; col <= 13; col++)
+                for (int col = 1; col <= 12; col++)
                 {
                     table.Columns[col].Width = 40;
                 }
 
                 // Шапка таблицы
+                // Настройка ширины столбцов (перед заполнением содержимого)
+                table.Columns[1].Width = 120;  // Ширина колонки "Предмет" (в пунктах)
+                table.Columns[12].Width = 80;   // Ширина колонки "Средний балл"
+                for (int col = 2; col <= 11; col++)
+                {
+                    table.Columns[col].Width = 30;  // Ширина колонок с оценками
+                }
+
                 // Первая колонка — "Предмет"
                 table.Cell(1, 1).Range.Text = "Предмет";
                 table.Cell(1, 1).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                table.Cell(1, 1).VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
 
-                // Последний столбец — "Средний балл"
-                table.Cell(1, 13).Range.Text = "Средний\nбалл";
-                table.Cell(1, 13).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                // Последний столбец (12) — "Средний балл"
+                table.Cell(1, 12).Range.Text = "Средний\nбалл";
+                table.Cell(1, 12).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                table.Cell(1, 12).VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
 
-                // Объединяем столбцы 2–12 в одну ячейку "Оценки"
-                table.Cell(1, 2).Merge(table.Cell(1, 12)); // Объединяем столбцы 2–12
-                table.Cell(1, 2).Range.Text = "Оценки"; // Устанавливаем текст
-                table.Cell(1, 2).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter; // Центрируем текст
+                // Объединяем столбцы 2–11 в одну ячейку "Оценки"
+                table.Cell(1, 2).Merge(table.Cell(1, 11));
+                table.Cell(1, 2).Range.Text = "Оценки";
+                table.Cell(1, 2).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                table.Cell(1, 2).VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
 
                 // Форматирование шапки
-                table.Rows[1].Range.Font.Bold = 1; // Жирный шрифт
-                table.Rows[1].Shading.BackgroundPatternColor = WdColor.wdColorGray25; // Серый фон
+                table.Rows[1].Range.Font.Bold = 1;
+                //Покрасить фон в серый
+                //table.Rows[1].Shading.BackgroundPatternColor = WdColor.wdColorGray25;
 
-                // Оставшиеся строки — пустые
+                // Оставшиеся строки — пустые с центрированием
                 for (int row = 2; row <= 15; row++)
                 {
-                    for (int col = 1; col <= 13; col++)
+                    for (int col = 1; col <= 12; col++)
                     {
-                        table.Cell(row, col).Range.Text = ""; // Очищаем содержимое ячеек
+                        table.Cell(row, col).Range.Text = "";
+                        table.Cell(row, col).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                        table.Cell(row, col).VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
                     }
                 }
 
-                // Подписи — по левому краю
+                // Опционально: автоматическая подгонка ширины столбцов по содержимому
+                // table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitContent);
+
+                // Пустой абзац для отступа после таблицы
+                var spacingParagraph = doc.Content.Paragraphs.Add();
+                spacingParagraph.Range.Text = "";
+                spacingParagraph.SpaceAfter = 10; // Большой отступ после таблицы
+                spacingParagraph.Range.InsertParagraphAfter();
+
+                // Первая подпись (классный руководитель)
                 var signParagraph = doc.Content.Paragraphs.Add();
-                signParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                signParagraph.SpaceBefore = 30;
                 signParagraph.Range.Text = "Подпись классного руководителя: ____________________________";
+                signParagraph.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                signParagraph.Format.SpaceAfter = 0; // Убираем отступ после этой строки
+                signParagraph.Range.Font.Bold = 0; // Обычный шрифт (если нужно)
                 signParagraph.Range.InsertParagraphAfter();
 
+                // Вторая подпись (родители)
                 signParagraph = doc.Content.Paragraphs.Add();
-                signParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
                 signParagraph.Range.Text = "Подпись родителей: _________________________________";
+                signParagraph.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphLeft;
+                signParagraph.Format.SpaceAfter = 0; // Убираем отступ после этой строки
+                signParagraph.Range.Font.Bold = 0; // Обычный шрифт (если нужно)
                 signParagraph.Range.InsertParagraphAfter();
 
                 // Сохранение документа
