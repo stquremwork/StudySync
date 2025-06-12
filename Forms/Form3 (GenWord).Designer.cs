@@ -38,7 +38,6 @@
             this.comboBox_group_id = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.guna2Button2 = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2ButtonReview = new Guna.UI2.WinForms.Guna2Button();
             this.guna2ButtonGenerateWord = new Guna.UI2.WinForms.Guna2Button();
             this.SuspendLayout();
             // 
@@ -106,7 +105,7 @@
             this.comboBox_group_id.Name = "comboBox_group_id";
             this.comboBox_group_id.Size = new System.Drawing.Size(121, 24);
             this.comboBox_group_id.TabIndex = 7;
-            this.comboBox_group_id.SelectedIndexChanged += new System.EventHandler(this.comboBox4_SelectedIndexChanged);
+            this.comboBox_group_id.SelectedIndexChanged += new System.EventHandler(this.comboBox_group_id_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -127,28 +126,12 @@
             this.guna2Button2.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.guna2Button2.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.guna2Button2.ForeColor = System.Drawing.Color.White;
-            this.guna2Button2.Location = new System.Drawing.Point(389, 136);
+            this.guna2Button2.Location = new System.Drawing.Point(380, 136);
             this.guna2Button2.Name = "guna2Button2";
-            this.guna2Button2.Size = new System.Drawing.Size(145, 46);
+            this.guna2Button2.Size = new System.Drawing.Size(154, 46);
             this.guna2Button2.TabIndex = 13;
             this.guna2Button2.Text = "Закрыть";
             this.guna2Button2.Click += new System.EventHandler(this.guna2Button2_Click);
-            // 
-            // guna2ButtonReview
-            // 
-            this.guna2ButtonReview.BorderRadius = 10;
-            this.guna2ButtonReview.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2ButtonReview.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2ButtonReview.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2ButtonReview.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2ButtonReview.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.guna2ButtonReview.ForeColor = System.Drawing.Color.White;
-            this.guna2ButtonReview.Location = new System.Drawing.Point(389, 9);
-            this.guna2ButtonReview.Name = "guna2ButtonReview";
-            this.guna2ButtonReview.Size = new System.Drawing.Size(145, 46);
-            this.guna2ButtonReview.TabIndex = 14;
-            this.guna2ButtonReview.Text = "Обзор";
-            this.guna2ButtonReview.Click += new System.EventHandler(this.guna2ButtonReview_Click);
             // 
             // guna2ButtonGenerateWord
             // 
@@ -159,12 +142,12 @@
             this.guna2ButtonGenerateWord.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.guna2ButtonGenerateWord.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.guna2ButtonGenerateWord.ForeColor = System.Drawing.Color.White;
-            this.guna2ButtonGenerateWord.Location = new System.Drawing.Point(389, 70);
+            this.guna2ButtonGenerateWord.Location = new System.Drawing.Point(380, 12);
             this.guna2ButtonGenerateWord.Name = "guna2ButtonGenerateWord";
-            this.guna2ButtonGenerateWord.Size = new System.Drawing.Size(145, 46);
+            this.guna2ButtonGenerateWord.Size = new System.Drawing.Size(154, 46);
             this.guna2ButtonGenerateWord.TabIndex = 15;
             this.guna2ButtonGenerateWord.Text = "Сгенерировать";
-            this.guna2ButtonGenerateWord.Click += new System.EventHandler(this.guna2ButtonGenerateWord_Click);
+            this.guna2ButtonGenerateWord.Click += new System.EventHandler(this.guna2ButtonGenerateWord_Click); // ✅ Однократное подключение
             // 
             // Form3
             // 
@@ -172,7 +155,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(556, 202);
             this.Controls.Add(this.guna2ButtonGenerateWord);
-            this.Controls.Add(this.guna2ButtonReview);
             this.Controls.Add(this.guna2Button2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBox_group_id);
@@ -192,6 +174,7 @@
         }
 
         #endregion
+
         private System.Windows.Forms.ComboBox comboBox_first_name;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -201,7 +184,6 @@
         private System.Windows.Forms.ComboBox comboBox_group_id;
         private System.Windows.Forms.Label label4;
         private Guna.UI2.WinForms.Guna2Button guna2Button2;
-        private Guna.UI2.WinForms.Guna2Button guna2ButtonReview;
         private Guna.UI2.WinForms.Guna2Button guna2ButtonGenerateWord;
     }
 }

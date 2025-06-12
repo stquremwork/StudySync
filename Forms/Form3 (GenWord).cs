@@ -1,8 +1,11 @@
-﻿using Npgsql;
+﻿using Microsoft.Office.Interop.Word;
+using Npgsql;
 using NpgsqlTypes;
 using System;
-using System.Data;
+using DataTable = System.Data.DataTable;
 using System.Windows.Forms;
+using Word = Microsoft.Office.Interop.Word;
+using System.Data;
 
 namespace StudySync.Forms
 {
@@ -49,7 +52,7 @@ namespace StudySync.Forms
                 using (var cmd = new NpgsqlCommand(query, _connection))
                 using (var reader = cmd.ExecuteReader())
                 {
-                    DataTable table = new DataTable();
+                    System.Data.DataTable table = new System.Data.DataTable();
                     table.Load(reader);
                     comboBox_group_id.DataSource = null;
                     comboBox_group_id.DisplayMember = "group_name";
@@ -307,7 +310,85 @@ namespace StudySync.Forms
 
         private void guna2ButtonGenerateWord_Click(object sender, EventArgs e)
         {
+            // Проверка, выбран ли студент полностью
+            if (string.IsNullOrEmpty(selectedLastName) ||
+                string.IsNullOrEmpty(selectedFirstName) ||
+                string.IsNullOrEmpty(selectedMiddleName) ||
+                !selectedGroupId.HasValue)
+            {
+                MessageBox.Show("Пожалуйста, выберите все данные студента: группу, фамилию, имя и отчество.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            try
+            {
+                // Создание нового Word приложения
+                Word.Application wordApp = new Word.Application();
+                wordApp.Visible = true; // Открываем документ сразу
+
+                // Создание нового документа
+                Word.Document doc = wordApp.Documents.Add();
+                Word.Paragraph paragraph;
+
+                // Заголовок
+                paragraph = doc.Content.Paragraphs.Add();
+                paragraph.Range.Text = "Табель учета посещаемости";
+                paragraph.Range.Font.Bold = 1;
+                paragraph.Range.Font.Size = 16;
+                paragraph.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                paragraph.SpaceAfter = 20;
+                paragraph.SpaceBefore = 20;
+                paragraph.Range.InsertParagraphAfter();
+
+                // Информация о студенте
+                paragraph = doc.Content.Paragraphs.Add();
+                paragraph.Range.Text = $"ФИО: {selectedLastName} {selectedFirstName} {selectedMiddleName}";
+                paragraph.Range.Font.Size = 12;
+                paragraph.Range.Font.Bold = 1;
+                paragraph.SpaceAfter = 10;
+                paragraph.Range.InsertParagraphAfter();
+
+                paragraph = doc.Content.Paragraphs.Add();
+                paragraph.Range.Text = $"Группа: {comboBox_group_id.Text}";
+                paragraph.Range.Font.Size = 12;
+                paragraph.SpaceAfter = 20;
+                paragraph.Range.InsertParagraphAfter();
+
+                // Таблица (пример)
+                Word.Table table = doc.Tables.Add(paragraph.Range, 5, 3); // 5 строк, 3 столбца
+                table.Borders.Enable = 1;
+
+                // Заполнение заголовков таблицы
+                table.Cell(1, 1).Range.Text = "Дата";
+                table.Cell(1, 2).Range.Text = "Предмет";
+                table.Cell(1, 3).Range.Text = "Присутствие";
+
+                // Пример заполнения данными
+                for (int i = 2; i <= 5; i++)
+                {
+                    table.Cell(i, 1).Range.Text = DateTime.Now.AddDays(i - 2).ToShortDateString();
+                    table.Cell(i, 2).Range.Text = $"Предмет {i - 1}";
+                    table.Cell(i, 3).Range.Text = "Присутствовал";
+                }
+
+                table.Rows[1].Range.Font.Bold = 1;
+                table.Rows[1].Shading.BackgroundPatternColor = Word.WdColor.wdColorGray25;
+
+                // Сохранение документа (пользователь сам выбирает путь)
+                SaveFileDialog saveDialog = new SaveFileDialog();
+                saveDialog.Filter = "Word Document (*.docx)|*.docx";
+                saveDialog.FileName = $"{selectedLastName}_{selectedFirstName}_{selectedMiddleName}.docx";
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+                {
+                    doc.SaveAs2(saveDialog.FileName);
+                    MessageBox.Show("Документ успешно сохранён!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при создании документа: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
