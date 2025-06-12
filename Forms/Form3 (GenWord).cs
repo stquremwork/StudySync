@@ -310,80 +310,120 @@ namespace StudySync.Forms
 
         private void guna2ButtonGenerateWord_Click(object sender, EventArgs e)
         {
-            // Проверка, выбран ли студент полностью
+            // Проверка выбора всех данных студента
             if (string.IsNullOrEmpty(selectedLastName) ||
                 string.IsNullOrEmpty(selectedFirstName) ||
                 string.IsNullOrEmpty(selectedMiddleName) ||
                 !selectedGroupId.HasValue)
             {
-                MessageBox.Show("Пожалуйста, выберите все данные студента: группу, фамилию, имя и отчество.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Пожалуйста, выберите все данные студента: группу, фамилию, имя и отчество.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
-                // Создание нового Word приложения
-                Word.Application wordApp = new Word.Application();
-                wordApp.Visible = true; // Открываем документ сразу
-
-                // Создание нового документа
-                Word.Document doc = wordApp.Documents.Add();
-                Word.Paragraph paragraph;
-
-                // Заголовок
-                paragraph = doc.Content.Paragraphs.Add();
-                paragraph.Range.Text = "Табель учета посещаемости";
-                paragraph.Range.Font.Bold = 1;
-                paragraph.Range.Font.Size = 16;
-                paragraph.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-                paragraph.SpaceAfter = 20;
-                paragraph.SpaceBefore = 20;
-                paragraph.Range.InsertParagraphAfter();
-
-                // Информация о студенте
-                paragraph = doc.Content.Paragraphs.Add();
-                paragraph.Range.Text = $"ФИО: {selectedLastName} {selectedFirstName} {selectedMiddleName}";
-                paragraph.Range.Font.Size = 12;
-                paragraph.Range.Font.Bold = 1;
-                paragraph.SpaceAfter = 10;
-                paragraph.Range.InsertParagraphAfter();
-
-                paragraph = doc.Content.Paragraphs.Add();
-                paragraph.Range.Text = $"Группа: {comboBox_group_id.Text}";
-                paragraph.Range.Font.Size = 12;
-                paragraph.SpaceAfter = 20;
-                paragraph.Range.InsertParagraphAfter();
-
-                // Таблица (пример)
-                Word.Table table = doc.Tables.Add(paragraph.Range, 5, 3); // 5 строк, 3 столбца
-                table.Borders.Enable = 1;
-
-                // Заполнение заголовков таблицы
-                table.Cell(1, 1).Range.Text = "Дата";
-                table.Cell(1, 2).Range.Text = "Предмет";
-                table.Cell(1, 3).Range.Text = "Присутствие";
-
-                // Пример заполнения данными
-                for (int i = 2; i <= 5; i++)
-                {
-                    table.Cell(i, 1).Range.Text = DateTime.Now.AddDays(i - 2).ToShortDateString();
-                    table.Cell(i, 2).Range.Text = $"Предмет {i - 1}";
-                    table.Cell(i, 3).Range.Text = "Присутствовал";
-                }
-
-                table.Rows[1].Range.Font.Bold = 1;
-                table.Rows[1].Shading.BackgroundPatternColor = Word.WdColor.wdColorGray25;
-
-                // Сохранение документа (пользователь сам выбирает путь)
+                // Диалог сохранения файла
                 SaveFileDialog saveDialog = new SaveFileDialog();
                 saveDialog.Filter = "Word Document (*.docx)|*.docx";
-                saveDialog.FileName = $"{selectedLastName}_{selectedFirstName}_{selectedMiddleName}.docx";
+                saveDialog.FileName = $"Табель_{selectedLastName}_{selectedGroupId}.docx";
 
-                if (saveDialog.ShowDialog() == DialogResult.OK)
+                if (saveDialog.ShowDialog() != DialogResult.OK)
                 {
-                    doc.SaveAs2(saveDialog.FileName);
-                    MessageBox.Show("Документ успешно сохранён!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return; // Пользователь отменил сохранение
                 }
+
+                // Создаем приложение Word
+                var wordApp = new Microsoft.Office.Interop.Word.Application
+                {
+                    Visible = true
+                };
+
+                // Создаем новый документ
+                var doc = wordApp.Documents.Add();
+
+                // Заголовок
+                var titleParagraph = doc.Content.Paragraphs.Add();
+                titleParagraph.Range.Text = "СВЕДЕНИЯ ОБ УСПЕВАЕМОСТИ";
+                titleParagraph.Range.Font.Bold = 1;
+                titleParagraph.Range.Font.Size = 16;
+                titleParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                titleParagraph.SpaceAfter = 20;
+                titleParagraph.Range.InsertParagraphAfter();
+
+                // ФИО
+                var nameParagraph = doc.Content.Paragraphs.Add();
+                nameParagraph.Range.Text = $"ученика(цы) {selectedLastName} {selectedFirstName} {selectedMiddleName}";
+                nameParagraph.Range.Font.Size = 14;
+                nameParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                nameParagraph.SpaceAfter = 10;
+                nameParagraph.Range.InsertParagraphAfter();
+
+                // Группа
+                var groupParagraph = doc.Content.Paragraphs.Add();
+                groupParagraph.Range.Text = $"группы «{comboBox_group_id.Text}»";
+                groupParagraph.Range.Font.Size = 14;
+                groupParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                groupParagraph.SpaceAfter = 30;
+                groupParagraph.Range.InsertParagraphAfter();
+
+                // Таблица
+                var tableParagraph = doc.Content.Paragraphs.Add();
+                tableParagraph.Range.Text = "";
+                tableParagraph.Range.InsertParagraphAfter();
+
+                // Создаем таблицу 15 строк × 13 столбцов
+                var table = doc.Tables.Add(tableParagraph.Range, 15, 13);
+                table.Borders.Enable = 1;
+
+                // Настройка ширины столбцов
+                for (int col = 1; col <= 13; col++)
+                {
+                    table.Columns[col].Width = 40;
+                }
+
+                // Шапка таблицы
+                // Первая колонка — "Предмет"
+                table.Cell(1, 1).Range.Text = "Предмет";
+                table.Cell(1, 1).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+
+                // Последний столбец — "Средний балл"
+                table.Cell(1, 13).Range.Text = "Средний\nбалл";
+                table.Cell(1, 13).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+
+                // Объединяем столбцы 2–12 в одну ячейку "Оценки"
+                table.Cell(1, 2).Merge(table.Cell(1, 12)); // Объединяем столбцы 2–12
+                table.Cell(1, 2).Range.Text = "Оценки"; // Устанавливаем текст
+                table.Cell(1, 2).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter; // Центрируем текст
+
+                // Форматирование шапки
+                table.Rows[1].Range.Font.Bold = 1; // Жирный шрифт
+                table.Rows[1].Shading.BackgroundPatternColor = WdColor.wdColorGray25; // Серый фон
+
+                // Оставшиеся строки — пустые
+                for (int row = 2; row <= 15; row++)
+                {
+                    for (int col = 1; col <= 13; col++)
+                    {
+                        table.Cell(row, col).Range.Text = ""; // Очищаем содержимое ячеек
+                    }
+                }
+
+                // Подписи — по левому краю
+                var signParagraph = doc.Content.Paragraphs.Add();
+                signParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                signParagraph.SpaceBefore = 30;
+                signParagraph.Range.Text = "Подпись классного руководителя: ____________________________";
+                signParagraph.Range.InsertParagraphAfter();
+
+                signParagraph = doc.Content.Paragraphs.Add();
+                signParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                signParagraph.Range.Text = "Подпись родителей: _________________________________";
+                signParagraph.Range.InsertParagraphAfter();
+
+                // Сохранение документа
+                doc.SaveAs2(saveDialog.FileName);
+
             }
             catch (Exception ex)
             {
