@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StudySync;
+using System;
 using System.Windows.Forms;
 
 namespace Kursach

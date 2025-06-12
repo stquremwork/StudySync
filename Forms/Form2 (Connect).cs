@@ -1,12 +1,12 @@
 ﻿using Guna.UI2.WinForms;
-using Kursach.Forms;
+using StudySync.Forms;
 using Npgsql;
 using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Kursach
+namespace StudySync
 {
     public partial class Form2 : Form
     {

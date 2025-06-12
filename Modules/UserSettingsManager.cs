@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kursach
+namespace StudySync
 {
     public static class UserSettingsManager
     {

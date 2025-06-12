@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Kursach
+namespace StudySync
 {
     partial class Form1
     {
@@ -100,7 +100,7 @@ namespace Kursach
             // 
             // importToolStripMenuItem
             // 
-            this.importToolStripMenuItem.Image = global::Kursach.Properties.Resources.free_icon_import_87651641;
+            this.importToolStripMenuItem.Image = global::StudySync.Properties.Resources.free_icon_import_87651641;
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             this.importToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.importToolStripMenuItem.Text = "Импорт из CSV";
@@ -108,7 +108,7 @@ namespace Kursach
             // 
             // exportToolStripMenuItem
             // 
-            this.exportToolStripMenuItem.Image = global::Kursach.Properties.Resources.free_icon_export_88283341;
+            this.exportToolStripMenuItem.Image = global::StudySync.Properties.Resources.free_icon_export_88283341;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.exportToolStripMenuItem.Text = "Экспорт в CSV";
@@ -130,7 +130,7 @@ namespace Kursach
             // 
             // fullScreenToolStripMenuItem
             // 
-            this.fullScreenToolStripMenuItem.Image = global::Kursach.Properties.Resources.icons8_полный_экран_100;
+            this.fullScreenToolStripMenuItem.Image = global::StudySync.Properties.Resources.icons8_полный_экран_100;
             this.fullScreenToolStripMenuItem.Name = "fullScreenToolStripMenuItem";
             this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
             this.fullScreenToolStripMenuItem.Text = "На весь экран";
@@ -138,7 +138,7 @@ namespace Kursach
             // 
             // minimizeToolStripMenuItem1
             // 
-            this.minimizeToolStripMenuItem1.Image = global::Kursach.Properties.Resources.free_icon_zoom_out_35940051;
+            this.minimizeToolStripMenuItem1.Image = global::StudySync.Properties.Resources.free_icon_zoom_out_35940051;
             this.minimizeToolStripMenuItem1.Name = "minimizeToolStripMenuItem1";
             this.minimizeToolStripMenuItem1.Size = new System.Drawing.Size(190, 26);
             this.minimizeToolStripMenuItem1.Text = "В окне";
@@ -231,7 +231,7 @@ namespace Kursach
             // toolStripButton2
             // 
             this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = global::Kursach.Properties.Resources.free_icon_diskette_5612613;
+            this.toolStripButton2.Image = global::StudySync.Properties.Resources.free_icon_diskette_5612613;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(29, 24);

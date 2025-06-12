@@ -4,20 +4,17 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 
-namespace Kursach.Forms
+namespace StudySync.Forms
 {
     public partial class Form4 : Form
     {
-        private NpgsqlConnection _connection; 
-
-
+        private NpgsqlConnection _connection;
         public Form4(NpgsqlConnection connection)
         {
             InitializeComponent();
             _connection = connection;
         }
 
-   
         public Form4() : this(null) { }
 
         private int? selectedGroupId = null;
@@ -35,7 +32,6 @@ namespace Kursach.Forms
             LoadGradesIntoComboBox();
             LoadGroupsIntoComboBox();
             LoadSubjectsIntoComboBox();
-
             LoadStudentLastNamesIntoComboBox();
             LoadStudentFirstNamesIntoComboBox();
             LoadStudentMiddleNamesIntoComboBox();
@@ -44,11 +40,8 @@ namespace Kursach.Forms
         private void LoadGradesIntoComboBox()
         {
             comboBox_grade.Items.Clear();
-            comboBox_grade.Items.Add("Н");
             for (int i = 1; i <= 10; i++)
-            {
                 comboBox_grade.Items.Add(i.ToString());
-            }
         }
 
         private void LoadGroupsIntoComboBox()
@@ -59,6 +52,7 @@ namespace Kursach.Forms
                 MessageBox.Show("Соединение с БД не установлено.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             try
             {
                 using (var cmd = new NpgsqlCommand(query, _connection))
@@ -66,11 +60,7 @@ namespace Kursach.Forms
                 {
                     DataTable table = new DataTable();
                     table.Load(reader);
-                    if (table.Rows.Count == 0)
-                    {
-                        MessageBox.Show("Таблица 'groups' пустая.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+
                     comboBox_group_id.DataSource = null;
                     comboBox_group_id.DisplayMember = "group_name";
                     comboBox_group_id.ValueMember = "group_id";
@@ -82,6 +72,7 @@ namespace Kursach.Forms
                 MessageBox.Show($"Ошибка загрузки групп: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LoadSubjectsIntoComboBox()
         {
             string query = "SELECT id, subjects_name FROM public.subjects";
@@ -90,6 +81,7 @@ namespace Kursach.Forms
                 MessageBox.Show("Соединение с БД не установлено.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             try
             {
                 using (var cmd = new NpgsqlCommand(query, _connection))
@@ -97,11 +89,7 @@ namespace Kursach.Forms
                 {
                     DataTable table = new DataTable();
                     table.Load(reader);
-                    if (table.Rows.Count == 0)
-                    {
-                        MessageBox.Show("Таблица 'subjects' пустая.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+
                     comboBox_subject.DataSource = null;
                     comboBox_subject.DisplayMember = "subjects_name";
                     comboBox_subject.ValueMember = "id";
@@ -113,13 +101,12 @@ namespace Kursach.Forms
                 MessageBox.Show($"Ошибка загрузки предметов: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LoadStudentLastNamesIntoComboBox()
         {
             string query = "SELECT DISTINCT last_name, id FROM public.students WHERE TRUE";
-
             if (selectedGroupId.HasValue)
                 query += " AND group_id = @groupId";
-
             query += " ORDER BY last_name";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
@@ -151,15 +138,14 @@ namespace Kursach.Forms
                 MessageBox.Show($"Ошибка загрузки фамилий студентов: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LoadStudentFirstNamesIntoComboBox()
         {
             string query = "SELECT DISTINCT first_name, id FROM public.students WHERE TRUE";
-
             if (selectedGroupId.HasValue)
                 query += " AND group_id = @groupId";
             if (!string.IsNullOrEmpty(selectedLastName))
                 query += " AND last_name = @lastName";
-
             query += " ORDER BY first_name";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
@@ -181,7 +167,6 @@ namespace Kursach.Forms
                     using (var reader = cmd.ExecuteReader())
                         table.Load(reader);
 
-                   
                     comboBox_first_name.DataSource = null;
                     comboBox_first_name.Items.Clear();
                     comboBox_first_name.DisplayMember = "first_name";
@@ -194,17 +179,16 @@ namespace Kursach.Forms
                 MessageBox.Show($"Ошибка загрузки имён студентов: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LoadStudentMiddleNamesIntoComboBox()
         {
             string query = "SELECT DISTINCT middle_name, id FROM public.students WHERE middle_name IS NOT NULL AND middle_name <> ''";
-
             if (selectedGroupId.HasValue)
                 query += " AND group_id = @groupId";
             if (!string.IsNullOrEmpty(selectedLastName))
                 query += " AND last_name = @lastName";
             if (!string.IsNullOrEmpty(selectedFirstName))
                 query += " AND first_name = @firstName";
-
             query += " ORDER BY middle_name";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
@@ -228,7 +212,6 @@ namespace Kursach.Forms
                     using (var reader = cmd.ExecuteReader())
                         table.Load(reader);
 
-                    
                     comboBox_middle_name.DataSource = null;
                     comboBox_middle_name.Items.Clear();
                     comboBox_middle_name.DisplayMember = "middle_name";
@@ -244,15 +227,34 @@ namespace Kursach.Forms
 
         private void comboBox_group_id_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox_group_id.SelectedValue != null && int.TryParse(comboBox_group_id.SelectedValue.ToString(), out int groupId))
+            if (comboBox_group_id.SelectedValue != null &&
+                int.TryParse(comboBox_group_id.SelectedValue.ToString(), out int groupId))
+            {
                 selectedGroupId = groupId;
+            }
             else
+            {
                 selectedGroupId = null;
+            }
 
+            // Очистка зависимых полей
+            selectedLastName = null;
+            selectedFirstName = null;
+            selectedMiddleName = null;
+            selectedStudentId = null;
+
+            // Перезагрузка данных
             LoadStudentLastNamesIntoComboBox();
             LoadStudentFirstNamesIntoComboBox();
             LoadStudentMiddleNamesIntoComboBox();
+
+            // Сброс выбранных значений в ComboBox'ах
+            comboBox_first_name.DataSource = null;
+            comboBox_first_name.Items.Clear();
+            comboBox_middle_name.DataSource = null;
+            comboBox_middle_name.Items.Clear();
         }
+
         private void comboBox_last_name_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox_last_name.SelectedItem != null)
@@ -270,6 +272,7 @@ namespace Kursach.Forms
             LoadStudentFirstNamesIntoComboBox();
             LoadStudentMiddleNamesIntoComboBox();
         }
+
         private void comboBox_first_name_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox_first_name.SelectedItem != null)
@@ -286,6 +289,7 @@ namespace Kursach.Forms
 
             LoadStudentMiddleNamesIntoComboBox();
         }
+
         private void comboBox_middle_name_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox_middle_name.SelectedItem != null)
@@ -301,7 +305,6 @@ namespace Kursach.Forms
             }
         }
 
-
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             if (_connection == null || _connection.State != ConnectionState.Open)
@@ -310,7 +313,6 @@ namespace Kursach.Forms
                 return;
             }
 
-            // Проверка обязательных полей
             if (comboBox_subject.SelectedValue == null)
             {
                 MessageBox.Show("Выберите предмет.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -335,19 +337,10 @@ namespace Kursach.Forms
                 return;
             }
 
-            // Получаем данные
             int subjectId = Convert.ToInt32(comboBox_subject.SelectedValue);
             int studentId = selectedStudentId.Value;
             string gradeStr = comboBox_grade.SelectedItem.ToString();
             DateTime gradeDate = dateTimePicker1.Value;
-
-            // Проверяем и устанавливаем groupId
-            if (!int.TryParse(comboBox_group_id.SelectedValue?.ToString(), out int groupId))
-            {
-                MessageBox.Show("Некорректный идентификатор группы.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            selectedGroupId = groupId;
 
             short? gradeValue = null;
             if (gradeStr != "Н")
@@ -360,7 +353,6 @@ namespace Kursach.Forms
                 gradeValue = parsedGrade;
             }
 
-            // SQL-запрос
             string query = @"
             INSERT INTO public.grades (subject_id, group_id, student_id, grade_date, grade)
             VALUES (@subjectId, @groupId, @studentId, @gradeDate, @grade)";
@@ -369,27 +361,15 @@ namespace Kursach.Forms
             {
                 using (var cmd = new NpgsqlCommand(query, _connection))
                 {
-                    // subject_id - обязателен
                     cmd.Parameters.AddWithValue("@subjectId", NpgsqlDbType.Bigint, subjectId);
-
-                    // group_id - теперь обязателен
                     cmd.Parameters.AddWithValue("@groupId", NpgsqlDbType.Bigint, selectedGroupId.Value);
-
-                    // student_id - обязателен
                     cmd.Parameters.AddWithValue("@studentId", NpgsqlDbType.Bigint, studentId);
-
-                    // grade_date - обязателен
                     cmd.Parameters.AddWithValue("@gradeDate", NpgsqlDbType.Date, gradeDate);
+                    cmd.Parameters.AddWithValue("@grade", gradeValue.HasValue
+    ? (object)gradeValue.Value
+    : (object)DBNull.Value);
 
-                    // grade - может быть NULL (если "Н")
-                    if (gradeValue.HasValue)
-                        cmd.Parameters.AddWithValue("@grade", NpgsqlDbType.Smallint, gradeValue.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@grade", DBNull.Value);
-
-                    // Выполняем запрос
                     int rowsAffected = cmd.ExecuteNonQuery();
-
                     if (rowsAffected > 0)
                         MessageBox.Show("Оценка успешно добавлена.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     else
@@ -408,20 +388,18 @@ namespace Kursach.Forms
         {
             this.Close();
         }
+
+        #region Unused Events
         private void label1_Click(object sender, EventArgs e) { }
         private void label2_Click(object sender, EventArgs e) { }
-        private void label4_Click(object sender, EventArgs e) { }
-        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void comboBox_subject_SelectedIndexChanged(object sender, EventArgs e) { }
         private void label3_Click(object sender, EventArgs e) { }
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void comboBox_grade_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
+        private void label4_Click(object sender, EventArgs e) { }
+        private void label5_Click(object sender, EventArgs e) { }
+        private void label7_Click(object sender, EventArgs e) { }
+        private void comboBox_grade_SelectedIndexChanged(object sender, EventArgs e) { }
+        private void comboBox_subject_SelectedIndexChanged(object sender, EventArgs e) { }
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e) { }
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e) { }
+        #endregion
     }
 }

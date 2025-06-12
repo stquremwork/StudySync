@@ -1,4 +1,4 @@
-﻿namespace Kursach.Forms
+﻿namespace StudySync.Forms
 {
     partial class Form4
     {
@@ -44,6 +44,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.comboBox_subject = new System.Windows.Forms.ComboBox();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.comboBox_group_id.SelectedIndexChanged += new System.EventHandler(this.comboBox_group_id_SelectedIndexChanged);
             this.SuspendLayout();
             // 
             // guna2Button1
@@ -146,6 +147,7 @@
             this.label5.Size = new System.Drawing.Size(56, 16);
             this.label5.TabIndex = 9;
             this.label5.Text = "Оценка";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // comboBox_grade
             // 
@@ -189,6 +191,7 @@
             this.label7.Size = new System.Drawing.Size(65, 16);
             this.label7.TabIndex = 14;
             this.label7.Text = "Предмет";
+            this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // comboBox_subject
             // 

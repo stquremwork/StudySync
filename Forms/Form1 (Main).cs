@@ -1,4 +1,4 @@
-﻿using Kursach.Forms;
+﻿using StudySync.Forms;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Kursach
+namespace StudySync
 {
     public partial class Form1 : Form
     {
@@ -872,12 +872,7 @@ namespace Kursach
             }
         }
 
-        private void settingsToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            Form3 form3 = new Form3();
-            form3.StartPosition = FormStartPosition.CenterParent;
-            form3.ShowDialog(this);
-        }
+
 
         private void connectDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -896,7 +891,7 @@ namespace Kursach
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://stquremwork.github.io/");
+            System.Diagnostics.Process.Start("https://stquremwork.github.io/StudySync-site//");
 
         }
 
