@@ -28,10 +28,9 @@ namespace StudySync.Forms
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
-
             LoadGradesIntoComboBox();
             LoadGroupsIntoComboBox();
-            LoadSubjectsIntoComboBox();
+            LoadSubjectsIntoComboBox(); // Загружаем все или фильтрованные предметы
             LoadStudentLastNamesIntoComboBox();
             LoadStudentFirstNamesIntoComboBox();
             LoadStudentMiddleNamesIntoComboBox();
@@ -42,6 +41,7 @@ namespace StudySync.Forms
             comboBox_grade.Items.Clear();
             for (int i = 1; i <= 10; i++)
                 comboBox_grade.Items.Add(i.ToString());
+            comboBox_grade.Items.Add("Н");
         }
 
         private void LoadGroupsIntoComboBox()
@@ -52,7 +52,6 @@ namespace StudySync.Forms
                 MessageBox.Show("Соединение с БД не установлено.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
             try
             {
                 using (var cmd = new NpgsqlCommand(query, _connection))
@@ -60,7 +59,6 @@ namespace StudySync.Forms
                 {
                     DataTable table = new DataTable();
                     table.Load(reader);
-
                     comboBox_group_id.DataSource = null;
                     comboBox_group_id.DisplayMember = "group_name";
                     comboBox_group_id.ValueMember = "group_id";
@@ -75,7 +73,12 @@ namespace StudySync.Forms
 
         private void LoadSubjectsIntoComboBox()
         {
-            string query = "SELECT id, subjects_name FROM public.subjects";
+            string query = @"
+                SELECT s.id, s.subjects_name 
+                FROM public.subjects s
+                INNER JOIN public.groups g ON s.specialities_id = g.specialty_id
+                WHERE g.group_id = @groupId";
+
             if (_connection == null || _connection.State != ConnectionState.Open)
             {
                 MessageBox.Show("Соединение с БД не установлено.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -85,10 +88,17 @@ namespace StudySync.Forms
             try
             {
                 using (var cmd = new NpgsqlCommand(query, _connection))
-                using (var reader = cmd.ExecuteReader())
                 {
+                    if (selectedGroupId.HasValue)
+                        cmd.Parameters.AddWithValue("groupId", selectedGroupId.Value);
+                    else
+                        cmd.Parameters.AddWithValue("groupId", DBNull.Value);
+
                     DataTable table = new DataTable();
-                    table.Load(reader);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        table.Load(reader);
+                    }
 
                     comboBox_subject.DataSource = null;
                     comboBox_subject.DisplayMember = "subjects_name";
@@ -107,7 +117,7 @@ namespace StudySync.Forms
             string query = "SELECT DISTINCT last_name, id FROM public.students WHERE TRUE";
             if (selectedGroupId.HasValue)
                 query += " AND group_id = @groupId";
-            query += " ORDER BY last_name";
+            query += " ORDER BY last_name, id";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
             {
@@ -146,7 +156,7 @@ namespace StudySync.Forms
                 query += " AND group_id = @groupId";
             if (!string.IsNullOrEmpty(selectedLastName))
                 query += " AND last_name = @lastName";
-            query += " ORDER BY first_name";
+            query += " ORDER BY first_name, id";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
             {
@@ -189,7 +199,7 @@ namespace StudySync.Forms
                 query += " AND last_name = @lastName";
             if (!string.IsNullOrEmpty(selectedFirstName))
                 query += " AND first_name = @firstName";
-            query += " ORDER BY middle_name";
+            query += " ORDER BY middle_name, id";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
             {
@@ -247,6 +257,9 @@ namespace StudySync.Forms
             LoadStudentLastNamesIntoComboBox();
             LoadStudentFirstNamesIntoComboBox();
             LoadStudentMiddleNamesIntoComboBox();
+
+            // Динамически обновляем список предметов
+            LoadSubjectsIntoComboBox();
 
             // Сброс выбранных значений в ComboBox'ах
             comboBox_first_name.DataSource = null;
@@ -341,8 +354,8 @@ namespace StudySync.Forms
             int studentId = selectedStudentId.Value;
             string gradeStr = comboBox_grade.SelectedItem.ToString();
             DateTime gradeDate = dateTimePicker1.Value;
-
             short? gradeValue = null;
+
             if (gradeStr != "Н")
             {
                 if (!short.TryParse(gradeStr, out short parsedGrade))
@@ -354,8 +367,8 @@ namespace StudySync.Forms
             }
 
             string query = @"
-            INSERT INTO public.grades (subject_id, group_id, student_id, grade_date, grade)
-            VALUES (@subjectId, @groupId, @studentId, @gradeDate, @grade)";
+                INSERT INTO public.grades (subject_id, group_id, student_id, grade_date, grade)
+                VALUES (@subjectId, @groupId, @studentId, @gradeDate, @grade)";
 
             try
             {
@@ -366,8 +379,8 @@ namespace StudySync.Forms
                     cmd.Parameters.AddWithValue("@studentId", NpgsqlDbType.Bigint, studentId);
                     cmd.Parameters.AddWithValue("@gradeDate", NpgsqlDbType.Date, gradeDate);
                     cmd.Parameters.AddWithValue("@grade", gradeValue.HasValue
-    ? (object)gradeValue.Value
-    : (object)DBNull.Value);
+                        ? (object)gradeValue.Value
+                        : (object)DBNull.Value);
 
                     int rowsAffected = cmd.ExecuteNonQuery();
                     if (rowsAffected > 0)
@@ -390,6 +403,7 @@ namespace StudySync.Forms
         }
 
         #region Unused Events
+
         private void label1_Click(object sender, EventArgs e) { }
         private void label2_Click(object sender, EventArgs e) { }
         private void label3_Click(object sender, EventArgs e) { }
@@ -400,6 +414,7 @@ namespace StudySync.Forms
         private void comboBox_subject_SelectedIndexChanged(object sender, EventArgs e) { }
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e) { }
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e) { }
+
         #endregion
     }
 }

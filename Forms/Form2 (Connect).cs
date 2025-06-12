@@ -28,7 +28,16 @@ namespace StudySync
         {
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.StartPosition = FormStartPosition.CenterScreen;
+            // Получаем основной экран
+            Rectangle screen = Screen.PrimaryScreen.WorkingArea;
+
+            // Вычисляем координаты X и Y чтобы окно было по центру
+            int x = (screen.Width - this.Width) / 2;
+            int y = (screen.Height - this.Height) / 2;
+
+            // Устанавливаем стартовую позицию
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = new Point(x, y);
 
             var (host, userName, databaseName) = UserSettingsManager.LoadUserSettings();
             HostTextBox.Text = host;
