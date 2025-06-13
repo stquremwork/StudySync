@@ -296,12 +296,27 @@ namespace StudySync
             MainForm.UpdateConnectionStatus();
             if (isConnected && connection != null && connection.State == ConnectionState.Open)
             {
-               
+                // Здесь можно добавить логику для передачи данных или открытия главной формы
+                if (MainForm != null)
+                {
+                    MainForm.Show(); // Показываем главное окно
+                    this.Hide();     // Скрываем текущую форму
+                }
+                else
+                {
+                    Form1 form1 = new Form1();
+                    form1.Show();
+                    this.Hide();
+                }
             }
             else
             {
-                MessageBox.Show("Сначала необходимо установить соединение с базой данных.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Сначала необходимо установить соединение с базой данных.",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+
+            // Всегда закрываем форму после нажатия
+            this.Close();
         }
 
 
