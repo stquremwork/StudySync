@@ -9,6 +9,12 @@ namespace StudySync.Forms
     public partial class Form4 : Form
     {
         private NpgsqlConnection _connection;
+        private int? selectedGroupId = null;
+        private int? selectedStudentId = null;
+        private string selectedLastName = null;
+        private string selectedFirstName = null;
+        private string selectedMiddleName = null;
+
         public Form4(NpgsqlConnection connection)
         {
             InitializeComponent();
@@ -17,17 +23,12 @@ namespace StudySync.Forms
 
         public Form4() : this(null) { }
 
-        private int? selectedGroupId = null;
-        private int? selectedStudentId = null;
-        private string selectedLastName = null;
-        private string selectedFirstName = null;
-        private string selectedMiddleName = null;
-
         private void Form4_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
+
             LoadGradesIntoComboBox();
             LoadGroupsIntoComboBox();
             LoadSubjectsIntoComboBox(); // Загружаем все или фильтрованные предметы
@@ -41,7 +42,7 @@ namespace StudySync.Forms
             comboBox_grade.Items.Clear();
             for (int i = 1; i <= 10; i++)
                 comboBox_grade.Items.Add(i.ToString());
-            comboBox_grade.Items.Add("Н");
+            comboBox_grade.Items.Add("Н"); // Н — неявка
         }
 
         private void LoadGroupsIntoComboBox()
@@ -76,8 +77,11 @@ namespace StudySync.Forms
             string query = @"
                 SELECT s.id, s.subjects_name 
                 FROM public.subjects s
-                INNER JOIN public.groups g ON s.specialities_id = g.specialty_id
-                WHERE g.group_id = @groupId";
+                INNER JOIN public.specialities sp ON s.specialities_id = sp.id
+                INNER JOIN public.groups g ON sp.id = g.speciality_id";
+
+            if (selectedGroupId.HasValue)
+                query += " WHERE g.group_id = @groupId";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
             {
@@ -91,14 +95,10 @@ namespace StudySync.Forms
                 {
                     if (selectedGroupId.HasValue)
                         cmd.Parameters.AddWithValue("groupId", selectedGroupId.Value);
-                    else
-                        cmd.Parameters.AddWithValue("groupId", DBNull.Value);
 
                     DataTable table = new DataTable();
                     using (var reader = cmd.ExecuteReader())
-                    {
                         table.Load(reader);
-                    }
 
                     comboBox_subject.DataSource = null;
                     comboBox_subject.DisplayMember = "subjects_name";
@@ -137,7 +137,6 @@ namespace StudySync.Forms
                         table.Load(reader);
 
                     comboBox_last_name.DataSource = null;
-                    comboBox_last_name.Items.Clear();
                     comboBox_last_name.DisplayMember = "last_name";
                     comboBox_last_name.ValueMember = "id";
                     comboBox_last_name.DataSource = table;
@@ -178,7 +177,6 @@ namespace StudySync.Forms
                         table.Load(reader);
 
                     comboBox_first_name.DataSource = null;
-                    comboBox_first_name.Items.Clear();
                     comboBox_first_name.DisplayMember = "first_name";
                     comboBox_first_name.ValueMember = "id";
                     comboBox_first_name.DataSource = table;
@@ -223,7 +221,6 @@ namespace StudySync.Forms
                         table.Load(reader);
 
                     comboBox_middle_name.DataSource = null;
-                    comboBox_middle_name.Items.Clear();
                     comboBox_middle_name.DisplayMember = "middle_name";
                     comboBox_middle_name.ValueMember = "id";
                     comboBox_middle_name.DataSource = table;
@@ -237,10 +234,21 @@ namespace StudySync.Forms
 
         private void comboBox_group_id_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox_group_id.SelectedValue != null &&
-                int.TryParse(comboBox_group_id.SelectedValue.ToString(), out int groupId))
+            if (comboBox_group_id.SelectedValue != null)
             {
-                selectedGroupId = groupId;
+                var value = comboBox_group_id.SelectedValue;
+                if (value is long id64 && id64 <= int.MaxValue)
+                {
+                    selectedGroupId = (int)id64;
+                }
+                else if (value is int id32)
+                {
+                    selectedGroupId = id32;
+                }
+                else
+                {
+                    selectedGroupId = null;
+                }
             }
             else
             {
@@ -253,12 +261,9 @@ namespace StudySync.Forms
             selectedMiddleName = null;
             selectedStudentId = null;
 
-            // Перезагрузка данных
             LoadStudentLastNamesIntoComboBox();
             LoadStudentFirstNamesIntoComboBox();
             LoadStudentMiddleNamesIntoComboBox();
-
-            // Динамически обновляем список предметов
             LoadSubjectsIntoComboBox();
 
             // Сброс выбранных значений в ComboBox'ах
@@ -318,6 +323,27 @@ namespace StudySync.Forms
             }
         }
 
+        private int? GetGroupFromStudent(int? studentId)
+        {
+            if (!studentId.HasValue) return null;
+
+            string query = "SELECT group_id FROM students WHERE id = @studentId";
+            try
+            {
+                using (var cmd = new NpgsqlCommand(query, _connection))
+                {
+                    cmd.Parameters.AddWithValue("studentId", studentId.Value);
+                    var result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? Convert.ToInt32(result) : (int?)null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка получения группы студента: {ex.Message}");
+                return null;
+            }
+        }
+
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             if (_connection == null || _connection.State != ConnectionState.Open)
@@ -326,27 +352,22 @@ namespace StudySync.Forms
                 return;
             }
 
-            if (comboBox_subject.SelectedValue == null)
-            {
-                MessageBox.Show("Выберите предмет.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!selectedStudentId.HasValue)
-            {
-                MessageBox.Show("Выберите студента.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (comboBox_grade.SelectedItem == null)
-            {
-                MessageBox.Show("Выберите оценку.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
+            string missingFields = "";
             if (comboBox_group_id.SelectedValue == null)
+                missingFields += "- Группа\n";
+            if (comboBox_subject.SelectedValue == null)
+                missingFields += "- Предмет\n";
+            if (!selectedStudentId.HasValue)
+                missingFields += "- Студент\n";
+            if (comboBox_grade.SelectedItem == null)
+                missingFields += "- Оценка\n";
+
+            if (!string.IsNullOrEmpty(missingFields))
             {
-                MessageBox.Show("Выберите группу.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Не все обязательные поля заполнены:\n{missingFields}",
+                                "Ошибка",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                 return;
             }
 
@@ -354,8 +375,8 @@ namespace StudySync.Forms
             int studentId = selectedStudentId.Value;
             string gradeStr = comboBox_grade.SelectedItem.ToString();
             DateTime gradeDate = dateTimePicker1.Value;
-            short? gradeValue = null;
 
+            short? gradeValue = null;
             if (gradeStr != "Н")
             {
                 if (!short.TryParse(gradeStr, out short parsedGrade))
@@ -366,21 +387,40 @@ namespace StudySync.Forms
                 gradeValue = parsedGrade;
             }
 
-            string query = @"
+            int? groupId = selectedGroupId ?? GetGroupFromStudent(studentId);
+
+            // Проверка на дубликат
+            string checkQuery = @"
+                SELECT COUNT(*) FROM grades 
+                WHERE student_id = @studentId AND subject_id = @subjectId AND grade_date = @gradeDate";
+
+            using (var checkCmd = new NpgsqlCommand(checkQuery, _connection))
+            {
+                checkCmd.Parameters.AddWithValue("studentId", studentId);
+                checkCmd.Parameters.AddWithValue("subjectId", subjectId);
+                checkCmd.Parameters.AddWithValue("gradeDate", gradeDate.Date);
+
+                int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+                if (count > 0)
+                {
+                    MessageBox.Show("У студента уже есть оценка по этому предмету за указанную дату.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            string insertQuery = @"
                 INSERT INTO public.grades (subject_id, group_id, student_id, grade_date, grade)
                 VALUES (@subjectId, @groupId, @studentId, @gradeDate, @grade)";
 
             try
             {
-                using (var cmd = new NpgsqlCommand(query, _connection))
+                using (var cmd = new NpgsqlCommand(insertQuery, _connection))
                 {
                     cmd.Parameters.AddWithValue("@subjectId", NpgsqlDbType.Bigint, subjectId);
-                    cmd.Parameters.AddWithValue("@groupId", NpgsqlDbType.Bigint, selectedGroupId.Value);
+                    cmd.Parameters.AddWithValue("@groupId", NpgsqlDbType.Bigint, groupId ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@studentId", NpgsqlDbType.Bigint, studentId);
-                    cmd.Parameters.AddWithValue("@gradeDate", NpgsqlDbType.Date, gradeDate);
-                    cmd.Parameters.AddWithValue("@grade", gradeValue.HasValue
-                        ? (object)gradeValue.Value
-                        : (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@gradeDate", NpgsqlDbType.Date, gradeDate.Date);
+                    cmd.Parameters.AddWithValue("@grade", gradeValue.HasValue ? (object)gradeValue.Value : DBNull.Value);
 
                     int rowsAffected = cmd.ExecuteNonQuery();
                     if (rowsAffected > 0)
@@ -391,7 +431,7 @@ namespace StudySync.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при добавлении оценки:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка при добавлении оценки: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             this.Close();
@@ -403,7 +443,6 @@ namespace StudySync.Forms
         }
 
         #region Unused Events
-
         private void label1_Click(object sender, EventArgs e) { }
         private void label2_Click(object sender, EventArgs e) { }
         private void label3_Click(object sender, EventArgs e) { }
@@ -414,7 +453,6 @@ namespace StudySync.Forms
         private void comboBox_subject_SelectedIndexChanged(object sender, EventArgs e) { }
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e) { }
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e) { }
-
         #endregion
     }
 }

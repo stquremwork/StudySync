@@ -2,10 +2,11 @@
 using Npgsql;
 using NpgsqlTypes;
 using System;
-using DataTable = System.Data.DataTable;
-using System.Windows.Forms;
-using Word = Microsoft.Office.Interop.Word;
+using System.Collections.Generic;
 using System.Data;
+using System.Windows.Forms;
+using DataTable = System.Data.DataTable;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace StudySync.Forms
 {
@@ -37,7 +38,7 @@ namespace StudySync.Forms
             LoadStudentMiddleNamesIntoComboBox();
         }
 
-      
+
 
         private void LoadGroupsIntoComboBox()
         {
@@ -66,7 +67,7 @@ namespace StudySync.Forms
             }
         }
 
-       
+
 
         private void LoadStudentLastNamesIntoComboBox()
         {
@@ -313,8 +314,8 @@ namespace StudySync.Forms
             // Проверка выбора всех данных студента
             if (string.IsNullOrEmpty(selectedLastName) ||
                 string.IsNullOrEmpty(selectedFirstName) ||
-                string.IsNullOrEmpty(selectedMiddleName) ||
-                !selectedGroupId.HasValue)
+                !selectedGroupId.HasValue ||
+                !selectedStudentId.HasValue)
             {
                 MessageBox.Show("Пожалуйста, выберите все данные студента: группу, фамилию, имя и отчество.",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -323,10 +324,66 @@ namespace StudySync.Forms
 
             try
             {
+                // Получаем список предметов для группы студента
+                string subjectsQuery = @"
+            SELECT s.id, s.subjects_name 
+            FROM public.subjects s
+            INNER JOIN public.groups g ON s.specialities_id = g.speciality_id
+            WHERE g.group_id = @groupId
+            ORDER BY s.subjects_name";
+
+                // Получаем оценки студента по всем предметам
+                string gradesQuery = @"
+            SELECT g.subject_id, g.grade, g.grade_date
+            FROM public.grades g
+            WHERE g.student_id = @studentId
+            ORDER BY g.grade_date";
+
+                DataTable subjectsTable = new DataTable();
+                DataTable gradesTable = new DataTable();
+
+                using (var cmd = new NpgsqlCommand(subjectsQuery, _connection))
+                {
+                    cmd.Parameters.AddWithValue("groupId", selectedGroupId.Value);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        subjectsTable.Load(reader);
+                    }
+                }
+
+                using (var cmd = new NpgsqlCommand(gradesQuery, _connection))
+                {
+                    cmd.Parameters.AddWithValue("studentId", selectedStudentId.Value);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        gradesTable.Load(reader);
+                    }
+                }
+
+                // Создаем словарь для хранения оценок по предметам
+                Dictionary<int, List<string>> subjectGrades = new Dictionary<int, List<string>>();
+                foreach (DataRow subjectRow in subjectsTable.Rows)
+                {
+                    int subjectId = Convert.ToInt32(subjectRow["id"]);
+                    subjectGrades[subjectId] = new List<string>();
+                }
+
+                // Заполняем оценки
+                foreach (DataRow gradeRow in gradesTable.Rows)
+                {
+                    int subjectId = Convert.ToInt32(gradeRow["subject_id"]);
+                    if (subjectGrades.ContainsKey(subjectId))
+                    {
+                        object gradeValue = gradeRow["grade"];
+                        string gradeStr = gradeValue == DBNull.Value ? "Н" : gradeValue.ToString();
+                        subjectGrades[subjectId].Add(gradeStr);
+                    }
+                }
+
                 // Диалог сохранения файла
                 SaveFileDialog saveDialog = new SaveFileDialog();
                 saveDialog.Filter = "Word Document (*.docx)|*.docx";
-                saveDialog.FileName = $"Табель_{selectedLastName}_{selectedGroupId}.docx";
+                saveDialog.FileName = $"Табель_{selectedLastName}_{selectedFirstName}_{selectedGroupId}.docx";
 
                 if (saveDialog.ShowDialog() != DialogResult.OK)
                 {
@@ -364,25 +421,20 @@ namespace StudySync.Forms
                 tableParagraph.Range.Text = "";
                 tableParagraph.Range.InsertParagraphAfter();
 
-                // Создаем таблицу 15 строк × 12 столбцов (10 оценок + предмет + средний балл)
-                var table = doc.Tables.Add(tableParagraph.Range, 15, 12);
+                // Создаем таблицу (количество предметов + 1 строка заголовка) × 12 столбцов
+                int rowCount = subjectsTable.Rows.Count + 1;
+                var table = doc.Tables.Add(tableParagraph.Range, rowCount, 12);
                 table.Borders.Enable = 1;
 
                 // Настройка ширины столбцов
-                for (int col = 1; col <= 12; col++)
-                {
-                    table.Columns[col].Width = 40;
-                }
-
-                // Шапка таблицы
-                // Настройка ширины столбцов (перед заполнением содержимого)
                 table.Columns[1].Width = 120;  // Ширина колонки "Предмет" (в пунктах)
-                table.Columns[12].Width = 80;   // Ширина колонки "Средний балл"
+                table.Columns[12].Width = 80; // Ширина колонки "Средний балл"
                 for (int col = 2; col <= 11; col++)
                 {
                     table.Columns[col].Width = 30;  // Ширина колонок с оценками
                 }
 
+                // Шапка таблицы
                 // Первая колонка — "Предмет"
                 table.Cell(1, 1).Range.Text = "Предмет";
                 table.Cell(1, 1).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
@@ -401,48 +453,85 @@ namespace StudySync.Forms
 
                 // Форматирование шапки
                 table.Rows[1].Range.Font.Bold = 1;
-                //Покрасить фон в серый
-                //table.Rows[1].Shading.BackgroundPatternColor = WdColor.wdColorGray25;
+                table.Rows[1].Shading.BackgroundPatternColor = WdColor.wdColorGray25;
 
-                // Оставшиеся строки — пустые с центрированием
-                for (int row = 2; row <= 15; row++)
+                // Заполняем данные по предметам
+                for (int i = 0; i < subjectsTable.Rows.Count; i++)
                 {
-                    for (int col = 1; col <= 12; col++)
+                    DataRow subjectRow = subjectsTable.Rows[i];
+                    int subjectId = Convert.ToInt32(subjectRow["id"]);
+                    string subjectName = subjectRow["subjects_name"].ToString();
+
+                    // Название предмета
+                    table.Cell(i + 2, 1).Range.Text = subjectName;
+                    table.Cell(i + 2, 1).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+
+                    // Оценки
+                    if (subjectGrades.ContainsKey(subjectId) && subjectGrades[subjectId].Count > 0)
                     {
-                        table.Cell(row, col).Range.Text = "";
-                        table.Cell(row, col).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(row, col).VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                        // Заполняем оценки (максимум 10 оценок)
+                        int maxGrades = Math.Min(subjectGrades[subjectId].Count, 10);
+                        for (int j = 0; j < maxGrades; j++)
+                        {
+                            table.Cell(i + 2, j + 2).Range.Text = subjectGrades[subjectId][j];
+                        }
+
+                        // Вычисляем средний балл (игнорируем "Н")
+                        double sum = 0;
+                        int count = 0;
+                        foreach (string grade in subjectGrades[subjectId])
+                        {
+                            if (grade != "Н" && int.TryParse(grade, out int numericGrade))
+                            {
+                                sum += numericGrade;
+                                count++;
+                            }
+                        }
+
+                        if (count > 0)
+                        {
+                            double average = sum / count;
+                            table.Cell(i + 2, 12).Range.Text = average.ToString("0.00");
+                        }
+                        else
+                        {
+                            table.Cell(i + 2, 12).Range.Text = "-";
+                        }
+                    }
+                    else
+                    {
+                        table.Cell(i + 2, 12).Range.Text = "-";
+                    }
+
+                    // Центрируем оценки и средний балл
+                    for (int col = 2; col <= 12; col++)
+                    {
+                        table.Cell(i + 2, col).Range.Paragraphs[1].Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
                     }
                 }
-
-                // Опционально: автоматическая подгонка ширины столбцов по содержимому
-                // table.AutoFitBehavior(WdAutoFitBehavior.wdAutoFitContent);
 
                 // Пустой абзац для отступа после таблицы
                 var spacingParagraph = doc.Content.Paragraphs.Add();
                 spacingParagraph.Range.Text = "";
-                spacingParagraph.SpaceAfter = 10; // Большой отступ после таблицы
+                spacingParagraph.SpaceAfter = 10;
                 spacingParagraph.Range.InsertParagraphAfter();
 
-                // Первая подпись (классный руководитель)
+                // Подписи
                 var signParagraph = doc.Content.Paragraphs.Add();
                 signParagraph.Range.Text = "Подпись классного руководителя: ____________________________";
-                signParagraph.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphLeft;
-                signParagraph.Format.SpaceAfter = 0; // Убираем отступ после этой строки
-                signParagraph.Range.Font.Bold = 0; // Обычный шрифт (если нужно)
+                signParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                signParagraph.Format.SpaceAfter = 0;
                 signParagraph.Range.InsertParagraphAfter();
 
-                // Вторая подпись (родители)
                 signParagraph = doc.Content.Paragraphs.Add();
                 signParagraph.Range.Text = "Подпись родителей: _________________________________";
-                signParagraph.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphLeft;
-                signParagraph.Format.SpaceAfter = 0; // Убираем отступ после этой строки
-                signParagraph.Range.Font.Bold = 0; // Обычный шрифт (если нужно)
+                signParagraph.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                signParagraph.Format.SpaceAfter = 0;
                 signParagraph.Range.InsertParagraphAfter();
 
                 // Сохранение документа
                 doc.SaveAs2(saveDialog.FileName);
-
+                MessageBox.Show("Документ успешно создан!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
